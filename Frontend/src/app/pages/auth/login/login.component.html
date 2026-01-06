@@ -1,0 +1,36 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    <img src="/Assets/Logo.png" alt="MNDR Logo" class="login-logo"/>
+    <mat-card-header>
+      <mat-card-title>Prijava</mat-card-title>
+      <mat-card-subtitle>Unesite svoje podatke</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" id="EmailInput"/>
+          <mat-error *ngIf="f['email'].hasError('required')">Email je obavezan</mat-error>
+          <mat-error *ngIf="f['email'].hasError('email')">Email nije ispravan</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Lozinka</mat-label>
+          <input matInput type="password" formControlName="password" id="PasswordInput" />
+          <mat-error *ngIf="f['password'].hasError('required')">Lozinka je obavezna</mat-error>
+          <mat-error *ngIf="f['password'].hasError('minlength')">Lozinka mora biti najmanje 6 karaktera</mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button type="submit" class="full-width" [disabled]="loading">
+          <span *ngIf="!loading" class="PrijaviSeDugme">Prijavi se</span>
+          <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+        </button>
+      </form>
+
+      <p class="register-link">
+        Nemaš nalog? <a routerLink="/kupac/register">Registruj se ovde</a>
+      </p>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,47 @@
+import { Routes } from '@angular/router';
+import { LandingPageComponent } from './pages/landing-page/landing-page.component';
+import { LandingMajstorComponent } from './pages/landing-majstor/landing-majstor.component';
+import { LandingKupacComponent } from './pages/landing-kupac/landing-kupac.component';
+import { LoginComponent } from './pages/auth/login/login.component';
+import { RegisterComponent } from './pages/auth/register/register.component';
+import { OglasListComponent } from './pages/oglasi/oglas-list.component';
+import { CreateOglasWizardComponent } from './pages/oglasi/create-oglas-wizard/create-oglas-wizard.component';
+import { RazgovorComponent } from './pages/razgovori/razgovor.component';
+import { RecenzijeComponent } from './pages/recenzije/recenzije.component';
+import { KreditiComponent } from './pages/krediti/krediti.component';
+import { UgovoriComponent } from './pages/ugovori/ugovori.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { KupciComponent } from './pages/kupci/kupci.component';
+import { MajstorRegisterComponent } from './pages/majstor-register/majstor-register.component';
+import { MajstorEditProfileComponent } from './pages/majstor-edit-profile/majstor-edit-profile.component';
+import { MajstorDeleteProfileComponent } from './pages/majstor-delete-profile/majstor-delete-profile.component';
+import { KupacRegisterComponent } from './pages/kupac-register/kupac-register.component';
+import { KupacEditProfileComponent } from './pages/kupac-edit-profile/kupac-edit-profile.component';
+import { KupacDeleteProfileComponent } from './pages/kupac-delete-profile/kupac-delete-profile.component';
+import { KupacMojProfilComponent } from './pages/kupac-moj-profil/kupac-moj-profil.component';
+import { SettingsComponent } from './pages/settings/settings.component';
+
+export const routes: Routes = [
+  { path: 'settings', component: SettingsComponent },
+  { path: '', component: LandingPageComponent },
+  { path: 'majstor', component: LandingMajstorComponent },
+  { path: 'kupac', component: LandingKupacComponent },
+  { path: 'dashboard', component: DashboardComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'majstor/register', component: MajstorRegisterComponent },
+  { path: 'majstor/edit-profile/:id', component: MajstorEditProfileComponent },
+  { path: 'majstor/delete-profile/:id', component: MajstorDeleteProfileComponent },
+  { path: 'kupac/register', component: KupacRegisterComponent },
+  { path: 'kupac/moj-profil', component: KupacMojProfilComponent },
+  { path: 'kupac/edit-profile/:id', component: KupacEditProfileComponent },
+  { path: 'kupac/delete-profile/:id', component: KupacDeleteProfileComponent },
+  { path: 'oglasi', component: OglasListComponent },
+  { path: 'oglasi/create', component: CreateOglasWizardComponent },
+  { path: 'kupci', component: KupciComponent },
+  { path: 'razgovori/:id', component: RazgovorComponent },
+  { path: 'recenzije', component: RecenzijeComponent },
+  { path: 'krediti', component: KreditiComponent },
+  { path: 'ugovori', component: UgovoriComponent },
+  { path: '**', redirectTo: '' }
+];
