@@ -3,16 +3,20 @@ namespace MNDR.Application.Modules.Majstori.Commands.Create;
 public class CreateMajstorCommandHandler(
     IAppDbContext context,
     IPasswordHasher<Korisnik> passwordHasher)
-    : IRequestHandler<CreateMajstorCommand, int>
+    : IRequestHandler<CreateMajstorCommand, CreateMajstorResponse>
 {
-    public async Task<int> Handle(CreateMajstorCommand request, CancellationToken cancellationToken)
+    public async Task<CreateMajstorResponse> Handle(CreateMajstorCommand request, CancellationToken cancellationToken)
     {
         // Provera da li email već postoji
         var emailExists = await context.Korisnici
             .AnyAsync(k => k.Email == request.Email.ToLower(), cancellationToken);
 
         if (emailExists)
-            throw new ValidationException("Email je već registrovan");
+            return new CreateMajstorResponse
+            {
+                Success = false,
+                Message = "Email je već registrovan"
+            };
 
         // Kreiranje korisnika
         var korisnik = new Korisnik
@@ -48,6 +52,11 @@ public class CreateMajstorCommandHandler(
         context.Majstori.Add(majstor);
         await context.SaveChangesAsync(cancellationToken);
 
-        return majstor.KorisnikId;
+        return new CreateMajstorResponse
+        {
+            Success = true,
+            Message = "Majstor je uspešno kreiran",
+            MajstorId = majstor.KorisnikId
+        };
     }
 }

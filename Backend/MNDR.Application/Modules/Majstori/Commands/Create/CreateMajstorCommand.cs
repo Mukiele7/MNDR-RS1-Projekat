@@ -1,6 +1,6 @@
 namespace MNDR.Application.Modules.Majstori.Commands.Create;
 
-public class CreateMajstorCommand : IRequest<int>
+public class CreateMajstorCommand : IRequest<CreateMajstorResponse>
 {
     public string Ime { get; set; } = string.Empty;
     public string Prezime { get; set; } = string.Empty;
@@ -13,4 +13,11 @@ public class CreateMajstorCommand : IRequest<int>
     public int GodineIskustva { get; set; }
     public decimal CijenaMjesecne { get; set; }
     public string? DetaljanOpisProfila { get; set; }
+}
+
+public class CreateMajstorResponse
+{
+    public bool Success { get; set; }
+    public string Message { get; set; } = string.Empty;
+    public int MajstorId { get; set; }
 }

@@ -1,0 +1,152 @@
+<div class="wizard-container">
+  <h2>Kreiraj novi oglas</h2>
+
+  <mat-stepper linear #stepper>
+    <!-- Korak 1: Osnovne informacije -->
+    <mat-step [stepControl]="basicInfoForm" label="Osnovne informacije">
+      <form [formGroup]="basicInfoForm">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Unesite osnovne podatke o oglasu</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <!-- Naslov -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Naslov oglasa</mat-label>
+              <input 
+                matInput 
+                formControlName="naslov" 
+                placeholder="npr. Vodoinstalaterske usluge"
+                maxlength="200">
+              <mat-hint align="end">{{naslov?.value?.length || 0}}/200</mat-hint>
+              <mat-error *ngIf="naslov?.hasError('required')">
+                Naslov je obavezan
+              </mat-error>
+              <mat-error *ngIf="naslov?.hasError('minlength')">
+                Naslov mora imati najmanje 10 karaktera
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Opis -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Opis</mat-label>
+              <textarea 
+                matInput 
+                formControlName="opis" 
+                placeholder="Detaljno opišite vašu uslugu..."
+                rows="6"
+                maxlength="1000"></textarea>
+              <mat-hint align="end">{{opis?.value?.length || 0}}/1000</mat-hint>
+              <mat-error *ngIf="opis?.hasError('required')">
+                Opis je obavezan
+              </mat-error>
+              <mat-error *ngIf="opis?.hasError('minlength')">
+                Opis mora imati najmanje 50 karaktera
+              </mat-error>
+            </mat-form-field>
+          </mat-card-content>
+        </mat-card>
+
+        <div class="stepper-buttons">
+          <button mat-raised-button matStepperNext [disabled]="!basicInfoForm.valid" color="primary">
+            Dalje <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Korak 2: Kategorije -->
+    <mat-step [stepControl]="categoryForm" label="Kategorije">
+      <form [formGroup]="categoryForm">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Izaberite kategorije usluga</mat-card-title>
+            <mat-card-subtitle>Možete izabrati više kategorija</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <!-- Dostupne kategorije -->
+            <div class="kategorije-grid">
+              <mat-card 
+                *ngFor="let kat of kategorije" 
+                class="kategorija-card"
+                [class.selected]="isSelected(kat)"
+                (click)="isSelected(kat) ? removeKategorija(kat) : addKategorija(kat)">
+                <mat-card-content>
+                  <mat-icon>{{isSelected(kat) ? 'check_circle' : 'radio_button_unchecked'}}</mat-icon>
+                  <h3>{{kat.naziv}}</h3>
+                </mat-card-content>
+              </mat-card>
+            </div>
+
+            <!-- Izabrane kategorije -->
+            <div class="selected-chips" *ngIf="selectedKategorije.length > 0">
+              <h4>Izabrane kategorije:</h4>
+              <mat-chip-set>
+                <mat-chip 
+                  *ngFor="let kat of selectedKategorije"
+                  (removed)="removeKategorija(kat)">
+                  {{kat.naziv}}
+                  <button matChipRemove>
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                </mat-chip>
+              </mat-chip-set>
+            </div>
+
+            <mat-error *ngIf="categoryForm.invalid && selectedKategorije.length === 0">
+              Morate izabrati najmanje jednu kategoriju
+            </mat-error>
+          </mat-card-content>
+        </mat-card>
+
+        <div class="stepper-buttons">
+          <button mat-button matStepperPrevious>
+            <mat-icon>arrow_back</mat-icon> Nazad
+          </button>
+          <button mat-raised-button matStepperNext [disabled]="!categoryForm.valid" color="primary">
+            Dalje <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Korak 3: Pregled -->
+    <mat-step label="Pregled i potvrda">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Proverite unete podatke</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="preview-section">
+            <h3>Naslov:</h3>
+            <p>{{basicInfoForm.value.naslov}}</p>
+
+            <h3>Opis:</h3>
+            <p class="opis-preview">{{basicInfoForm.value.opis}}</p>
+
+            <h3>Kategorije:</h3>
+            <mat-chip-set>
+              <mat-chip *ngFor="let kat of selectedKategorije">
+                {{kat.naziv}}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <div class="stepper-buttons">
+        <button mat-button matStepperPrevious>
+          <mat-icon>arrow_back</mat-icon> Nazad
+        </button>
+        <button 
+          mat-raised-button 
+          color="primary" 
+          (click)="onSubmit()"
+          [disabled]="isSubmitting || !basicInfoForm.valid || !categoryForm.valid">
+          <mat-icon>check</mat-icon> 
+          {{isSubmitting ? 'Objavljujem...' : 'Objavi oglas'}}
+        </button>
+      </div>
+    </mat-step>
+  </mat-stepper>
+</div>

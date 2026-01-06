@@ -58,7 +58,7 @@ export class MajstorRegisterComponent {
       ime: ['', [Validators.required, Validators.minLength(2)]],
       prezime: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email, Validators.pattern(/^[^@\s]+@[^@\s]+\.com$/)]],
-      telefon: ['', [Validators.required, Validators.pattern(/^(\+387[6-9]\d{7}|0[6-9]\d{7}|[6-9]\d{7})$/)]],
+      telefon: ['', [Validators.required, Validators.pattern(/^(\+387|0)[6-9]\d{7,8}$/)]],
       lozinka: ['', [Validators.required, Validators.minLength(6)]],
       potvrdaLozinke: ['', [Validators.required]]
     }, { validators: this.passwordMatchValidator });

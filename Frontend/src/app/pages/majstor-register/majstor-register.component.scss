@@ -109,23 +109,35 @@ mat-form-field {
   }
 }
 
+button[mat-raised-button][color="primary"],
 button[color="primary"] {
-  background: linear-gradient(135deg, #13AB24 0%, #0d8a1e 100%);
+  background: linear-gradient(135deg, #13AB24 0%, #0d8a1e 100%) !important;
+  color: white !important;
   
   &:hover:not([disabled]) {
-    background: linear-gradient(135deg, #0d8a1e 0%, #0a6b17 100%);
+    background: linear-gradient(135deg, #0d8a1e 0%, #0a6b17 100%) !important;
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(19, 171, 36, 0.3);
   }
 }
 
+button[mat-raised-button][color="accent"],
 button[color="accent"] {
-  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
-  color: white;
+  background: linear-gradient(135deg, #13AB24 0%, #0d8a1e 100%) !important;
+  color: white !important;
   
   &:hover:not([disabled]) {
+    background: linear-gradient(135deg, #0d8a1e 0%, #0a6b17 100%) !important;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
+    box-shadow: 0 6px 20px rgba(19, 171, 36, 0.3);
+  }
+}
+
+button[mat-button] {
+  color: #13AB24 !important;
+  
+  &:hover:not([disabled]) {
+    background-color: rgba(19, 171, 36, 0.1) !important;
   }
 }
 

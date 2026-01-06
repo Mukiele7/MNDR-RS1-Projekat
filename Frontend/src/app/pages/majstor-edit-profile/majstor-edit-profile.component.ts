@@ -116,7 +116,14 @@ export class MajstorEditProfileComponent implements OnInit {
   updateProfile(): void {
     if (this.editForm.valid) {
       this.saving = true;
-      this.majstorService.updateMajstor(this.majstorId, this.editForm.value).subscribe({
+      
+      // Pripremi podatke - dodaj cijenaMjesecne = 0 da backend može kalkulisati
+      const updateData = {
+        ...this.editForm.value,
+        cijenaMjesecne: 0 // Backend će automatski izračunati iz cijenaSat
+      };
+      
+      this.majstorService.updateMajstor(this.majstorId, updateData).subscribe({
         next: (response) => {
           alert('Profil uspješno ažuriran!');
           this.saving = false;

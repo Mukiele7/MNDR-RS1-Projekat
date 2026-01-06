@@ -1,0 +1,3 @@
+# Ignore all uploaded files
+profiles/*
+!profiles/.gitkeep

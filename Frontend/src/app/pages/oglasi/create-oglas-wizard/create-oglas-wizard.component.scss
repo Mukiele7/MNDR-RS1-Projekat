@@ -1,0 +1,124 @@
+.wizard-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #3f51b5;
+  font-size: 2rem;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+mat-card {
+  margin-bottom: 1.5rem;
+}
+
+.stepper-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  gap: 1rem;
+}
+
+.stepper-buttons button {
+  padding: 0.5rem 2rem;
+}
+
+/* Kategorije grid */
+.kategorije-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.kategorija-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.kategorija-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.kategorija-card.selected {
+  border-color: #3f51b5;
+  background-color: #e8eaf6;
+}
+
+.kategorija-card mat-card-content {
+  text-align: center;
+  padding: 1rem;
+}
+
+.kategorija-card mat-icon {
+  font-size: 2rem;
+  width: 2rem;
+  height: 2rem;
+  color: #3f51b5;
+}
+
+.kategorija-card h3 {
+  margin: 0.5rem 0 0 0;
+  font-size: 1rem;
+}
+
+/* Selected chips */
+.selected-chips {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.selected-chips h4 {
+  margin: 0 0 1rem 0;
+  color: #666;
+}
+
+/* Preview section */
+.preview-section {
+  padding: 1rem 0;
+}
+
+.preview-section h3 {
+  color: #3f51b5;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.preview-section p {
+  margin: 0;
+  padding: 0.5rem;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.opis-preview {
+  white-space: pre-wrap;
+  min-height: 100px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .wizard-container {
+    padding: 1rem;
+  }
+
+  .kategorije-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+
+  .stepper-buttons {
+    flex-direction: column;
+  }
+}

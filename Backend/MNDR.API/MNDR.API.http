@@ -1,0 +1,131 @@
+@baseUrl = https://localhost:7070
+@accessToken = 
+@refreshToken = 
+
+### Health Check
+GET {{baseUrl}}/weatherforecast/
+Accept: application/json
+
+###
+
+### 1. Registracija novog korisnika (Kupac)
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "test.kupac@mndr.com",
+  "password": "Test123!",
+  "ime": "Test",
+  "prezime": "Kupac",
+  "telefon": "061234567",
+  "uloga": "Kupac",
+  "grad": "Sarajevo",
+  "korisnikoIme": "testkupac"
+}
+
+###
+
+### 2. Registracija majstora
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "test.majstor@mndr.com",
+  "password": "Test123!",
+  "ime": "Test",
+  "prezime": "Majstor",
+  "telefon": "062345678",
+  "uloga": "Majstor",
+  "grad": "Sarajevo",
+  "korisnikoIme": "testmajstor",
+  "struka": "Vodoinstalater"
+}
+
+###
+
+### 3. Login (vraća accessToken i refreshToken)
+# @name login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test.kupac@mndr.com",
+  "password": "Test123!",
+  "deviceFingerprint": "browser_hash_12345"
+}
+
+###
+
+### 4. Refresh Token (koristi refreshToken iz login odgovora)
+POST {{baseUrl}}/api/auth/refresh-token
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}",
+  "deviceFingerprint": "browser_hash_12345"
+}
+
+###
+
+### 5. Logout
+POST {{baseUrl}}/api/auth/logout
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "userId": 1
+}
+
+###
+
+### 6. Kreiranje oglasa (Majstor mora biti ulogovan)
+POST {{baseUrl}}/api/oglasi
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "naslov": "Popravka vodovodnih instalacija",
+  "opis": "Nudim usluge popravke svih vrsta vodovodnih instalacija. Brza i kvalitetna usluga.",
+  "majstorId": 2,
+  "kategorijeIds": [1]
+}
+
+###
+
+### 7. Lista svih oglasa
+GET {{baseUrl}}/api/oglasi
+Accept: application/json
+
+###
+
+### 8. Kreiranje razgovora
+POST {{baseUrl}}/api/razgovori
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "kupacId": 1,
+  "majstorId": 2
+}
+
+###
+
+### 9. Lista razgovora
+GET {{baseUrl}}/api/razgovori
+Authorization: Bearer {{accessToken}}
+
+###
+
+### 10. Dodavanje recenzije
+POST {{baseUrl}}/api/recenzije
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "majstorId": 2,
+  "kupacId": 1,
+  "ocjena": 5,
+  "komentar": "Odličan rad, brzo i kvalitetno!"
+}
+
+###

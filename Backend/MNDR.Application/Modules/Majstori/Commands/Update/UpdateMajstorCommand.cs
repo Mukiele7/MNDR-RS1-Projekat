@@ -1,6 +1,6 @@
 namespace MNDR.Application.Modules.Majstori.Commands.Update;
 
-public class UpdateMajstorCommand : IRequest
+public class UpdateMajstorCommand : IRequest<UpdateMajstorResponse>
 {
     public int KorisnikId { get; set; }
     public string Ime { get; set; } = string.Empty;
@@ -13,4 +13,10 @@ public class UpdateMajstorCommand : IRequest
     public decimal CijenaSat { get; set; }
     public string? DetaljanOpisProfila { get; set; }
     public string? OpisProfila { get; set; }
+}
+
+public class UpdateMajstorResponse
+{
+    public bool Success { get; set; }
+    public string Message { get; set; } = string.Empty;
 }

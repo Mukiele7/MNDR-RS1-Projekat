@@ -24,12 +24,17 @@ public sealed class UpdateMajstorCommandValidator : AbstractValidator<UpdateMajs
             .LessThanOrEqualTo(50).WithMessage("Godine iskustva ne mogu biti veće od 50");
 
         RuleFor(x => x.CijenaMjesecne)
-            .GreaterThan(0).WithMessage("Mjesečna cijena mora biti veća od 0")
+            .GreaterThanOrEqualTo(0).WithMessage("Mjesečna cijena ne može biti negativna")
             .LessThanOrEqualTo(100000).WithMessage("Cijena ne može biti veća od 100,000 KM");
 
         RuleFor(x => x.CijenaSat)
             .GreaterThanOrEqualTo(0).WithMessage("Cijena po satu ne može biti negativna")
             .LessThanOrEqualTo(1000).WithMessage("Cijena po satu ne može biti veća od 1,000 KM");
+        
+        // Barem jedna cijena mora biti veća od 0
+        RuleFor(x => x)
+            .Must(x => x.CijenaSat > 0 || x.CijenaMjesecne > 0)
+            .WithMessage("Morate uneti ili cijenu po satu ili mjesečnu cijenu");
 
         RuleFor(x => x.Grad)
             .MaximumLength(100).WithMessage("Grad ne može biti duži od 100 karaktera")
