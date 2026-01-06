@@ -1,0 +1,116 @@
+<div class="edit-profile-container">
+  <div class="content-wrapper">
+    <!-- Loading spinner -->
+    <div class="loading" *ngIf="loading">
+      <mat-spinner diameter="60" color="primary"></mat-spinner>
+      <p>Učitavanje profila...</p>
+    </div>
+
+    <!-- Edit forma -->
+    <mat-card class="edit-card" *ngIf="!loading">
+      <mat-card-header>
+        <div class="header-content">
+          <mat-icon class="header-icon">edit</mat-icon>
+          <div>
+            <mat-card-title>Uredi svoj profil</mat-card-title>
+            <mat-card-subtitle>Ažurirajte svoje informacije i postavke</mat-card-subtitle>
+          </div>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form [formGroup]="editForm">
+          <!-- Osnovni podaci -->
+          <div class="section">
+            <h3><mat-icon>person</mat-icon> Osnovni podaci</h3>
+            
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Ime</mat-label>
+                <input matInput formControlName="ime">
+                <mat-icon matPrefix>badge</mat-icon>
+                <mat-error>{{getErrorMessage('ime')}}</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Prezime</mat-label>
+                <input matInput formControlName="prezime">
+                <mat-icon matPrefix>badge</mat-icon>
+                <mat-error>{{getErrorMessage('prezime')}}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Grad</mat-label>
+              <mat-select formControlName="grad">
+                <mat-option *ngFor="let grad of gradovi" [value]="grad">{{grad}}</mat-option>
+              </mat-select>
+              <mat-icon matPrefix>location_city</mat-icon>
+              <mat-error>{{getErrorMessage('grad')}}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Profesionalni podaci -->
+          <div class="section">
+            <h3><mat-icon>work</mat-icon> Profesionalni podaci</h3>
+            
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Specijalizacija</mat-label>
+              <mat-select formControlName="specijalizacija">
+                <mat-option *ngFor="let spec of specijalizacije" [value]="spec">{{spec}}</mat-option>
+              </mat-select>
+              <mat-icon matPrefix>construction</mat-icon>
+              <mat-error>{{getErrorMessage('specijalizacija')}}</mat-error>
+            </mat-form-field>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Godine iskustva</mat-label>
+                <input matInput formControlName="godineIskustva" type="number" min="0">
+                <mat-icon matPrefix>trending_up</mat-icon>
+                <mat-error>{{getErrorMessage('godineIskustva')}}</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Cijena po satu (KM)</mat-label>
+                <input matInput formControlName="cijenaSat" type="number" min="1">
+                <mat-icon matPrefix>attach_money</mat-icon>
+                <mat-error>{{getErrorMessage('cijenaSat')}}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Opis profila</mat-label>
+              <textarea 
+                matInput 
+                formControlName="opisProfila" 
+                rows="5" 
+                placeholder="Opišite svoje usluge i iskustvo..."></textarea>
+              <mat-icon matPrefix>description</mat-icon>
+              <mat-hint align="end">{{editForm.get('opisProfila')?.value?.length || 0}} karaktera</mat-hint>
+              <mat-error>{{getErrorMessage('opisProfila')}}</mat-error>
+            </mat-form-field>
+          </div>
+        </form>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button 
+          mat-raised-button 
+          color="primary" 
+          (click)="updateProfile()" 
+          [disabled]="!editForm.valid || saving">
+          <mat-spinner diameter="20" *ngIf="saving"></mat-spinner>
+          <mat-icon *ngIf="!saving">save</mat-icon>
+          {{saving ? 'Čuvanje...' : 'Sačuvaj izmjene'}}
+        </button>
+        <button mat-button (click)="cancel()" [disabled]="saving">
+          <mat-icon>cancel</mat-icon> Otkaži
+        </button>
+        <a mat-button [routerLink]="['/majstor/delete-profile', majstorId]" color="warn" class="delete-link">
+          <mat-icon>delete</mat-icon> Obriši profil
+        </a>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

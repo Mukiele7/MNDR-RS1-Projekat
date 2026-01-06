@@ -1,0 +1,483 @@
+<div class="landing-majstor">
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="logo" routerLink="/">
+        <img src="/Assets/Logo.png" alt="MNDR Logo" class="logo-image"/>
+      </div>
+
+      <button class="hamburger-menu" (click)="toggleMenu()" [class.active]="isMenuOpen">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="nav-links" [class.active]="isMenuOpen">
+        <a routerLink="/" (click)="closeMenu()">Naslovna</a>
+        <a routerLink="/oglasi" (click)="closeMenu()">Pretraga</a>
+        <a routerLink="/oglasi" (click)="closeMenu()">Ponude</a>
+        <a routerLink="/majstor" (click)="closeMenu()">Majstori</a>
+        <a routerLink="" (click)="closeMenu()">Popusti</a>
+        <a routerLink="/login" class="btn-primary" (click)="closeMenu()">Prijava/Registracija</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-banner">
+    <div class="container-banner">
+      <div class="hero-left">
+        <h1 class="hero-title">Majstor Na Dohvat Ruke</h1>
+        <p class="hero-subtitle">Klikom do rješenja!!</p>
+        <p class="hero-description">Unesite podatke koji su vam potrebni i nađemo majstora u svom domaćinu</p>
+        <button class="btn-search">Pretraga</button>
+      </div>
+      <div class="hero-center">
+        <img src="/Assets/majstor-hero.png" alt="Majstor" class="hero-worker-image" onerror="this.style.background='linear-gradient(135deg, #f4a261, #e76f51)'; this.alt=''"/>
+      </div>
+      <div class="hero-right">
+        <div class="steps">
+          <div class="step-item">
+            <span class="step-number">1</span>
+            <span class="step-text">REGISTRUJ SE</span>
+          </div>
+          <div class="step-item">
+            <span class="step-number">2</span>
+            <span class="step-text">ODABERI ULOGU</span>
+          </div>
+          <div class="step-item">
+            <span class="step-number">3</span>
+            <span class="step-text">DOGOVORI POSAO!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search Filters Section -->
+  <section class="search-filters">
+    <div class="container">
+      <div class="filters-header">
+        <h2>Pronađi Savršenog Majstora</h2>
+        <p>Filtriraj po specijalizaciji, lokaciji, iskustvu i cijeni</p>
+      </div>
+      
+      <div class="filters-form">
+        <div class="filter-row">
+          <div class="filter-group">
+            <label>
+              <mat-icon>construction</mat-icon>
+              Specijalizacija
+            </label>
+            <select class="filter-select" [(ngModel)]="filters.specijalizacija">
+              <option value="">Sve specijalizacije</option>
+              <option value="Vodoinstalacije">Vodoinstalacije</option>
+              <option value="Elektrika">Elektrika</option>
+              <option value="Keramika">Keramika</option>
+              <option value="Stolarija">Stolarija</option>
+              <option value="Grejanje">Grejanje</option>
+              <option value="Molerski radovi">Molerski radovi</option>
+              <option value="Limarski radovi">Limarski radovi</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label>
+              <mat-icon>location_on</mat-icon>
+              Grad
+            </label>
+            <select class="filter-select" [(ngModel)]="filters.grad">
+              <option value="">Svi gradovi</option>
+              <option value="Sarajevo">Sarajevo</option>
+              <option value="Banja Luka">Banja Luka</option>
+              <option value="Tuzla">Tuzla</option>
+              <option value="Zenica">Zenica</option>
+              <option value="Mostar">Mostar</option>
+              <option value="Bijeljina">Bijeljina</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label>
+              <mat-icon>star</mat-icon>
+              Minimalna Ocjena
+            </label>
+            <select class="filter-select" [(ngModel)]="filters.minOcjena">
+              <option [ngValue]="null">Sve ocjene</option>
+              <option [ngValue]="4.5">4.5+ ⭐</option>
+              <option [ngValue]="4.0">4.0+ ⭐</option>
+              <option [ngValue]="3.5">3.5+ ⭐</option>
+              <option [ngValue]="3.0">3.0+ ⭐</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label>
+              <mat-icon>trending_up</mat-icon>
+              Iskustvo
+            </label>
+            <select class="filter-select" [(ngModel)]="filters.minGodineIskustva">
+              <option [ngValue]="null">Sve nivoe</option>
+              <option [ngValue]="10">10+ godina</option>
+              <option [ngValue]="5">5+ godina</option>
+              <option [ngValue]="3">3+ godina</option>
+              <option [ngValue]="1">1+ godina</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label>
+              <mat-icon>payments</mat-icon>
+              Maksimalna Cijena
+            </label>
+            <input type="number" class="filter-input" placeholder="npr. 2000 KM" [(ngModel)]="filters.maxCijena">
+          </div>
+        </div>
+
+        <div class="filter-actions">
+          <button class="btn-search-filter" (click)="searchMajstori()">
+            <mat-icon>search</mat-icon>
+            Pretraži Majstore
+          </button>
+          <button class="btn-reset" (click)="resetFilters()">
+            <mat-icon>refresh</mat-icon>
+            Resetuj Filtere
+          </button>
+        </div>
+      </div>
+
+      <div class="quick-filters">
+        <span class="quick-label">Brza pretraga:</span>
+        <button class="quick-chip" (click)="quickFilter('Vodoinstalacije')">Vodoinstalater</button>
+        <button class="quick-chip" (click)="quickFilter('Elektrika')">Električar</button>
+        <button class="quick-chip" (click)="quickFilter('Keramika')">Keramičar</button>
+        <button class="quick-chip" (click)="quickFilter('Stolarija')">Stolar</button>
+        <button class="quick-chip" (click)="quickFilter('Molerski radovi')">Moler</button>
+      </div>
+
+      <!-- Search Results Section -->
+      <div class="search-results" *ngIf="hasSearched">
+        <div class="results-header" *ngIf="!isLoading">
+          <h3>Rezultati Pretrage</h3>
+          <span class="results-count" *ngIf="majstori.length > 0">Pronađeno {{ totalCount }} majstora</span>
+        </div>
+
+        <div class="loading-spinner" *ngIf="isLoading">
+          <mat-icon class="spinner">hourglass_empty</mat-icon>
+          <p>Učitavanje majstora...</p>
+        </div>
+
+        <div class="majstori-grid" *ngIf="!isLoading && majstori.length > 0">
+          <div class="majstor-card" *ngFor="let majstor of majstori">
+            <div class="majstor-header">
+              <div class="majstor-avatar">
+                <mat-icon>person</mat-icon>
+              </div>
+              <div class="majstor-info">
+                <h4>{{ majstor.ime }} {{ majstor.prezime }}</h4>
+                <p class="specijalizacija">{{ majstor.specijalizacija }}</p>
+              </div>
+            </div>
+            <div class="majstor-details">
+              <div class="detail-row">
+                <mat-icon>location_on</mat-icon>
+                <span>{{ majstor.grad || 'N/A' }}</span>
+              </div>
+              <div class="detail-row">
+                <mat-icon>star</mat-icon>
+                <span>{{ majstor.prosjecnaOcjena || 'Nema ocjena' }}</span>
+              </div>
+              <div class="detail-row">
+                <mat-icon>work</mat-icon>
+                <span>{{ majstor.godineIskustva }} god. iskustva</span>
+              </div>
+              <div class="detail-row">
+                <mat-icon>payments</mat-icon>
+                <span>{{ majstor.cijenaSat }} KM/sat</span>
+              </div>
+            </div>
+            <div class="majstor-actions">
+              <button class="btn-contact">Kontaktiraj</button>
+              <button *ngIf="!isCurrentUserMajstor(majstor.korisnikId)" class="btn-details" [routerLink]="['/majstor', majstor.korisnikId]">Detalji</button>
+              <button *ngIf="isCurrentUserMajstor(majstor.korisnikId)" class="btn-edit" [routerLink]="['/majstor/edit-profile', majstor.korisnikId]">
+                <mat-icon>edit</mat-icon>
+                Uredi Profil
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="no-results" *ngIf="!isLoading && majstori.length === 0">
+          <mat-icon>search_off</mat-icon>
+          <h3>Nema rezultata</h3>
+          <p>Probajte promijeniti kriterije pretrage</p>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" *ngIf="!isLoading && totalCount > pageSize">
+          <button class="page-btn" (click)="pageNumber = pageNumber - 1; loadMajstori()" [disabled]="pageNumber === 1">
+            <mat-icon>chevron_left</mat-icon>
+            Prethodna
+          </button>
+          <div class="page-numbers">
+            <span class="page-info">Strana {{ pageNumber }} od {{ Math.ceil(totalCount / pageSize) }}</span>
+          </div>
+          <button class="page-btn" (click)="pageNumber = pageNumber + 1; loadMajstori()" [disabled]="pageNumber * pageSize >= totalCount">
+            Sljedeća
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Original Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1>Razvij Svoj Biznis kao Majstor</h1>
+        <p class="subtitle">
+          Pridruži se platformi gde su tvoje veštine cenjene. Pronađi nove klijente, radi na zanimljivim projektima i gradi svoju reputaciju.
+        </p>
+        <div class="cta-buttons">
+          <a routerLink="/register" class="btn-primary-large">Pridruži se Besplatno</a>
+          <a routerLink="/oglasi" class="btn-secondary-large">Pogledaj Oglase</a>
+        </div>
+        <div class="stats">
+          <div class="stat-item">
+            <span class="stat-number">1000+</span>
+            <span class="stat-label">Aktivnih Projekata</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">50+</span>
+            <span class="stat-label">Kategorija Usluga</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">95%</span>
+            <span class="stat-label">Ponovljenih Klijenata</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img src="/Assets/Krovopokrivač.jpg" alt="Profesionalni majstor na gradilištu" class="hero-main-image">
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="container">
+      <h2>Prednosti Za Majstore</h2>
+      <p class="section-subtitle">Sve što ti je potrebno za uspešan biznis</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🎯</div>
+          <h3>Pronađi Posao</h3>
+          <p>Pristupaj stotinama oglasa dnevno. Biraj projekte koji odgovaraju tvojim veštinama.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Gradi Profil</h3>
+          <p>Prikaži svoje radove, recenzije i sertifikate. Dokaži svoju stručnost.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💰</div>
+          <h3>Zaradjuj Više</h3>
+          <p>Dobij fer cenu za svoj rad. Bez skrivenih troškova ili provizija.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📱</div>
+          <h3>Jednostavna Komunikacija</h3>
+          <p>Razgovaraj direktno sa klijentima kroz našu platformu.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">✅</div>
+          <h3>Sigurni Ugovori</h3>
+          <p>Zaštiti sebe formalnim ugovorima za svaki projekat.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⭐</div>
+          <h3>Sistem Recenzija</h3>
+          <p>Dobij zaslužene ocene i gradi svoju reputaciju.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it Works -->
+  <section class="how-it-works">
+    <div class="container">
+      <h2>Kako Početi?</h2>
+      <p class="section-subtitle">Započni zaradu u 4 jednostavna koraka</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Kreiraj Profil</h3>
+          <p>Registruj se i napravi profesionalan profil sa svojim veštinama i iskustvom</p>
+          <div class="step-arrow">→</div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Pregledaj Oglase</h3>
+          <p>Pretraži oglase po kategorijama i pronađi projekte koji ti odgovaraju</p>
+          <div class="step-arrow">→</div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Pošalji Ponudu</h3>
+          <p>Kontaktiraj klijente i dogovori detalje projekta</p>
+          <div class="step-arrow">→</div>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <h3>Radi i Zarađuj</h3>
+          <p>Završi posao, dobij plaćanje i pozitivnu recenziju</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Success Stories -->
+  <section class="testimonials">
+    <div class="container">
+      <h2>Priče Naših Majstora</h2>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="stars">
+            <span class="star filled">⭐</span>
+            <span class="star filled">⭐</span>
+            <span class="star filled">⭐</span>
+            <span class="star filled">⭐</span>
+            <span class="star filled">⭐</span>
+          </div>
+          <p class="testimonial-text">"Od kada sam se pridružio MNDR-u, imam stabilnu klijentelu. Platforma je jednostavna za korišćenje i klijenti su pouzdani."</p>
+          <p class="testimonial-author">- Nikola V., Električar</p>
+        </div>
+        <div class="testimonial-card">
+          <div class="stars">
+            <span class="star filled">⭐</span>
+            <span class="star filled">⭐</span>
+            <span class="star filled">⭐</span>
+            <span class="star filled">⭐</span>
+            <span class="star filled">⭐</span>
+          </div>
+          <p class="testimonial-text">"Konačno platforma koja razume potrebe majstora. Bez komplikovanih pravila, samo direktan kontakt sa klijentima."</p>
+          <p class="testimonial-author">- Milan D., Vodoinstalater</p>
+        </div>
+        <div class="testimonial-card">
+          <div class="stars">
+            <span class="star filled">⭐</span>
+            <span class="star filled">⭐</span>
+            <span class="star filled">⭐</span>
+            <span class="star filled">⭐</span>
+            <span class="star filled">⭐</span>
+          </div>
+          <p class="testimonial-text">"Sistem recenzija me je pomogao da gradim poverenje. Sada imam redovne klijente koji me direktno kontaktiraju."</p>
+          <p class="testimonial-author">- Jovan P., Moler</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories -->
+  <section class="categories">
+    <div class="container">
+      <h2>Popularne Kategorije</h2>
+      <div class="categories-grid">
+        <div class="category-card">🔌 Električar</div>
+        <div class="category-card">🚰 Vodoinstalater</div>
+        <div class="category-card">🏗️ Građevinar</div>
+        <div class="category-card">🎨 Moler</div>
+        <div class="category-card">🪛 Stolar</div>
+        <div class="category-card">🛠️ Bravar</div>
+        <div class="category-card">🔧 Auto-mehaničar</div>
+        <div class="category-card">❄️ Klima-tehničar</div>
+        <div class="category-card">📺 IT tehničar</div>
+        <div class="category-card">🌿 Baštovan</div>
+        <div class="category-card">🧹 Čistač</div>
+        <div class="category-card">➕ I mnogo više...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-main">
+        <!-- Logo i Social Media -->
+        <div class="footer-brand">
+          <div class="logo-and-social">
+            <img src="/Assets/Logo.png" alt="MNDR Logo" class="footer-logo"/>
+            <div class="social-icons">
+              <a href="#" class="social-icon" aria-label="Instagram">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+              </a>
+              <a href="#" class="social-icon" aria-label="Facebook">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+              </a>
+              <a href="#" class="social-icon" aria-label="TikTok">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="app-downloads">
+            <a href="#" class="app-badge">
+              <img src="/Assets/App store.png" alt="Download on App Store"/>
+            </a>
+            <a href="#" class="app-badge">
+              <img src="/Assets/Google play.png" alt="Get it on Google Play"/>
+            </a>
+          </div>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="footer-newsletter">
+          <h3>Prvi saznajte o promocijama</h3>
+          <form class="newsletter-form" (ngSubmit)="subscribeNewsletter()">
+            <input 
+              type="email" 
+              placeholder="vasemail@gmail.com" 
+              [(ngModel)]="newsletterEmail"
+              name="email"
+              required
+            />
+            <button type="submit" class="btn-subscribe">Pretplatite se</button>
+          </form>
+        </div>
+
+        <!-- Legalne stvari -->
+        <div class="footer-links">
+          <h4>Legalne stvari ba</h4>
+          <a href="#">Uslovi korišćenja</a>
+          <a href="#">Polica privatnosti</a>
+          <a href="#">Dobre misli</a>
+        </div>
+
+        <!-- Važni linkovi -->
+        <div class="footer-links">
+          <h4>Važni linkovi</h4>
+          <a href="#">Pomoć</a>
+          <a routerLink="/register">Sign up to work</a>
+          <a routerLink="/register">Create a business account</a>
+        </div>
+      </div>
+
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <p class="copyright">MNDR Copyright 2025, All Rights Reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms</a>
+          <a href="#">Pricing</a>
+          <a href="#">Do not sell or share my personal information</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,154 @@
+<div class="register-container">
+  <div class="register-card-wrapper">
+    <mat-card class="register-card">
+      <mat-card-header>
+        <div class="header-content">
+          <mat-icon class="header-icon">construction</mat-icon>
+          <div>
+            <mat-card-title>Registracija Majstora</mat-card-title>
+            <mat-card-subtitle>Pridružite se platformi i promovirajte svoje usluge</mat-card-subtitle>
+          </div>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <mat-stepper #stepper linear>
+          <!-- Korak 1: Lični podaci -->
+          <mat-step [stepControl]="personalInfoForm">
+            <form [formGroup]="personalInfoForm">
+              <ng-template matStepLabel>Lični podaci</ng-template>
+              
+              <div class="step-content">
+                <h3>Osnovne informacije</h3>
+                
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Ime</mat-label>
+                    <input matInput formControlName="ime" placeholder="Unesite vaše ime">
+                    <mat-icon matPrefix>person</mat-icon>
+                    <mat-error>{{getErrorMessage('ime', personalInfoForm)}}</mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Prezime</mat-label>
+                    <input matInput formControlName="prezime" placeholder="Unesite vaše prezime">
+                    <mat-icon matPrefix>person</mat-icon>
+                    <mat-error>{{getErrorMessage('prezime', personalInfoForm)}}</mat-error>
+                  </mat-form-field>
+                </div>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Email</mat-label>
+                  <input matInput formControlName="email" type="email" placeholder="primer@email.com">
+                  <mat-icon matPrefix>email</mat-icon>
+                  <mat-error>{{getErrorMessage('email', personalInfoForm)}}</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Telefon</mat-label>
+                  <input matInput formControlName="telefon" placeholder="+38761234567">
+                  <mat-icon matPrefix>phone</mat-icon>
+                  <mat-error>{{getErrorMessage('telefon', personalInfoForm)}}</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Lozinka</mat-label>
+                  <input matInput formControlName="lozinka" type="password" placeholder="Minimum 6 karaktera">
+                  <mat-icon matPrefix>lock</mat-icon>
+                  <mat-error>{{getErrorMessage('lozinka', personalInfoForm)}}</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Potvrda lozinke</mat-label>
+                  <input matInput formControlName="potvrdaLozinke" type="password" placeholder="Ponovite lozinku">
+                  <mat-icon matPrefix>lock</mat-icon>
+                  <mat-error *ngIf="personalInfoForm.hasError('passwordMismatch')">Lozinke se ne podudaraju</mat-error>
+                </mat-form-field>
+
+                <div class="step-actions">
+                  <button mat-raised-button matStepperNext color="primary" [disabled]="!personalInfoForm.valid">
+                    Sljedeći korak <mat-icon>arrow_forward</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </mat-step>
+
+          <!-- Korak 2: Profesionalni podaci -->
+          <mat-step [stepControl]="professionalInfoForm">
+            <form [formGroup]="professionalInfoForm">
+              <ng-template matStepLabel>Profesionalni podaci</ng-template>
+              
+              <div class="step-content">
+                <h3>Vaša ekspertiza</h3>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Grad</mat-label>
+                    <mat-select formControlName="grad">
+                      <mat-option *ngFor="let grad of gradovi" [value]="grad">{{grad}}</mat-option>
+                    </mat-select>
+                    <mat-icon matPrefix>location_city</mat-icon>
+                    <mat-error>{{getErrorMessage('grad', professionalInfoForm)}}</mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Specijalizacija</mat-label>
+                    <mat-select formControlName="specijalizacija">
+                      <mat-option *ngFor="let spec of specijalizacije" [value]="spec">{{spec}}</mat-option>
+                    </mat-select>
+                    <mat-icon matPrefix>work</mat-icon>
+                    <mat-error>{{getErrorMessage('specijalizacija', professionalInfoForm)}}</mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Godine iskustva</mat-label>
+                    <input matInput formControlName="godineIskustva" type="number" min="0">
+                    <mat-icon matPrefix>trending_up</mat-icon>
+                    <mat-error>{{getErrorMessage('godineIskustva', professionalInfoForm)}}</mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Cijena po satu (KM)</mat-label>
+                    <input matInput formControlName="cijenaSat" type="number" min="1">
+                    <mat-icon matPrefix>attach_money</mat-icon>
+                    <mat-error>{{getErrorMessage('cijenaSat', professionalInfoForm)}}</mat-error>
+                  </mat-form-field>
+                </div>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Opis profila (minimum 50 karaktera)</mat-label>
+                  <textarea 
+                    matInput 
+                    formControlName="opisProfila" 
+                    rows="5" 
+                    placeholder="Opišite svoje usluge, iskustvo i što vas izdvaja od drugih majstora..."></textarea>
+                  <mat-icon matPrefix>description</mat-icon>
+                  <mat-hint align="end">{{professionalInfoForm.get('opisProfila')?.value?.length || 0}}/50</mat-hint>
+                  <mat-error>{{getErrorMessage('opisProfila', professionalInfoForm)}}</mat-error>
+                </mat-form-field>
+
+                <div class="step-actions">
+                  <button mat-button matStepperPrevious>
+                    <mat-icon>arrow_back</mat-icon> Nazad
+                  </button>
+                  <button mat-raised-button color="accent" (click)="register()" [disabled]="!professionalInfoForm.valid">
+                    <mat-icon>check_circle</mat-icon> Registruj se
+                  </button>
+                </div>
+              </div>
+            </form>
+          </mat-step>
+        </mat-stepper>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <div class="login-link">
+          Već imate nalog? <a routerLink="/login">Prijavite se</a>
+        </div>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

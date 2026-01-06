@@ -1,0 +1,115 @@
+<div class="delete-profile-container">
+  <div class="content-wrapper">
+    <!-- Loading -->
+    <div class="loading" *ngIf="loading">
+      <mat-spinner diameter="60" color="warn"></mat-spinner>
+      <p>Učitavanje...</p>
+    </div>
+
+    <!-- Delete Card -->
+    <mat-card class="delete-card" *ngIf="!loading">
+      <mat-card-header>
+        <div class="header-content">
+          <mat-icon class="header-icon">report_problem</mat-icon>
+          <div>
+            <mat-card-title>Brisanje profila</mat-card-title>
+            <mat-card-subtitle>Ova akcija je trajna i nepovratna</mat-card-subtitle>
+          </div>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Profil Info -->
+        <div class="profile-info" *ngIf="majstorData">
+          <h3>Profil koji će biti obrisan:</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <mat-icon>person</mat-icon>
+              <div>
+                <label>Ime i prezime</label>
+                <p>{{majstorData.ime}} {{majstorData.prezime}}</p>
+              </div>
+            </div>
+            <div class="info-item">
+              <mat-icon>email</mat-icon>
+              <div>
+                <label>Email</label>
+                <p>{{majstorData.email}}</p>
+              </div>
+            </div>
+            <div class="info-item">
+              <mat-icon>construction</mat-icon>
+              <div>
+                <label>Specijalizacija</label>
+                <p>{{majstorData.specijalizacija}}</p>
+              </div>
+            </div>
+            <div class="info-item">
+              <mat-icon>trending_up</mat-icon>
+              <div>
+                <label>Iskustvo</label>
+                <p>{{majstorData.godineIskustva}} godina</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Warning Section -->
+        <div class="warning-section">
+          <h3>
+            <mat-icon>warning</mat-icon>
+            Šta se dešava kada obrišete profil:
+          </h3>
+          
+          <div class="warning-list">
+            <div class="warning-item" *ngFor="let item of warningItems">
+              <mat-icon [class.critical]="item.icon === 'restore'">{{item.icon}}</mat-icon>
+              <p>{{item.text}}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Confirmation Checkbox -->
+        <div class="confirmation-section">
+          <mat-checkbox 
+            [(ngModel)]="confirmationChecked" 
+            color="warn"
+            class="confirmation-checkbox">
+            <strong>Razumijem da je ova akcija trajna i da će svi moji podaci biti obrisani bez mogućnosti povratka.</strong>
+          </mat-checkbox>
+        </div>
+
+        <!-- Alternative Options -->
+        <div class="alternatives-section">
+          <h4>Možda želite da umjesto brisanja:</h4>
+          <div class="alternative-buttons">
+            <button mat-stroked-button [routerLink]="['/majstor/edit-profile', majstorId]">
+              <mat-icon>edit</mat-icon>
+              Uredite svoj profil
+            </button>
+            <button mat-stroked-button routerLink="/dashboard">
+              <mat-icon>dashboard</mat-icon>
+              Vratite se na dashboard
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button 
+          mat-raised-button 
+          color="warn" 
+          (click)="deleteProfile()" 
+          [disabled]="!confirmationChecked || deleting">
+          <mat-spinner diameter="20" *ngIf="deleting" color="warn"></mat-spinner>
+          <mat-icon *ngIf="!deleting">delete_forever</mat-icon>
+          {{deleting ? 'Brisanje profila...' : 'Obriši profil trajno'}}
+        </button>
+        <button mat-button (click)="cancel()" [disabled]="deleting">
+          <mat-icon>cancel</mat-icon>
+          Otkaži
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
