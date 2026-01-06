@@ -1,0 +1,117 @@
+<div class="moj-profil-container">
+  <div class="content-wrapper">
+    <!-- Loading spinner -->
+    <div class="loading" *ngIf="loading">
+      <mat-spinner diameter="60" color="primary"></mat-spinner>
+      <p>Učitavanje profila...</p>
+    </div>
+
+    <!-- Profil sadržaj -->
+    <div class="profile-content" *ngIf="!loading && kupac">
+      <!-- Header sa slikom -->
+      <mat-card class="profile-header">
+        <div class="header-background"></div>
+        <div class="profile-image-container">
+          <img [src]="getProfileImage()" [alt]="kupac.ime + ' ' + kupac.prezime" class="profile-image">
+        </div>
+        <div class="profile-info">
+          <h1>{{kupac.ime}} {{kupac.prezime}}</h1>
+          <p class="email"><mat-icon>email</mat-icon> {{kupac.email}}</p>
+        </div>
+      </mat-card>
+
+      <!-- Detalji profila -->
+      <mat-card class="profile-details">
+        <mat-card-header>
+          <mat-card-title><mat-icon>info</mat-icon> Osnovne informacije</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="detail-row">
+            <div class="detail-item">
+              <mat-icon>badge</mat-icon>
+              <div>
+                <span class="label">Korisničko ime</span>
+                <span class="value">{{kupac.korisnikoIme || 'Nije postavljeno'}}</span>
+              </div>
+            </div>
+            <div class="detail-item">
+              <mat-icon>phone</mat-icon>
+              <div>
+                <span class="label">Telefon</span>
+                <span class="value">{{kupac.telefon}}</span>
+              </div>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <mat-icon>location_city</mat-icon>
+              <div>
+                <span class="label">Grad</span>
+                <span class="value">{{kupac.grad || 'Nije postavljeno'}}</span>
+              </div>
+            </div>
+            <div class="detail-item">
+              <mat-icon>place</mat-icon>
+              <div>
+                <span class="label">Općina</span>
+                <span class="value">{{kupac.opcina || 'Nije postavljeno'}}</span>
+              </div>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="detail-row full-width" *ngIf="kupac.opisProfila">
+            <div class="detail-item">
+              <mat-icon>description</mat-icon>
+              <div>
+                <span class="label">Opis profila</span>
+                <span class="value">{{kupac.opisProfila}}</span>
+              </div>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <mat-icon>calendar_today</mat-icon>
+              <div>
+                <span class="label">Datum registracije</span>
+                <span class="value">{{kupac.datumRegistracije | date:'dd.MM.yyyy'}}</span>
+              </div>
+            </div>
+            <div class="detail-item">
+              <mat-icon>shopping_cart</mat-icon>
+              <div>
+                <span class="label">Broj narudžbi</span>
+                <span class="value">{{kupac.brojNarudzbi || 0}}</span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Akcije -->
+      <div class="profile-actions">
+        <button mat-raised-button color="primary" (click)="navigateToEdit()">
+          <mat-icon>edit</mat-icon> Uredi profil
+        </button>
+        <button mat-raised-button color="warn" (click)="navigateToDelete()">
+          <mat-icon>delete</mat-icon> Obriši profil
+        </button>
+      </div>
+    </div>
+
+    <!-- Greška -->
+    <mat-card class="error-card" *ngIf="!loading && !kupac">
+      <mat-icon>error_outline</mat-icon>
+      <h2>Greška</h2>
+      <p>Nije moguće učitati profil.</p>
+      <button mat-raised-button color="primary" routerLink="/kupac/landing">Nazad</button>
+    </mat-card>
+  </div>
+</div>

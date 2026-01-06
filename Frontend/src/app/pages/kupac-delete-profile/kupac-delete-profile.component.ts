@@ -1,0 +1,152 @@
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialog } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import { KupacService } from '../../services/kupac.service';
+import { DeleteConfirmationDialogComponent } from '../../components/delete-confirmation-dialog/delete-confirmation-dialog.component';
+
+@Component({
+  selector: 'app-kupac-delete-profile',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCheckboxModule,
+    MatProgressSpinnerModule
+  ],
+  templateUrl: './kupac-delete-profile.component.html',
+  styleUrls: ['./kupac-delete-profile.component.scss']
+})
+export class KupacDeleteProfileComponent implements OnInit {
+  loading = false;
+  deleting = false;
+  confirmationChecked = false;
+  kupacId: number = 0;
+  kupacData: any = null;
+
+  warningItems = [
+    { icon: 'warning', text: 'Svi vaši oglasi i zahtjevi će biti trajno obrisani' },
+    { icon: 'delete_forever', text: 'Vaš profil i sve informacije će biti uklonjeni' },
+    { icon: 'chat_bubble_outline', text: 'Svi razgovori i poruke će biti obrisani' },
+    { icon: 'star_outline', text: 'Recenzije koje ste dali više neće biti dostupne' },
+    { icon: 'receipt', text: 'Svi ugovori povezani sa vašim profilom će biti obrisani' },
+    { icon: 'restore', text: 'Ovu akciju NIJE moguće poništiti' }
+  ];
+
+  constructor(
+    private kupacService: KupacService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef,
+    private dialog: MatDialog
+  ) {}
+
+  ngOnInit(): void {
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam) {
+      this.kupacId = parseInt(idParam, 10);
+      this.loadKupacData();
+    } else {
+      alert('ID kupca nije naveden u URL-u');
+      this.router.navigate(['/']);
+    }
+  }
+
+  loadKupacData(): void {
+    this.loading = true;
+    console.log('🔍 Pozivam API za ID:', this.kupacId);
+    console.log('📡 URL:', `http://localhost:5017/api/kupac/${this.kupacId}`);
+    
+    this.kupacService.getKupacById(this.kupacId).subscribe({
+      next: (data) => {
+        console.log('✅ Dobio response:', data);
+        console.log('📊 Tip podatka:', typeof data, 'Null?', data === null);
+        console.log('🔑 Keys u objektu:', Object.keys(data));
+        console.log('👤 data.ime:', data.ime, 'data.Ime:', data.Ime);
+        
+        console.log('⏹️ PRIJE: this.loading =', this.loading);
+        this.loading = false;
+        console.log('⏹️ POSLIJE: this.loading =', this.loading);
+        this.cdr.detectChanges(); // 🔥 Forsiraj Angular da detektuje promjene!
+        console.log('✨ Change detection forced!');
+        
+        if (data) {
+          this.kupacData = data;
+          console.log('💾 Podaci sačuvani u component:', this.kupacData);
+        } else {
+          console.warn('⚠️ Backend vratio null/undefined');
+          alert(`Kupac sa ID ${this.kupacId} nije pronađen u bazi!`);
+          this.router.navigate(['/']);
+        }
+      },
+      error: (error) => {
+        console.error('❌ HTTP Error:', error);
+        console.error('Status:', error.status);
+        console.error('Message:', error.message);
+        console.error('Full error object:', JSON.stringify(error, null, 2));
+        
+        this.loading = false;
+        alert(`Greška pri učitavanju profila: ${error.status === 404 ? 'Kupac nije pronađen' : error.message}`);
+        this.router.navigate(['/']);
+      },
+      complete: () => {
+        console.log('🏁 Observable completed');
+      }
+    });
+  }
+
+  deleteProfile(): void {
+    if (!this.confirmationChecked) {
+      alert('Morate potvrditi da razumijete posljedice brisanja profila.');
+      return;
+    }
+
+    // Otvaranje Material Dialog modala
+    const dialogRef = this.dialog.open(DeleteConfirmationDialogComponent, {
+      width: '500px',
+      data: {
+        title: 'Potvrda Brisanja Profila',
+        message: `Da li ste APSOLUTNO sigurni da želite obrisati vaš profil?\n\nProfil: ${this.kupacData?.ime} ${this.kupacData?.prezime}\nEmail: ${this.kupacData?.email}\n\nOva akcija je TRAJNA i NEPOVRATNA!`,
+        confirmText: 'Obriši Profil',
+        cancelText: 'Otkaži'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.performDelete();
+      }
+    });
+  }
+
+  private performDelete(): void {
+
+    this.deleting = true;
+    this.kupacService.deleteKupac(this.kupacId).subscribe({
+      next: (response) => {
+        alert('Vaš profil je uspješno obrisan. Hvala što ste koristili našu platformu.');
+        // TODO: Logout korisnika i redirektuj na landing
+        this.router.navigate(['/']);
+      },
+      error: (error) => {
+        console.error('Greška pri brisanju profila:', error);
+        alert('Greška pri brisanju profila. Molimo pokušajte ponovo.');
+        this.deleting = false;
+      }
+    });
+  }
+
+  cancel(): void {
+    this.router.navigate(['/kupac/edit-profile', this.kupacId]);
+  }
+}

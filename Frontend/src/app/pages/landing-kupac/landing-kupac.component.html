@@ -1,0 +1,198 @@
+<div class="landing-kupac">
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="logo" routerLink="/">
+        <img src="/Assets/Logo.png" alt="MNDR Logo" class="logo-image"/>
+      </div>
+
+      <div class="nav-links">
+        <a routerLink="/">Naslovna</a>
+        <a routerLink="/oglasi">Pretraga</a>
+        <a routerLink="/kupac/edit-profile">Ponude</a>
+        <a routerLink="">Majstori</a>
+        <a routerLink="">Popusti</a>
+        
+        <!-- Prikaži dugme za prijavu/registraciju ako korisnik nije ulogovan -->
+        <a *ngIf="!isAuthenticated" routerLink="/login" class="btn-primary">Prijava/Registracija</a>
+        
+        <!-- Prikaži profil dugme sa dropdown menijem ako je korisnik ulogovan -->
+        <div *ngIf="isAuthenticated" class="profile-dropdown">
+          <button class="profile-button" (click)="toggleDropdown()">
+            <img [src]="getProfileImage()" alt="Profil" class="profile-avatar">
+            <span class="profile-name">{{currentUser?.ime}} {{currentUser?.prezime}}</span>
+          </button>
+          
+          <div class="dropdown-menu" [class.open]="isDropdownOpen">
+            <a routerLink="/kupac/moj-profil" (click)="isDropdownOpen = false" class="dropdown-item">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              Moj profil
+            </a>
+            <a (click)="logout()" class="dropdown-item logout">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              Odjavi se
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1>Majstor Na Dohvat Ruke</h1>
+        <p class="subtitle">
+          Povežite se sa stotinama provjerenih majstora Dobijte najbolje ponude i ostvarite svoj projekat uz sigurnost i kvalitet
+        </p>
+        <p class="hero-description">Unesite poštanski kod da vidite dostupnost majstora u vašem okruženju</p>
+        <div class="search-group">
+          <input type="text" class="search-input" placeholder="npr. 71000" />
+          <button mat-raised-button color="accent" class="hero-btn">
+            Pretraga
+          </button>
+        </div>
+      </div>
+      <div class="hero-image">
+        <div class="image-placeholder">
+          <img src="Assets/majstor-hero.png" alt="Majstor" id="hero-slika"/>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="container">
+      <h2>Zašto MNDR?</h2>
+      <p class="section-subtitle">Sve što ti je potrebno za uspješan projekat</p>
+      <div class="features-grid">
+        <div class="feature-card" *ngFor="let feature of features">
+          <div class="feature-icon">{{ feature.icon }}</div>
+          <h3>{{ feature.title }}</h3>
+          <p>{{ feature.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it Works -->
+  <section class="how-it-works">
+    <div class="container">
+      <h2>Kako Funkcioniše?</h2>
+      <p class="section-subtitle">Pronađi majstora u 4 jednostavna koraka</p>
+      <div class="steps">
+        <div class="step" *ngFor="let step of steps; let i = index">
+          <div class="step-number">{{ step.number }}</div>
+          <h3>{{ step.title }}</h3>
+          <p>{{ step.description }}</p>
+          <div class="step-arrow" *ngIf="i < steps.length - 1">→</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials">
+    <div class="container">
+      <h2>Šta Kažu Naši Korisnici</h2>
+      <div class="testimonials-grid">
+        <div class="testimonial-card" *ngFor="let testimonial of testimonials">
+          <div class="stars">
+            <span *ngFor="let star of [1,2,3,4,5]" class="star" [class.filled]="star <= testimonial.rating">⭐</span>
+          </div>
+          <p class="testimonial-text">"{{ testimonial.text }}"</p>
+          <p class="testimonial-author">- {{ testimonial.name }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-main">
+        <!-- Logo i Social Media -->
+        <div class="footer-brand">
+          <div class="logo-and-social">
+            <img src="/Assets/Logo.png" alt="MNDR Logo" class="footer-logo"/>
+            <div class="social-icons">
+              <a href="#" class="social-icon" aria-label="Instagram">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+              </a>
+              <a href="#" class="social-icon" aria-label="Facebook">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+              </a>
+              <a href="#" class="social-icon" aria-label="TikTok">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="app-downloads">
+            <a href="#" class="app-badge">
+              <img src="/Assets/App store.png" alt="Download on App Store"/>
+            </a>
+            <a href="#" class="app-badge">
+              <img src="/Assets/Google play.png" alt="Get it on Google Play"/>
+            </a>
+          </div>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="footer-newsletter">
+          <h3>Prvi saznajte o promocijama</h3>
+          <form class="newsletter-form" (ngSubmit)="subscribeNewsletter()">
+            <input 
+              type="email" 
+              placeholder="vasemail@gmail.com" 
+              [(ngModel)]="newsletterEmail"
+              name="email"
+              required
+            />
+            <button type="submit" class="btn-subscribe">Pretplatite se</button>
+          </form>
+        </div>
+
+        <!-- Legalne stvari -->
+        <div class="footer-links">
+          <h4>Legalne stvari ba</h4>
+          <a href="#">Uslovi korišćenja</a>
+          <a href="#">Polica privatnosti</a>
+          <a href="#">Dobre misli</a>
+        </div>
+
+        <!-- Važni linkovi -->
+        <div class="footer-links">
+          <h4>Važni linkovi</h4>
+          <a href="#">Pomoć</a>
+          <a routerLink="/register">Sign up to work</a>
+          <a routerLink="/register">Create a business account</a>
+        </div>
+      </div>
+
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <p class="copyright">MNDR Copyright 2025, All Rights Reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms</a>
+          <a href="#">Pricing</a>
+          <a href="#">Do not sell or share my personal information</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>

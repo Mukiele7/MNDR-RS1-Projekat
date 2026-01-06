@@ -1,0 +1,363 @@
+.register-container {
+    background: white;
+  min-height: 100vh;
+display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  font-family: 'Poppins', sans-serif;
+background: #11AB1F;
+background: radial-gradient(circle,rgba(17, 171, 31, 1) 64%, rgba(111, 204, 120, 1) 91%, rgba(8, 66, 8, 1) 100%);
+}
+.register-logo{
+    width: 200px;
+    height: 220px;
+    border-radius: 8px;
+}
+.register-card-wrapper {
+  width: 100%;
+  max-width: 800px;
+  background: white;
+}
+
+.register-card {
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+
+  mat-card-header {
+    background: rgba(72, 82, 73, 0);
+    color: rgb(19, 171, 37);
+    padding: 2rem;
+    margin: -16px -16px 24px -16px;
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .header-icon {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+      }
+
+      mat-card-title {
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0;
+      }
+
+      mat-card-subtitle {
+        color: rgba(19, 171, 37, 0.9);
+        font-size: 14px;
+        margin: 4px 0 0 0;
+      }
+    }
+  }
+
+  mat-card-content {
+    padding: 2rem;
+  }
+
+  mat-card-actions {
+    padding: 1rem 2rem 2rem 2rem;
+    margin: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+}
+
+.step-content {
+  padding: 1rem 0;
+
+  h3 {
+    color: rgb(19, 171, 37);
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 1.5rem 0;
+  }
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+mat-form-field {
+  width: 100%;
+
+  mat-icon[matPrefix] {
+    color: rgb(19, 171, 37);
+    margin-right: 8px;
+  }
+}
+
+.step-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    font-weight: 600;
+    color: white !important;
+  }
+}
+
+button {
+  //background: rgb(19, 171, 37);
+
+  
+  &:hover:not([disabled]) {
+    background: rgb(19, 171, 37);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(28, 63, 22, 0.3);
+  }
+
+}
+.step-actions button text{
+    color:white
+}
+button {
+  background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+  color: white;
+  
+  &:hover:not([disabled]) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+  }
+}
+
+.login-link {
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+
+  a {
+    color: rgb(19, 171, 37);
+    text-decoration: none;
+    font-weight: 600;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// Mat-stepper custom styling
+::ng-deep {
+  .mat-step-header {
+    .mat-step-icon {
+      background-color: rgb(19, 171, 37) !important;
+      color: white !important;
+    }
+
+    .mat-step-icon-selected {
+      background-color: rgb(19, 171, 37) !important;
+      color: white !important;
+    }
+  }
+
+  .mat-step-label-selected {
+    color: rgb(19, 171, 37) !important;
+  }
+
+  // Mat-form-field focus styling
+  .mat-mdc-form-field.mat-focused {
+    .mat-mdc-text-field-wrapper {
+      .mat-mdc-form-field-focus-overlay {
+        background-color: rgb(19, 171, 37) !important;
+      }
+    }
+
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: rgb(19, 171, 37) !important;
+    }
+
+    .mat-mdc-form-field-focus-overlay {
+      background-color: rgb(19, 171, 37) !important;
+    }
+
+    label {
+      color: rgb(19, 171, 37) !important;
+    }
+  }
+
+  // Mat-select focus styling
+  .mat-mdc-select.mat-mdc-select-focused {
+    .mat-mdc-select-trigger {
+      border-color: rgb(19, 171, 37) !important;
+    }
+  }
+
+  // Mat-select panel (dropdown) styling
+  .mat-mdc-select-panel {
+    background-color: white !important;
+  }
+
+  .mat-mdc-option {
+    background-color: white !important;
+    
+    &:hover {
+      background-color: rgba(19, 171, 37, 0.1) !important;
+    }
+    
+    &.mat-mdc-option-active {
+      background-color: rgba(19, 171, 37, 0.2) !important;
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .register-container {
+    padding: 1rem;
+  }
+
+  .register-card {
+    mat-card-header {
+      padding: 1.5rem;
+
+      .header-content {
+        .header-icon {
+          font-size: 36px;
+          width: 36px;
+          height: 36px;
+        }
+
+        mat-card-title {
+          font-size: 22px;
+        }
+
+        mat-card-subtitle {
+          font-size: 12px;
+        }
+      }
+    }
+
+    mat-card-content {
+      padding: 1rem;
+    }
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .step-actions {
+    flex-direction: column;
+
+    button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
+// Image upload styling
+.image-upload-section {
+  margin: 1.5rem 0;
+
+  .upload-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgb(19, 171, 37);
+    margin-bottom: 0.5rem;
+  }
+
+  .upload-area {
+    border: 2px dashed rgb(19, 171, 37);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    background-color: rgba(19, 171, 37, 0.05);
+    transition: all 0.3s ease;
+
+    &.dragging {
+      border-color: rgb(19, 171, 37);
+      background-color: rgba(19, 171, 37, 0.15);
+      transform: scale(1.02);
+    }
+
+    .upload-placeholder {
+      .upload-icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+        color: rgb(19, 171, 37);
+        margin-bottom: 1rem;
+      }
+
+      .upload-text {
+        color: #666;
+        font-size: 16px;
+        margin: 0.5rem 0;
+      }
+
+      button {
+        margin: 1rem 0;
+        background: rgb(19, 171, 37);
+        color: white;
+        
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
+        }
+      }
+
+      .upload-hint {
+        color: #999;
+        font-size: 12px;
+        margin-top: 0.5rem;
+      }
+    }
+
+    .image-preview {
+      position: relative;
+
+      img {
+        max-width: 100%;
+        max-height: 300px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .remove-image {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background-color: #f44336;
+        color: white;
+        
+        &:hover {
+          background-color: #d32f2f;
+          transform: scale(1.1);
+        }
+      }
+
+      .file-name {
+        color: #000000;
+        font-size: 14px;
+        margin-top: 1rem;
+        font-weight: 500;
+        word-break: break-word;
+      }
+    }
+  }
+}
