@@ -7,6 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MajstorService } from '../../services/majstor.service';
 import { AuthService } from '../../services/auth.service';
+import { FavoritesService } from '../../services/favorites.service';
 
 @Component({
   selector: 'app-landing-majstor',
@@ -51,11 +52,13 @@ export class LandingMajstorComponent implements OnInit {
   pageNumber: number = 1;
   pageSize: number = 9;
   isLoading: boolean = false;
-  hasSearched: boolean = false; // Track if search was performed
+  hasSearched: boolean = false;
+  favoriteStatuses: Map<number, boolean> = new Map();
 
   constructor(
     private majstorService: MajstorService,
     private authService: AuthService,
+    private favoritesService: FavoritesService,
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone
   ) {}
@@ -82,6 +85,7 @@ export class LandingMajstorComponent implements OnInit {
         this.majstori = [...response.items];
         this.totalCount = response.totalCount;
         this.isLoading = false;
+        this.loadFavoriteStatuses();
         setTimeout(() => this.cdr.detectChanges(), 0);
       },
       error: (error) => {
@@ -187,4 +191,73 @@ export class LandingMajstorComponent implements OnInit {
     const currentUser = this.authService.getCurrentUser();
     return currentUser?.korisnikId === korisnikId;
   }
+
+  loadFavoriteStatuses(): void {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser || currentUser.uloga !== 'Kupac' || !currentUser.korisnikId) {
+      return;
+    }
+
+    this.majstori.forEach(majstor => {
+      this.favoritesService.isFavorite(currentUser.korisnikId!, majstor.korisnikId)
+        .subscribe({
+          next: (isFavorite) => {
+            this.favoriteStatuses.set(majstor.korisnikId, isFavorite);
+          },
+          error: (error) => {
+            console.error('Greška pri provjeri favorita:', error);
+          }
+        });
+    });
+  }
+
+  isFavorite(majstorId: number): boolean {
+    return this.favoriteStatuses.get(majstorId) || false;
+  }
+
+  toggleFavorite(majstor: any, event: Event): void {
+    event.stopPropagation();
+    event.preventDefault();
+    
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) {
+      alert('Opcija dostupna samo prijavljenim korisnicima');
+      return;
+    }
+    
+    if (currentUser.uloga !== 'Kupac' || !currentUser.korisnikId) {
+      alert('Samo kupci mogu dodavati omiljene majstore.');
+      return;
+    }
+
+    const isFav = this.isFavorite(majstor.korisnikId);
+    
+    if (isFav) {
+      this.favoritesService.removeFavorite(currentUser.korisnikId!, majstor.korisnikId)
+        .subscribe({
+          next: () => {
+            this.favoriteStatuses.set(majstor.korisnikId, false);
+          },
+          error: (error) => {
+            console.error('Greška pri uklanjanju favorita:', error);
+          }
+        });
+    } else {
+      this.favoritesService.addFavorite(currentUser.korisnikId!, majstor.korisnikId)
+        .subscribe({
+          next: () => {
+            this.favoriteStatuses.set(majstor.korisnikId, true);
+          },
+          error: (error) => {
+            console.error('Greška pri dodavanju favorita:', error);
+          }
+        });
+    }
+  }
+
+  isKupac(): boolean {
+    const currentUser = this.authService.getCurrentUser();
+    return currentUser?.uloga === 'Kupac';
+  }
 }
+

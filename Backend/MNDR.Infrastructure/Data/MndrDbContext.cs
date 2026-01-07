@@ -32,6 +32,7 @@ namespace MNDR.Infrastructure.Data
         public DbSet<Recenzija> Recenzije { get; set; }
         public DbSet<Notifikacija> Notifikacije { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<OmiljeniMajstor> OmiljeniMajstori { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -263,6 +264,27 @@ namespace MNDR.Infrastructure.Data
 
             modelBuilder.Entity<RefreshToken>()
                 .HasIndex(rt => rt.IsRevoked);
+
+            // OmiljeniMajstor Configuration
+            modelBuilder.Entity<OmiljeniMajstor>()
+                .ToTable("OmiljeniMajstor")
+                .HasKey(om => om.Id);
+
+            modelBuilder.Entity<OmiljeniMajstor>()
+                .HasOne(om => om.Kupac)
+                .WithMany()
+                .HasForeignKey(om => om.KupacId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<OmiljeniMajstor>()
+                .HasOne(om => om.Majstor)
+                .WithMany()
+                .HasForeignKey(om => om.MajstorId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<OmiljeniMajstor>()
+                .HasIndex(om => new { om.KupacId, om.MajstorId })
+                .IsUnique();
         }
 
         /// <summary>

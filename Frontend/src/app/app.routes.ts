@@ -20,12 +20,14 @@ import { KupacEditProfileComponent } from './pages/kupac-edit-profile/kupac-edit
 import { KupacDeleteProfileComponent } from './pages/kupac-delete-profile/kupac-delete-profile.component';
 import { KupacMojProfilComponent } from './pages/kupac-moj-profil/kupac-moj-profil.component';
 import { SettingsComponent } from './pages/settings/settings.component';
+import { FavoritesComponent } from './pages/favorites/favorites.component';
 
 export const routes: Routes = [
   { path: 'settings', component: SettingsComponent },
   { path: '', component: LandingPageComponent },
   { path: 'majstor', component: LandingMajstorComponent },
   { path: 'kupac', component: LandingKupacComponent },
+  { path: 'favorites', component: FavoritesComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },

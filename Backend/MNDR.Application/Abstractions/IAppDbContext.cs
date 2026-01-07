@@ -38,6 +38,9 @@ public interface IAppDbContext
     // Refresh Tokens
     DbSet<RefreshToken> RefreshTokens { get; }
 
+    // Favorites
+    DbSet<OmiljeniMajstor> OmiljeniMajstori { get; }
+
     /// <summary>
     /// Čuva sve promene u bazi podataka.
     /// </summary>

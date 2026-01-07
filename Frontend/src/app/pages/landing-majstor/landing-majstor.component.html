@@ -16,7 +16,8 @@
         <a routerLink="/" (click)="closeMenu()">Naslovna</a>
         <a routerLink="/oglasi" (click)="closeMenu()">Pretraga</a>
         <a routerLink="/oglasi" (click)="closeMenu()">Ponude</a>
-        <a routerLink="/majstor" (click)="closeMenu()">Majstori</a>
+        <a routerLink="/majstor" (click)="closeMenu()" class="active">Majstori</a>
+        <a routerLink="/favorites" (click)="closeMenu()">Omiljeni</a>
         <a routerLink="" (click)="closeMenu()">Popusti</a>
         <a routerLink="/login" class="btn-primary" (click)="closeMenu()">Prijava/Registracija</a>
       </div>
@@ -217,6 +218,9 @@
             <div class="majstor-actions">
               <button class="btn-contact">Kontaktiraj</button>
               <button *ngIf="!isCurrentUserMajstor(majstor.korisnikId)" class="btn-details" [routerLink]="['/majstor', majstor.korisnikId]">Detalji</button>
+              <button class="favorite-btn" (click)="toggleFavorite(majstor, $event)" [class.is-favorite]="isFavorite(majstor.korisnikId)">
+                <mat-icon>{{ isFavorite(majstor.korisnikId) ? 'favorite' : 'favorite_border' }}</mat-icon>
+              </button>
               <button *ngIf="isCurrentUserMajstor(majstor.korisnikId)" class="btn-edit" [routerLink]="['/majstor/edit-profile', majstor.korisnikId]">
                 <mat-icon>edit</mat-icon>
                 Uredi Profil
