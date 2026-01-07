@@ -37,6 +37,23 @@ interface Ugovor {
     <div class="ugovori-container">
       <h2>Moji ugovori</h2>
       
+      <!-- Sorting Controls -->
+      <div class="sort-controls">
+        <span>Sortiraj po:</span>
+        <button mat-button [class.active]="sortBy === 'datumkreiranja'" (click)="sortUgovori('datumkreiranja')">
+          Datum {{ sortBy === 'datumkreiranja' ? (sortOrder === 'asc' ? '↑' : '↓') : '' }}
+        </button>
+        <button mat-button [class.active]="sortBy === 'status'" (click)="sortUgovori('status')">
+          Status {{ sortBy === 'status' ? (sortOrder === 'asc' ? '↑' : '↓') : '' }}
+        </button>
+        <button mat-button [class.active]="sortBy === 'cena'" (click)="sortUgovori('cena')">
+          Cijena {{ sortBy === 'cena' ? (sortOrder === 'asc' ? '↑' : '↓') : '' }}
+        </button>
+        <button mat-button [class.active]="sortBy === 'datumod'" (click)="sortUgovori('datumod')">
+          Početak {{ sortBy === 'datumod' ? (sortOrder === 'asc' ? '↑' : '↓') : '' }}
+        </button>
+      </div>
+      
       <mat-tab-group>
         <mat-tab label="Aktivni">
           <div class="tab-content">
@@ -158,6 +175,26 @@ interface Ugovor {
     button {
       margin: 0 4px;
     }
+    
+    .sort-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 15px 0;
+      padding: 10px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+    
+    .sort-controls span {
+      font-weight: 500;
+      color: #666;
+    }
+    
+    .sort-controls button.active {
+      background-color: #1976d2;
+      color: white;
+    }
   `]
 })
 export class UgovoriComponent implements OnInit {
@@ -167,6 +204,10 @@ export class UgovoriComponent implements OnInit {
   displayedColumns = ['oglasNaslov', 'kupacIme', 'datumOd', 'datumDo', 'cena', 'akcije'];
   zavrseniColumns = ['oglasNaslov', 'kupacIme', 'cena', 'datumKreiranja', 'akcije'];
   korisnikId = 1; // TODO: Get from auth service
+  
+  // Sorting
+  sortBy: string = 'datumkreiranja';
+  sortOrder: string = 'desc';
 
   constructor(private ugovorService: UgovorService) {}
 
@@ -175,7 +216,7 @@ export class UgovoriComponent implements OnInit {
   }
 
   loadUgovori() {
-    this.ugovorService.getUgovori(this.korisnikId).subscribe({
+    this.ugovorService.getUgovori(this.korisnikId, this.sortBy, this.sortOrder).subscribe({
       next: (data: any) => {
         this.ugovori = data;
         this.filterUgovori();
@@ -184,6 +225,16 @@ export class UgovoriComponent implements OnInit {
         console.error('Greška pri učitavanju ugovora', err);
       }
     });
+  }
+
+  sortUgovori(column: string): void {
+    if (this.sortBy === column) {
+      this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortBy = column;
+      this.sortOrder = 'desc';
+    }
+    this.loadUgovori();
   }
 
   filterUgovori() {

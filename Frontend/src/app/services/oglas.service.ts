@@ -10,13 +10,22 @@ export class OglasService {
 
   constructor(private http: HttpClient) { }
 
-  getOglasi(pageNumber: number = 1, pageSize: number = 10, status?: string, searchTerm?: string): Observable<any> {
+  getOglasi(
+    pageNumber: number = 1, 
+    pageSize: number = 10, 
+    status?: string, 
+    searchTerm?: string,
+    sortBy?: string,
+    sortOrder?: string
+  ): Observable<any> {
     let params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', pageSize.toString());
 
     if (status) params = params.set('status', status);
     if (searchTerm) params = params.set('searchTerm', searchTerm);
+    if (sortBy) params = params.set('sortBy', sortBy);
+    if (sortOrder) params = params.set('sortOrder', sortOrder);
 
     return this.http.get<any>(this.apiUrl, { params });
   }

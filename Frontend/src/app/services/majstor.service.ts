@@ -17,7 +17,9 @@ export class MajstorService {
     minOcjena?: number,
     grad?: string,
     minGodineIskustva?: number,
-    maxCijena?: number
+    maxCijena?: number,
+    sortBy?: string,
+    sortOrder?: string
   ): Observable<any> {
     let params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
@@ -28,6 +30,8 @@ export class MajstorService {
     if (grad) params = params.set('grad', grad);
     if (minGodineIskustva) params = params.set('minGodineIskustva', minGodineIskustva.toString());
     if (maxCijena) params = params.set('maxCijena', maxCijena.toString());
+    if (sortBy) params = params.set('sortBy', sortBy);
+    if (sortOrder) params = params.set('sortOrder', sortOrder);
 
     return this.http.get<any>(this.apiUrl, { params });
   }

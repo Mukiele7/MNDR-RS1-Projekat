@@ -40,6 +40,34 @@ public class ListMajstoriQueryHandler(IAppDbContext context)
         if (request.MinProsjecnaOcjena.HasValue)
             query = query.Where(m => m.ProsjecnaOcjena >= request.MinProsjecnaOcjena.Value);
 
+        // Sorting
+        if (!string.IsNullOrEmpty(request.SortBy))
+        {
+            query = request.SortBy.ToLower() switch
+            {
+                "ime" => request.SortOrder == "desc"
+                    ? query.OrderByDescending(m => m.Korisnik!.Ime)
+                    : query.OrderBy(m => m.Korisnik!.Ime),
+                "specijalizacija" => request.SortOrder == "desc"
+                    ? query.OrderByDescending(m => m.Specijalizacija)
+                    : query.OrderBy(m => m.Specijalizacija),
+                "prosjecnaocjena" => request.SortOrder == "desc"
+                    ? query.OrderByDescending(m => m.ProsjecnaOcjena)
+                    : query.OrderBy(m => m.ProsjecnaOcjena),
+                "cijenamjesecne" => request.SortOrder == "desc"
+                    ? query.OrderByDescending(m => m.CijenaMjesecne)
+                    : query.OrderBy(m => m.CijenaMjesecne),
+                "godineiskustva" => request.SortOrder == "desc"
+                    ? query.OrderByDescending(m => m.GodineIskustva)
+                    : query.OrderBy(m => m.GodineIskustva),
+                _ => query.OrderBy(m => m.Korisnik!.Ime)
+            };
+        }
+        else
+        {
+            query = query.OrderBy(m => m.Korisnik!.Ime);
+        }
+
         var totalCount = await query.CountAsync(cancellationToken);
 
         var items = await query

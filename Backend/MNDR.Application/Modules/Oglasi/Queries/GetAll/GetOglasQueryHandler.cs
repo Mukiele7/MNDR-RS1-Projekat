@@ -41,6 +41,21 @@ public sealed class GetOglasQueryHandler : IRequestHandler<GetOglasQuery, PagedO
         if (!string.IsNullOrEmpty(request.Grad))
             query = query.Where(o => o.Majstor != null && o.Majstor.Korisnik != null && o.Majstor.Korisnik.Grad == request.Grad);
 
+        // Sorting
+        query = request.SortBy?.ToLower() switch
+        {
+            "datumobjave" => request.SortOrder == "desc"
+                ? query.OrderByDescending(o => o.DatumObjave)
+                : query.OrderBy(o => o.DatumObjave),
+            "naslov" => request.SortOrder == "desc"
+                ? query.OrderByDescending(o => o.Naslov)
+                : query.OrderBy(o => o.Naslov),
+            "status" => request.SortOrder == "desc"
+                ? query.OrderByDescending(o => o.Status)
+                : query.OrderBy(o => o.Status),
+            _ => query.OrderByDescending(o => o.DatumObjave) // Default sorting
+        };
+
         var totalCount = await query.CountAsync(cancellationToken);
 
         var items = await query

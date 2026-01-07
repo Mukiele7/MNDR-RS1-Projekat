@@ -61,6 +61,20 @@ interface PagedResult {
             <mat-icon>search</mat-icon> Pretraži
           </button>
         </div>
+        
+        <!-- Sorting Controls -->
+        <div class="sort-controls">
+          <span>Sortiraj po:</span>
+          <button mat-button [class.active]="sortBy === 'datumobjave'" (click)="sortOglasi('datumobjave')">
+            Datum {{ sortBy === 'datumobjave' ? (sortOrder === 'asc' ? '↑' : '↓') : '' }}
+          </button>
+          <button mat-button [class.active]="sortBy === 'naslov'" (click)="sortOglasi('naslov')">
+            Naslov {{ sortBy === 'naslov' ? (sortOrder === 'asc' ? '↑' : '↓') : '' }}
+          </button>
+          <button mat-button [class.active]="sortBy === 'status'" (click)="sortOglasi('status')">
+            Status {{ sortBy === 'status' ? (sortOrder === 'asc' ? '↑' : '↓') : '' }}
+          </button>
+        </div>
       </mat-card>
 
       <mat-card class="data-card">
@@ -201,6 +215,25 @@ interface PagedResult {
       padding: 40px;
       color: #999;
     }
+    
+    .sort-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .sort-controls span {
+      font-weight: 500;
+      color: #666;
+    }
+    
+    .sort-controls button.active {
+      background-color: #1976d2 !important;
+      color: white !important;
+    }
   `]
 })
 export class OglasListComponent implements OnInit {
@@ -211,6 +244,10 @@ export class OglasListComponent implements OnInit {
   loading = false;
   searchTerm = '';
   statusFilter = '';
+  
+  // Sorting
+  sortBy: string = 'datumobjave';
+  sortOrder: string = 'desc';
 
   constructor(private oglasService: OglasService) {}
 
@@ -220,8 +257,14 @@ export class OglasListComponent implements OnInit {
 
   loadOglasi() {
     this.loading = true;
-    this.oglasService.getOglasi(this.currentPage, this.pageSize, this.statusFilter, this.searchTerm)
-      .subscribe({
+    this.oglasService.getOglasi(
+      this.currentPage, 
+      this.pageSize, 
+      this.statusFilter, 
+      this.searchTerm,
+      this.sortBy,
+      this.sortOrder
+    ).subscribe({
         next: (result: any) => {
           this.oglasi = result.items;
           this.totalCount = result.totalCount;
@@ -232,6 +275,16 @@ export class OglasListComponent implements OnInit {
           this.loading = false;
         }
       });
+  }
+
+  sortOglasi(column: string): void {
+    if (this.sortBy === column) {
+      this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortBy = column;
+      this.sortOrder = 'desc';
+    }
+    this.loadOglasi();
   }
 
   onPageChange(event: PageEvent) {

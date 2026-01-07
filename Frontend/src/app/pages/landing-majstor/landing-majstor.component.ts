@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
 import { MajstorService } from '../../services/majstor.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-landing-majstor',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, MatIconModule],
+  imports: [CommonModule, RouterModule, FormsModule, MatIconModule, MatMenuModule, MatButtonModule],
   templateUrl: './landing-majstor.component.html',
   styleUrl: './landing-majstor.component.scss'
 })
@@ -27,6 +29,22 @@ export class LandingMajstorComponent implements OnInit {
     maxCijena: null as number | null
   };
 
+  // Sorting properties
+  sortBy: string = '';
+  sortOrder: string = 'asc';
+  currentSortLabel: string = 'Standardno';
+  
+  sortOptions = [
+    { value: 'ime-asc', label: 'Ime (A-Z)', sortBy: 'ime', sortOrder: 'asc' },
+    { value: 'ime-desc', label: 'Ime (Z-A)', sortBy: 'ime', sortOrder: 'desc' },
+    { value: 'ocjena-desc', label: 'Ocjena (najviša)', sortBy: 'prosjecnaocjena', sortOrder: 'desc' },
+    { value: 'ocjena-asc', label: 'Ocjena (najniža)', sortBy: 'prosjecnaocjena', sortOrder: 'asc' },
+    { value: 'iskustvo-desc', label: 'Iskustvo (najviše)', sortBy: 'godineiskustva', sortOrder: 'desc' },
+    { value: 'iskustvo-asc', label: 'Iskustvo (najmanje)', sortBy: 'godineiskustva', sortOrder: 'asc' },
+    { value: 'cijena-asc', label: 'Cijena (najniža)', sortBy: 'cijenamjesecne', sortOrder: 'asc' },
+    { value: 'cijena-desc', label: 'Cijena (najviša)', sortBy: 'cijenamjesecne', sortOrder: 'desc' }
+  ];
+
   // Paging properties
   majstori: any[] = [];
   totalCount: number = 0;
@@ -37,7 +55,9 @@ export class LandingMajstorComponent implements OnInit {
 
   constructor(
     private majstorService: MajstorService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -54,18 +74,41 @@ export class LandingMajstorComponent implements OnInit {
       this.filters.minOcjena || undefined,
       this.filters.grad || undefined,
       this.filters.minGodineIskustva || undefined,
-      this.filters.maxCijena || undefined
+      this.filters.maxCijena || undefined,
+      this.sortBy || undefined,
+      this.sortOrder
     ).subscribe({
       next: (response) => {
-        this.majstori = response.items;
+        this.majstori = [...response.items];
         this.totalCount = response.totalCount;
         this.isLoading = false;
+        setTimeout(() => this.cdr.detectChanges(), 0);
       },
       error: (error) => {
         console.error('Greška pri učitavanju majstora:', error);
         this.isLoading = false;
       }
     });
+  }
+
+  sortMajstori(column: string): void {
+    if (this.sortBy === column) {
+      this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortBy = column;
+      this.sortOrder = 'asc';
+    }
+    this.loadMajstori();
+  }
+  
+  applySorting(option: any): void {
+    this.sortBy = option.sortBy;
+    this.sortOrder = option.sortOrder;
+    this.currentSortLabel = option.label;
+    
+    if (this.hasSearched) {
+      this.loadMajstori();
+    }
   }
 
   searchMajstori(): void {

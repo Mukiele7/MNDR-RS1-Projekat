@@ -16,6 +16,10 @@ namespace MNDR.Application.Queries
         // Filter 5: Maksimalna cijena mjesečne
         public decimal? MaxCijena { get; set; }
 
+        // Sorting
+        public string? SortBy { get; set; } // Ime, Specijalizacija, ProsjecnaOcjena, CijenaMjesecne, GodineIskustva
+        public string SortOrder { get; set; } = "asc"; // asc or desc
+
         // Paging
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;

@@ -17,6 +17,10 @@ public class ListMajstoriQuery : IRequest<PagedMajstoriResult>
     // Filter 7: Minimalna prosječna ocjena
     public decimal? MinProsjecnaOcjena { get; set; }
 
+    // Sorting
+    public string? SortBy { get; set; }
+    public string SortOrder { get; set; } = "asc";
+
     // Paging
     public int PageNumber { get; set; } = 1;
     public int PageSize { get; set; } = 10;

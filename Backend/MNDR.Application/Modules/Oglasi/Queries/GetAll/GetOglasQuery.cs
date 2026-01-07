@@ -25,4 +25,8 @@ public sealed class GetOglasQuery : IRequest<PagedOglasResult>
     
     // Filter 7: Grad (grad majstora)
     public string? Grad { get; set; }
+    
+    // Sorting
+    public string? SortBy { get; set; } // DatumObjave, Naslov, Status
+    public string SortOrder { get; set; } = "desc"; // asc or desc
 }

@@ -42,6 +42,46 @@ namespace MNDR.Application.Handlers.QueryHandlers
             if (request.MaxCijena.HasValue)
                 query = query.Where(m => m.CijenaMjesecne <= request.MaxCijena.Value);
 
+            // Sorting
+            if (!string.IsNullOrEmpty(request.SortBy))
+            {
+                switch (request.SortBy.ToLower())
+                {
+                    case "ime":
+                        query = request.SortOrder == "desc"
+                            ? query.OrderByDescending(m => m.Korisnik!.Ime)
+                            : query.OrderBy(m => m.Korisnik!.Ime);
+                        break;
+                    case "specijalizacija":
+                        query = request.SortOrder == "desc"
+                            ? query.OrderByDescending(m => m.Specijalizacija)
+                            : query.OrderBy(m => m.Specijalizacija);
+                        break;
+                    case "prosjecnaocjena":
+                        query = request.SortOrder == "desc"
+                            ? query.OrderByDescending(m => m.ProsjecnaOcjena)
+                            : query.OrderBy(m => m.ProsjecnaOcjena);
+                        break;
+                    case "cijenamjesecne":
+                        query = request.SortOrder == "desc"
+                            ? query.OrderByDescending(m => m.CijenaMjesecne)
+                            : query.OrderBy(m => m.CijenaMjesecne);
+                        break;
+                    case "godineiskustva":
+                        query = request.SortOrder == "desc"
+                            ? query.OrderByDescending(m => m.GodineIskustva)
+                            : query.OrderBy(m => m.GodineIskustva);
+                        break;
+                    default:
+                        query = query.OrderBy(m => m.Korisnik!.Ime);
+                        break;
+                }
+            }
+            else
+            {
+                query = query.OrderBy(m => m.Korisnik!.Ime);
+            }
+
             var totalCount = await query.CountAsync(cancellationToken);
 
             var items = await query

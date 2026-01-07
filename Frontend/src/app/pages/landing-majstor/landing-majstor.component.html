@@ -162,6 +162,24 @@
           <span class="results-count" *ngIf="majstori.length > 0">Pronađeno {{ totalCount }} majstora</span>
         </div>
 
+        <!-- Sorting Dropdown Menu -->
+        <div class="sorting-dropdown" *ngIf="!isLoading && majstori.length > 0">
+          <button mat-raised-button [matMenuTriggerFor]="sortMenu" class="sort-menu-button">
+            <mat-icon>sort</mat-icon>
+            Sortiraj: {{ currentSortLabel }}
+            <mat-icon>arrow_drop_down</mat-icon>
+          </button>
+          
+          <mat-menu #sortMenu="matMenu">
+            <button mat-menu-item *ngFor="let option of sortOptions" (click)="applySorting(option)">
+              <mat-icon *ngIf="sortBy === option.sortBy && sortOrder === option.sortOrder">check</mat-icon>
+              <span [class.selected]="sortBy === option.sortBy && sortOrder === option.sortOrder">
+                {{ option.label }}
+              </span>
+            </button>
+          </mat-menu>
+        </div>
+
         <div class="loading-spinner" *ngIf="isLoading">
           <mat-icon class="spinner">hourglass_empty</mat-icon>
           <p>Učitavanje majstora...</p>
