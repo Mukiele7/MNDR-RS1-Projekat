@@ -1,18 +1,33 @@
 import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MajstorService } from '../../services/majstor.service';
 import { AuthService } from '../../services/auth.service';
 import { FavoritesService } from '../../services/favorites.service';
+import { debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 
 @Component({
   selector: 'app-landing-majstor',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, MatIconModule, MatMenuModule, MatButtonModule],
+  imports: [
+    CommonModule, 
+    RouterModule, 
+    FormsModule, 
+    ReactiveFormsModule,
+    MatIconModule, 
+    MatMenuModule, 
+    MatButtonModule,
+    MatAutocompleteModule,
+    MatFormFieldModule,
+    MatInputModule
+  ],
   templateUrl: './landing-majstor.component.html',
   styleUrl: './landing-majstor.component.scss'
 })
@@ -20,6 +35,10 @@ export class LandingMajstorComponent implements OnInit {
   newsletterEmail: string = '';
   isMenuOpen: boolean = false;
   Math = Math; // For template
+
+  // Autocomplete
+  searchControl = new FormControl('');
+  suggestions: any[] = [];
 
   // Filter properties
   filters = {
@@ -65,6 +84,34 @@ export class LandingMajstorComponent implements OnInit {
 
   ngOnInit(): void {
     // Ne učitavaj automatski - čekaj da korisnik klikne na pretragu
+    
+    // Setup autocomplete
+    this.searchControl.valueChanges.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(value => {
+        if (value && typeof value === 'string' && value.trim().length >= 2) {
+          return this.majstorService.getSuggestions(value.trim());
+        }
+        return of([]);
+      })
+    ).subscribe(suggestions => {
+      this.suggestions = suggestions;
+    });
+  }
+
+  onSuggestionSelected(suggestion: any): void {
+    // Navigate to majstor detail or apply filter
+    this.filters.specijalizacija = '';
+    this.filters.grad = '';
+    // Could navigate to detail: this.router.navigate(['/majstor', suggestion.korisnikId]);
+    // Or search by name:
+    this.searchControl.setValue(`${suggestion.ime} ${suggestion.prezime}`, { emitEvent: false });
+    this.searchMajstori();
+  }
+
+  displayFn(majstor: any): string {
+    return majstor ? `${majstor.ime} ${majstor.prezime}` : '';
   }
 
   loadMajstori(): void {

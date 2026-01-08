@@ -347,6 +347,56 @@
         }
       }
 
+      .autocomplete-search-row {
+        margin-bottom: 25px;
+
+        .filter-group.autocomplete-filter {
+          max-width: 450px;
+          margin: 0 auto;
+
+          .autocomplete-field {
+            width: 100%;
+
+            ::ng-deep {
+              .mat-mdc-form-field-infix {
+                padding: 0;
+                min-height: 42px;
+              }
+
+              .mat-mdc-text-field-wrapper {
+                padding: 0;
+              }
+
+              .mdc-text-field {
+                padding: 0 16px;
+                height: 46px;
+              }
+
+              .mat-mdc-form-field-subscript-wrapper {
+                display: none;
+              }
+
+              input {
+                height: 46px;
+              }
+
+              .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__leading,
+              .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__notch,
+              .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__trailing {
+                border-color: #e2e8f0;
+                border-width: 2px;
+              }
+
+              .mdc-text-field--focused .mdc-notched-outline .mdc-notched-outline__leading,
+              .mdc-text-field--focused .mdc-notched-outline .mdc-notched-outline__notch,
+              .mdc-text-field--focused .mdc-notched-outline .mdc-notched-outline__trailing {
+                border-color: #13ab24 !important;
+              }
+            }
+          }
+        }
+      }
+
       .filter-group {
         display: flex;
         flex-direction: column;
@@ -1689,6 +1739,50 @@
     .categories h2,
     .cta-section h2 {
       font-size: 32px;
+    }
+  }
+}
+
+// Global autocomplete suggestion styles
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+
+  .suggestion-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #13ab24, #0f8a1e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    mat-icon {
+      color: white;
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .suggestion-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    .suggestion-name {
+      font-weight: 600;
+      color: #2d3748;
+      font-size: 0.9rem;
+    }
+
+    .suggestion-specialization {
+      font-size: 0.8rem;
+      color: #718096;
     }
   }
 }

@@ -21,19 +21,21 @@ import { KupacDeleteProfileComponent } from './pages/kupac-delete-profile/kupac-
 import { KupacMojProfilComponent } from './pages/kupac-moj-profil/kupac-moj-profil.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { FavoritesComponent } from './pages/favorites/favorites.component';
+import { MajstorProfilComponent } from './pages/majstor-profil/majstor-profil.component';
 
 export const routes: Routes = [
   { path: 'settings', component: SettingsComponent },
   { path: '', component: LandingPageComponent },
+  { path: 'majstor/register', component: MajstorRegisterComponent },
+  { path: 'majstor/edit-profile/:id', component: MajstorEditProfileComponent },
+  { path: 'majstor/delete-profile/:id', component: MajstorDeleteProfileComponent },
+  { path: 'majstor/:id', component: MajstorProfilComponent },
   { path: 'majstor', component: LandingMajstorComponent },
   { path: 'kupac', component: LandingKupacComponent },
   { path: 'favorites', component: FavoritesComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'majstor/register', component: MajstorRegisterComponent },
-  { path: 'majstor/edit-profile/:id', component: MajstorEditProfileComponent },
-  { path: 'majstor/delete-profile/:id', component: MajstorDeleteProfileComponent },
   { path: 'kupac/register', component: KupacRegisterComponent },
   { path: 'kupac/moj-profil', component: KupacMojProfilComponent },
   { path: 'kupac/edit-profile/:id', component: KupacEditProfileComponent },

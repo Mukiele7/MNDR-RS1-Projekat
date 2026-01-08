@@ -51,4 +51,9 @@ export class MajstorService {
   deleteMajstor(id: number): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
+
+  getSuggestions(searchTerm: string): Observable<any[]> {
+    const params = new HttpParams().set('searchTerm', searchTerm);
+    return this.http.get<any[]>(`${this.apiUrl}/suggestions`, { params });
+  }
 }

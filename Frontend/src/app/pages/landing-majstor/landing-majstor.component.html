@@ -135,6 +135,40 @@
           </div>
         </div>
 
+        <!-- Autocomplete Search Row -->
+        <div class="autocomplete-search-row">
+          <div class="filter-group autocomplete-filter">
+            <label>
+              <mat-icon>search</mat-icon>
+              Pretraga po imenu
+            </label>
+            <mat-form-field class="autocomplete-field" appearance="outline">
+              <input 
+                matInput 
+                type="text"
+                [formControl]="searchControl"
+                [matAutocomplete]="auto"
+                placeholder="Npr. Marko Marković">
+              <mat-autocomplete 
+                #auto="matAutocomplete" 
+                [displayWith]="displayFn"
+                (optionSelected)="onSuggestionSelected($event.option.value)">
+                <mat-option *ngFor="let suggestion of suggestions" [value]="suggestion">
+                  <div class="suggestion-item">
+                    <div class="suggestion-avatar">
+                      <mat-icon>person</mat-icon>
+                    </div>
+                    <div class="suggestion-info">
+                      <span class="suggestion-name">{{ suggestion.ime }} {{ suggestion.prezime }}</span>
+                      <span class="suggestion-specialization">{{ suggestion.specijalizacija }}</span>
+                    </div>
+                  </div>
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+        </div>
+
         <div class="filter-actions">
           <button class="btn-search-filter" (click)="searchMajstori()">
             <mat-icon>search</mat-icon>

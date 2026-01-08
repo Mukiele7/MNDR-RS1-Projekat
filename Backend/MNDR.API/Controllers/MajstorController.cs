@@ -6,6 +6,7 @@ using MNDR.Application.Modules.Majstori.Commands.Update;
 using MNDR.Application.Modules.Majstori.Commands.Delete;
 using MNDR.Application.Modules.Majstori.Queries.GetById;
 using MNDR.Application.Modules.Majstori.Queries.List;
+using MNDR.Application.Modules.Majstori.Queries.Suggestions;
 
 namespace MNDR.API.Controllers
 {
@@ -17,6 +18,15 @@ namespace MNDR.API.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<PagedMajstoriResult>> GetMajstori([FromQuery] ListMajstoriQuery query, CancellationToken ct)
         {
+            var result = await sender.Send(query, ct);
+            return Ok(result);
+        }
+
+        [HttpGet("suggestions")]
+        [AllowAnonymous]
+        public async Task<ActionResult<List<MajstorSuggestionDto>>> GetSuggestions([FromQuery] string searchTerm, CancellationToken ct)
+        {
+            var query = new GetMajstorSuggestionsQuery { SearchTerm = searchTerm, MaxResults = 5 };
             var result = await sender.Send(query, ct);
             return Ok(result);
         }

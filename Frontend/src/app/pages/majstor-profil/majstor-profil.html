@@ -1,0 +1,163 @@
+<div class="profile-container" *ngIf="!loading && !error">
+  <!-- Header Section -->
+  <div class="profile-header">
+    <button mat-icon-button class="back-button" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Profil Majstora</h1>
+  </div>
+
+  <!-- Profile Card -->
+  <mat-card class="profile-card">
+    <mat-card-header class="profile-card-header">
+      <div class="profile-avatar-container">
+        <img 
+          [src]="majstor?.slikaProfila || getDefaultAvatar()" 
+          [alt]="majstor?.ime + ' ' + majstor?.prezime"
+          class="profile-avatar"
+        >
+      </div>
+      <div class="profile-title-section">
+        <mat-card-title class="profile-name">
+          {{ majstor?.ime }} {{ majstor?.prezime }}
+        </mat-card-title>
+        <mat-card-subtitle class="profile-specialization">
+          <mat-icon>build</mat-icon>
+          {{ majstor?.specijalizacija }}
+        </mat-card-subtitle>
+        <div class="profile-rating">
+          <mat-icon class="star-icon">star</mat-icon>
+          <span class="rating-value">{{ majstor?.prosjecnaOcjena?.toFixed(1) || 'N/A' }}</span>
+          <span class="rating-count">({{ majstor?.brojZavrsenihPoslova || 0 }} poslova)</span>
+        </div>
+      </div>
+      <button 
+        mat-icon-button 
+        class="favorite-button" 
+        [class.is-favorite]="isFavorite"
+        (click)="toggleFavorite()"
+        [attr.aria-label]="isFavorite ? 'Ukloni iz favorita' : 'Dodaj u favorite'"
+      >
+        <mat-icon>{{ isFavorite ? 'favorite' : 'favorite_border' }}</mat-icon>
+      </button>
+    </mat-card-header>
+
+    <mat-divider></mat-divider>
+
+    <mat-card-content class="profile-content">
+      <!-- Contact Info -->
+      <section class="info-section">
+        <h3 class="section-title">Kontakt Informacije</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <mat-icon>location_on</mat-icon>
+            <div class="info-text">
+              <span class="info-label">Lokacija</span>
+              <span class="info-value">{{ majstor?.grad || 'Nije navedeno' }}, {{ majstor?.opcina || '' }}</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <mat-icon>phone</mat-icon>
+            <div class="info-text">
+              <span class="info-label">Telefon</span>
+              <span class="info-value">{{ majstor?.telefon || 'Nije navedeno' }}</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <mat-icon>email</mat-icon>
+            <div class="info-text">
+              <span class="info-label">Email</span>
+              <span class="info-value">{{ majstor?.email || 'Nije navedeno' }}</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <mat-icon>work</mat-icon>
+            <div class="info-text">
+              <span class="info-label">Iskustvo</span>
+              <span class="info-value">{{ majstor?.godineIskustva || 0 }} godina</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <mat-divider></mat-divider>
+
+      <!-- Pricing Info -->
+      <section class="info-section">
+        <h3 class="section-title">Cijene Usluga</h3>
+        <div class="pricing-grid">
+          <mat-chip class="price-chip">
+            <mat-icon>schedule</mat-icon>
+            <span>{{ majstor?.cijenaSat?.toFixed(2) || '0.00' }} KM / sat</span>
+          </mat-chip>
+          <mat-chip class="price-chip">
+            <mat-icon>calendar_today</mat-icon>
+            <span>{{ majstor?.cijenaMjesecne?.toFixed(2) || '0.00' }} KM / mjesečno</span>
+          </mat-chip>
+        </div>
+      </section>
+
+      <mat-divider></mat-divider>
+
+      <!-- Description -->
+      <section class="info-section" *ngIf="majstor?.detaljanOpisProfila || majstor?.opisProfila">
+        <h3 class="section-title">O Majstoru</h3>
+        <p class="description-text">
+          {{ majstor?.detaljanOpisProfila || majstor?.opisProfila || 'Nema dostupnog opisa.' }}
+        </p>
+      </section>
+
+      <mat-divider></mat-divider>
+
+      <!-- Member Since -->
+      <section class="info-section">
+        <div class="member-since">
+          <mat-icon>event</mat-icon>
+          <span>Član od {{ majstor?.datumRegistracije | date: 'MMMM yyyy' }}</span>
+        </div>
+      </section>
+    </mat-card-content>
+
+    <mat-card-actions class="profile-actions">
+      <button mat-raised-button color="primary" (click)="contactMajstor()">
+        <mat-icon>message</mat-icon>
+        Kontaktiraj
+      </button>
+      <button mat-raised-button color="accent" (click)="createContract()">
+        <mat-icon>description</mat-icon>
+        Kreiraj Ugovor
+      </button>
+      <button mat-stroked-button (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+        Nazad na Pretragu
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
+
+<!-- Loading State -->
+<div class="loading-container" *ngIf="loading">
+  <mat-card class="loading-card">
+    <mat-card-content>
+      <div class="loading-spinner">
+        <mat-icon class="spinning">sync</mat-icon>
+        <p>Učitavanje profila...</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<!-- Error State -->
+<div class="error-container" *ngIf="error && !loading">
+  <mat-card class="error-card">
+    <mat-card-content>
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <h2>Greška</h2>
+      <p>Nije moguće učitati profil majstora.</p>
+      <button mat-raised-button color="primary" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+        Nazad na Pretragu
+      </button>
+    </mat-card-content>
+  </mat-card>
+</div>
