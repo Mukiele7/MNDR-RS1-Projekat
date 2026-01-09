@@ -78,6 +78,12 @@ background: radial-gradient(circle,rgba(17, 171, 31, 1) 64%, rgba(111, 204, 120,
   }
 }
 
+.recaptcha-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;

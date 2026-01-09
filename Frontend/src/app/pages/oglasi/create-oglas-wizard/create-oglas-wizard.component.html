@@ -2,18 +2,17 @@
   <h2>Kreiraj novi oglas</h2>
 
   <mat-stepper linear #stepper>
-    <!-- Korak 1: Osnovne informacije -->
     <mat-step [stepControl]="basicInfoForm" label="Osnovne informacije">
-      <form [formGroup]="basicInfoForm">
+      <form class="basic-info-form" [formGroup]="basicInfoForm">
         <mat-card>
           <mat-card-header>
             <mat-card-title>Unesite osnovne podatke o oglasu</mat-card-title>
+            <span id="razmak">  </span>
           </mat-card-header>
           <mat-card-content>
-            <!-- Naslov -->
-            <mat-form-field appearance="outline" class="full-width">
+            <mat-form-field id="naslov" class="full-width">
               <mat-label>Naslov oglasa</mat-label>
-              <input 
+              <input
                 matInput 
                 formControlName="naslov" 
                 placeholder="npr. Vodoinstalaterske usluge"
@@ -27,8 +26,7 @@
               </mat-error>
             </mat-form-field>
 
-            <!-- Opis -->
-            <mat-form-field appearance="outline" class="full-width">
+            <mat-form-field class="full-width">
               <mat-label>Opis</mat-label>
               <textarea 
                 matInput 
@@ -55,7 +53,6 @@
       </form>
     </mat-step>
 
-    <!-- Korak 2: Kategorije -->
     <mat-step [stepControl]="categoryForm" label="Kategorije">
       <form [formGroup]="categoryForm">
         <mat-card>
@@ -64,7 +61,6 @@
             <mat-card-subtitle>Možete izabrati više kategorija</mat-card-subtitle>
           </mat-card-header>
           <mat-card-content>
-            <!-- Dostupne kategorije -->
             <div class="kategorije-grid">
               <mat-card 
                 *ngFor="let kat of kategorije" 
@@ -78,7 +74,6 @@
               </mat-card>
             </div>
 
-            <!-- Izabrane kategorije -->
             <div class="selected-chips" *ngIf="selectedKategorije.length > 0">
               <h4>Izabrane kategorije:</h4>
               <mat-chip-set>
@@ -110,11 +105,10 @@
       </form>
     </mat-step>
 
-    <!-- Korak 3: Pregled -->
     <mat-step label="Pregled i potvrda">
       <mat-card>
         <mat-card-header>
-          <mat-card-title>Proverite unete podatke</mat-card-title>
+          <mat-card-title>Provjerite unijete podatke</mat-card-title>
         </mat-card-header>
         <mat-card-content>
           <div class="preview-section">
@@ -123,6 +117,9 @@
 
             <h3>Opis:</h3>
             <p class="opis-preview">{{basicInfoForm.value.opis}}</p>
+            
+            <h3>Datum kreiranja:</h3>
+            <p>{{currentDate | customDate}}</p>
 
             <h3>Kategorije:</h3>
             <mat-chip-set>

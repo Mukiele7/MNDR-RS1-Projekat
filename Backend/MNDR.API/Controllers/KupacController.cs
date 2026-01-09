@@ -6,6 +6,7 @@ using MNDR.Application.Modules.Kupci.Commands.Update;
 using MNDR.Application.Modules.Kupci.Commands.Delete;
 using MNDR.Application.Modules.Kupci.Queries.GetById;
 using MNDR.Application.Modules.Kupci.Queries.List;
+using MNDR.API.Attributes;
 
 namespace MNDR.API.Controllers
 {

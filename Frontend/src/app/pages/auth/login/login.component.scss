@@ -43,20 +43,14 @@
     {
       color:black
     }
+
 .PrijaviSeDugme {
   color: rgba(19, 171, 37);
-  border: 1px solid rgba(19, 171, 37);
   padding: 10px;
   padding-left: 100px;
   padding-right: 100px;
   border-radius: 20px;
-}
-.PrijaviSeDugme:hover {
-  background-color: rgba(19, 171, 37);
-  color: white;
-   transform: translateY(-2px);
-       box-shadow: 0 6px 20px rgba(28, 63, 22, 0.3);
-
+  width: 100%;
 }
     form {
       display: flex;

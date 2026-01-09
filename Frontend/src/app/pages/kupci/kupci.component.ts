@@ -12,6 +12,9 @@ import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { KupacService } from '../../services/kupac.service';
+import { CustomDatePipe } from '../../shared/pipes/date.pipe';
+import { CustomCurrencyPipe } from '../../shared/pipes/currency.pipe';
+import { CustomPhonePipe } from '../../shared/pipes/phone.pipe';
 
 interface Kupac {
   korisnikId: number;
@@ -41,7 +44,10 @@ interface Kupac {
     MatIconModule,
     MatCardModule,
     MatDialogModule,
-    MatSelectModule
+    MatSelectModule,
+    CustomPhonePipe,
+    CustomDatePipe,
+    CustomCurrencyPipe
   ],
   templateUrl: './kupci.component.html',
   styleUrls: ['./kupci.component.scss']
@@ -53,29 +59,26 @@ export class KupciComponent implements OnInit {
   pageSize = 10;
   pageNumber = 1;
 
-  // Filteri
   gradFilter = '';
   opcinaFilter = '';
   searchFilter = '';
   minOcjenaFilter: number | null = null;
   minBrojNarudzbiFilter: number | null = null;
 
-  // Forme
   createForm: FormGroup;
   updateForm: FormGroup;
   showCreateForm = false;
   showUpdateForm = false;
   selectedKupac: Kupac | null = null;
 
-  gradovi = ['Sarajevo', 'Banja Luka', 'Tuzla', 'Zenica', 'Mostar', 'Bijeljina'];
-  opcine = ['Centar', 'Novi Grad', 'Stari Grad', 'Ilidža', 'Vogošća'];
+  gradovi = ['Sarajevo', 'Banja Luka', 'Tuzla', 'Zenica', 'Mostar', 'Bihać', 'Goražde', 'Doboj', 'Brčko', 'Cazin', 'Trebinje', 'Zvornik', 'Prijedor', 'Sanski Most', 'Lukavac', 'Gradačac', 'Vitez', 'Bugojno', 'Jajce', 'Livno', 'Foča', 'Konjic', 'Neum', 'Prozor-Rama', 'Bosanska Krupa', 'Kalesija', 'Kladanj', 'Kotor Varoš', 'Modriča', 'Orašje', 'Rogatica', 'Srebrenik', 'Velika Kladuša', 'Žepče', 'Čapljina', 'Čelić',  'Široki Brijeg'];
+  opcine = ['Centar', 'Novi Grad', 'Stari Grad', 'Ilidža', 'Vogošća', 'Hadžići','Ilijaš','Trnovo','Novi Travnik','Bugojno','Gornji Vakuf-Uskoplje','Jajce','Donji Vakuf','Fojnica','Kiseljak','Kreševo','Busovača','Dobretići','Gračanica','Lukavac','Čelić','Srebrenik','Tuzla','Živinice','Banovići','Kladanj','Olovo','Vareš','Zavidovići','Maglaj','Tešanj','Doboj Istok','Doboj Jug','Modriča','Derventa','Brodski Varoš','Bosanski Brod','Odžak','Orašje','Bijeljina','Lopare','Ugljevik','Zvornik','Vlasenica','Milići','Bratunac','Srebrenica','Foča','Rogatica','Pale','Istočno Sarajevo','Čajniče','Kaljina','Trebinje','Nevesinje','Bileća','Gacko','Ljubinje','Cazin','Bihać','Bosanska Krupa','Bužim','Velika Kladuša','Kljuc','Sanski Most','Oštra Luka','Ključ','Bosanski Petrovac','Drvar','Glamoč','Glamoč','Šipovo','Jajce','Mrkonjić Grad','Ribnik','Petrovo','Kotor Varoš','Šipovo','Kupres','Dobretići','Fojnica'];
 
   constructor(
     private kupacService: KupacService,
     private formBuilder: FormBuilder,
     private dialog: MatDialog
   ) {
-    // Create forma
     this.createForm = this.formBuilder.group({
       ime: ['', [Validators.required, Validators.minLength(2)]],
       prezime: ['', [Validators.required, Validators.minLength(2)]],
@@ -86,7 +89,6 @@ export class KupciComponent implements OnInit {
       opcina: ['']
     });
 
-    // Update forma
     this.updateForm = this.formBuilder.group({
       ime: ['', [Validators.required, Validators.minLength(2)]],
       prezime: ['', [Validators.required, Validators.minLength(2)]],

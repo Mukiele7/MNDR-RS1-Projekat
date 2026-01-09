@@ -48,8 +48,8 @@ export class SettingsComponent implements OnInit {
   };
 
   languages = [
-    { value: 'sr-Latn-BA', label: 'Srpski (Latinica)' },
-    { value: 'sr-Cyrl-BA', label: 'Српски (Ћирилица)' },
+    { value: 'Ba-Latn-BA', label: 'bosanski (Latinica)' },
+    { value: 'Ba-Cyrl-BA', label: 'bosanski (Ćirilica)' },
     { value: 'en-US', label: 'English' }
   ];
 
@@ -79,7 +79,7 @@ export class SettingsComponent implements OnInit {
     this.applyTheme();
     
     this.snackBar.open('Podešavanja uspješno sačuvana', 'Zatvori', {
-      duration: 3000,
+      duration: 0,
       horizontalPosition: 'center',
       verticalPosition: 'top'
     });
@@ -87,7 +87,7 @@ export class SettingsComponent implements OnInit {
 
   resetSettings(): void {
     this.settings = {
-      language: 'sr-Latn-BA',
+      language: 'Ba-Latn-BA',
       theme: 'light',
       enableNotifications: true,
       emailNotifications: true,
@@ -99,7 +99,7 @@ export class SettingsComponent implements OnInit {
     this.applyTheme();
     
     this.snackBar.open('Podešavanja vraćena na početne vrijednosti', 'Zatvori', {
-      duration: 3000,
+      duration: 0,
       horizontalPosition: 'center',
       verticalPosition: 'top'
     });

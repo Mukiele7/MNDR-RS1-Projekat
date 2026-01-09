@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -7,8 +7,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { OglasService } from '../../services/oglas.service';
+import { QRCodeModule } from 'angularx-qrcode';
 
 interface Oglas {
   oglasId: number;
@@ -39,6 +41,8 @@ interface PagedResult {
     MatButtonModule,
     MatIconModule,
     MatCardModule,
+    MatDialogModule,
+    QRCodeModule,
     FormsModule
   ],
   template: `
@@ -115,6 +119,9 @@ interface PagedResult {
               </button>
               <button mat-button color="accent" (click)="startConversation(oglas.oglasId)">
                 <mat-icon>mail</mat-icon> Kontaktiraj
+              </button>
+              <button mat-button color="warn" (click)="openQRCodeDialog(oglas)">
+                <mat-icon>qr_code</mat-icon> QR Code
               </button>
             </mat-card-actions>
           </mat-card>
@@ -249,7 +256,10 @@ export class OglasListComponent implements OnInit {
   sortBy: string = 'datumobjave';
   sortOrder: string = 'desc';
 
-  constructor(private oglasService: OglasService) {}
+  constructor(
+    private oglasService: OglasService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit() {
     this.loadOglasi();
@@ -305,4 +315,130 @@ export class OglasListComponent implements OnInit {
   startConversation(oglasId: number) {
     console.log('Početak razgovora za oglas', oglasId);
   }
+
+  openQRCodeDialog(oglas: Oglas) {
+    this.dialog.open(QRCodeDialogComponent, {
+      width: '400px',
+      data: oglas
+    });
+  }
 }
+
+// QR Code Dialog Component
+@Component({
+  selector: 'app-qr-code-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatIconModule,
+    QRCodeModule
+  ],
+  template: `
+    <h2 mat-dialog-title>QR Kod za Oglas</h2>
+    <mat-dialog-content>
+      <div class="qr-info">
+        <h3>{{ data.naslov }}</h3>
+        <p>{{ data.opis }}</p>
+      </div>
+      <div class="qr-container">
+        <qrcode 
+          [qrdata]="qrData" 
+          [width]="256" 
+          [errorCorrectionLevel]="'M'"
+          #qrcode
+        ></qrcode>
+      </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="shareQRCode()">
+        <mat-icon>share</mat-icon> Podijeli
+      </button>
+      <button mat-raised-button color="primary" (click)="downloadQRCode()">
+        <mat-icon>download</mat-icon> Preuzmi
+      </button>
+      <button mat-button mat-dialog-close>Zatvori</button>
+    </mat-dialog-actions>
+  `,
+  styles: [`
+    .qr-info {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .qr-info h3 {
+      margin: 0;
+      color: #333;
+    }
+    .qr-info p {
+      color: #666;
+      font-size: 0.9em;
+      margin: 10px 0;
+    }
+    .qr-container {
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+    mat-dialog-actions {
+      margin-top: 20px;
+    }
+  `]
+})
+export class QRCodeDialogComponent {
+  qrData: string;
+
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: Oglas
+  ) {
+    // Kreiranje URL-a za oglas
+    this.qrData = `${window.location.origin}/oglasi/${data.oglasId}`;
+  }
+
+  downloadQRCode() {
+    const qrCodeElement = document.querySelector('qrcode canvas') as HTMLCanvasElement;
+    if (qrCodeElement) {
+      const url = qrCodeElement.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `oglas-${this.data.oglasId}-qrcode.png`;
+      link.click();
+    }
+  }
+
+  async shareQRCode() {
+    const qrCodeElement = document.querySelector('qrcode canvas') as HTMLCanvasElement;
+    if (qrCodeElement) {
+      qrCodeElement.toBlob(async (blob) => {
+        if (blob && navigator.share) {
+          try {
+            const file = new File([blob], `oglas-${this.data.oglasId}-qrcode.png`, { type: 'image/png' });
+            await navigator.share({
+              files: [file],
+              title: this.data.naslov,
+              text: `Pogledaj ovaj oglas: ${this.data.naslov}`
+            });
+          } catch (err) {
+            console.error('Greška pri dijeljenju:', err);
+            this.fallbackShare();
+          }
+        } else {
+          this.fallbackShare();
+        }
+      });
+    }
+  }
+
+  private fallbackShare() {
+    // Fallback ako Web Share API nije dostupan
+    const shareUrl = this.qrData;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareUrl);
+      alert('Link kopiran u clipboard!');
+    }
+  }
+}
+
+// Dodaj import za Inject i MAT_DIALOG_DATA na vrh fajla
