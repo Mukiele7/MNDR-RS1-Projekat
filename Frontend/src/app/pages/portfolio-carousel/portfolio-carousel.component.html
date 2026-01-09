@@ -1,0 +1,22 @@
+<div class="portfolio-carousel">
+  <h3>Istaknuti Radovi</h3>
+  
+  <div *ngIf="loading" class="loading">
+    Učitavanje...
+  </div>
+
+  <div *ngIf="!loading && istaknuteSlike.length === 0" class="empty-state">
+    <p>Nema istaknutih slika</p>
+  </div>
+
+  <owl-carousel-o *ngIf="!loading && istaknuteSlike.length > 0" [options]="customOptions">
+    <ng-template carouselSlide *ngFor="let slika of istaknuteSlike">
+      <div class="slide-item">
+          <img [src]="slika.slikaUrl" [alt]="slika.opis || 'Portfolio slika'" />
+        <div class="slide-caption" *ngIf="slika.opis">
+          <p>{{ slika.opis }}</p>
+        </div>
+      </div>
+    </ng-template>
+  </owl-carousel-o>
+</div>

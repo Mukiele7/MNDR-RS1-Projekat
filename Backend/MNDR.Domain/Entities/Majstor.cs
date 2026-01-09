@@ -24,6 +24,7 @@ namespace MNDR.Domain.Entities
         public virtual ICollection<BadgeNagrada> BadgeNagrade { get; set; } = new List<BadgeNagrada>();
         public virtual ICollection<Kredit> Krediti { get; set; } = new List<Kredit>();
         public virtual ICollection<Oglas> Oglasi { get; set; } = new List<Oglas>();
+        public virtual ICollection<PortfolioSlika> PortfolioSlike { get; set; } = new List<PortfolioSlika>();
         public virtual ICollection<Razgovor> Razgovori { get; set; } = new List<Razgovor>();
         public virtual ICollection<Ugovor> Ugovori { get; set; } = new List<Ugovor>();
     }

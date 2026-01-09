@@ -33,6 +33,7 @@ namespace MNDR.Infrastructure.Data
         public DbSet<Notifikacija> Notifikacije { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<OmiljeniMajstor> OmiljeniMajstori { get; set; }
+        public DbSet<PortfolioSlika> PortfolioSlike { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -285,6 +286,26 @@ namespace MNDR.Infrastructure.Data
             modelBuilder.Entity<OmiljeniMajstor>()
                 .HasIndex(om => new { om.KupacId, om.MajstorId })
                 .IsUnique();
+
+            // PortfolioSlika Configuration
+            modelBuilder.Entity<PortfolioSlika>()
+                .ToTable("PortfolioSlika")
+                .HasKey(ps => ps.PortfolioSlikaId);
+
+            modelBuilder.Entity<PortfolioSlika>()
+                .HasOne(ps => ps.Majstor)
+                .WithMany(m => m.PortfolioSlike)
+                .HasForeignKey(ps => ps.MajstorId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PortfolioSlika>()
+                .Property(ps => ps.SlikaUrl)
+                .IsRequired()
+                .HasMaxLength(500);
+
+            modelBuilder.Entity<PortfolioSlika>()
+                .Property(ps => ps.Opis)
+                .HasMaxLength(200);
         }
 
         /// <summary>

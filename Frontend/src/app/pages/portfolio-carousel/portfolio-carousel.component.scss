@@ -1,0 +1,77 @@
+.portfolio-carousel {
+  margin: 2rem 0;
+
+  h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-weight: 600;
+  }
+
+  .loading, .empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+  }
+
+  .slide-item {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    border-radius: 12px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .slide-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+      padding: 2rem 1.5rem 1.5rem;
+      color: white;
+
+      p {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+::ng-deep {
+  .owl-theme .owl-nav {
+    margin-top: 10px;
+    
+    [class*='owl-'] {
+      background: rgba(0, 0, 0, 0.5) !important;
+      color: white !important;
+      padding: 8px 15px !important;
+      border-radius: 50% !important;
+      
+      &:hover {
+        background: rgba(0, 0, 0, 0.8) !important;
+      }
+    }
+  }
+
+  .owl-theme .owl-dots .owl-dot span {
+    background: rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .owl-theme .owl-dots .owl-dot.active span {
+    background: #3f51b5 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .portfolio-carousel .slide-item {
+    height: 300px;
+  }
+}

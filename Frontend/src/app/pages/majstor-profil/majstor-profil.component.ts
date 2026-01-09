@@ -9,6 +9,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { MajstorService } from '../../services/majstor.service';
 import { FavoritesService } from '../../services/favorites.service';
+import { PortfolioGalleryComponent } from '../portfolio-gallery/portfolio-gallery.component';
+import { PortfolioCarouselComponent } from '../portfolio-carousel/portfolio-carousel.component';
 
 @Component({
   selector: 'app-majstor-profil',
@@ -21,7 +23,9 @@ import { FavoritesService } from '../../services/favorites.service';
     MatIconModule,
     MatChipsModule,
     MatDividerModule,
-    CarouselModule
+    CarouselModule,
+    PortfolioGalleryComponent,
+    PortfolioCarouselComponent
   ],
   templateUrl: './majstor-profil.html',
   styleUrl: './majstor-profil.scss',

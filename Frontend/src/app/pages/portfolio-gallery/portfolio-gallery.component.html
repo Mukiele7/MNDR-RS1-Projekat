@@ -1,0 +1,53 @@
+<div class="portfolio-gallery">
+  <!-- Header -->
+  <div class="gallery-header">
+    <button 
+      *ngIf="isOwner" 
+      mat-raised-button 
+      color="primary" 
+      (click)="addImageUrl()">
+      <mat-icon>add_photo_alternate</mat-icon>
+      Dodaj Sliku
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <!-- Gallery Grid -->
+  <div *ngIf="!loading && portfolioSlike.length > 0" class="gallery-grid">
+    <div 
+      *ngFor="let slika of portfolioSlike" 
+      class="gallery-item"
+      (click)="openLightbox(slika.slikaUrl)">
+      <img [src]="slika.slikaUrl" [alt]="slika.opis || 'Portfolio slika'" />
+      
+      <!-- Image Overlay -->
+      <div class="image-overlay">
+        <p *ngIf="slika.opis">{{ slika.opis }}</p>
+        <button 
+          *ngIf="isOwner" 
+          mat-icon-button 
+          color="warn" 
+          (click)="deleteSlika(slika.portfolioSlikaId); $event.stopPropagation()">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && portfolioSlike.length === 0" class="empty-state">
+    <p>Nema slika u galeriji</p>
+  </div>
+
+  <!-- Lightbox Modal -->
+  <div *ngIf="showLightbox" class="lightbox-overlay" (click)="closeLightbox()">
+    <button class="close-button" mat-icon-button (click)="closeLightbox()">
+      <mat-icon>close</mat-icon>
+    </button>
+    <img [src]="selectedImageUrl" alt="Full size image" (click)="$event.stopPropagation()" />
+  </div>
+</div>

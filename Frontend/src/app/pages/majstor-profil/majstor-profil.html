@@ -156,21 +156,20 @@
 
       <mat-divider></mat-divider>
 
-      <!-- Portfolio/Gallery Section -->
+      <!-- Portfolio Carousel - 3 Istaknutе Slike -->
       <section class="info-section portfolio-section">
-        <h3 class="section-title">Portfolio Radova</h3>
-        <div class="portfolio-carousel">
-          <owl-carousel-o [options]="carouselOptions">
-            <ng-template carouselSlide *ngFor="let image of portfolioImages">
-              <div class="portfolio-slide">
-                <img [src]="image.url" [alt]="image.alt" class="portfolio-image">
-                <div class="portfolio-caption">
-                  <p>{{ image.description }}</p>
-                </div>
-              </div>
-            </ng-template>
-          </owl-carousel-o>
-        </div>
+        <app-portfolio-carousel [majstorId]="majstorId"></app-portfolio-carousel>
+      </section>
+
+      <mat-divider></mat-divider>
+
+      <!-- Gallery - Sve Slike -->
+      <section class="info-section gallery-section">
+        <h3 class="section-title">Galerija</h3>
+        <app-portfolio-gallery 
+          [majstorId]="majstorId" 
+          [isOwner]="false">
+        </app-portfolio-gallery>
       </section>
     </mat-card-content>
 

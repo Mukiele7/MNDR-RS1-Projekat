@@ -41,6 +41,9 @@ public interface IAppDbContext
     // Favorites
     DbSet<OmiljeniMajstor> OmiljeniMajstori { get; }
 
+    // Portfolio
+    DbSet<PortfolioSlika> PortfolioSlike { get; }
+
     /// <summary>
     /// Čuva sve promene u bazi podataka.
     /// </summary>
