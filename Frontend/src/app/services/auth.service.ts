@@ -9,14 +9,16 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  success: boolean;
-  message: string;
-  token?: string;
-  korisnikId?: number;
-  email?: string;
+  accessToken: string;
+  refreshToken: string;
+  email: string;
+  fullName: string;
   ime?: string;
   prezime?: string;
-  uloga?: string;
+  role: string;
+  uloga?: string; // Alias za role
+  userId: number;
+  korisnikId?: number; // Alias za userId
   slikaProfila?: string;
 }
 
@@ -42,8 +44,18 @@ export class AuthService {
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
-        if (response.success && response.token) {
-          localStorage.setItem('token', response.token);
+        if (response.accessToken) {
+          // Razdvoji fullName na ime i prezime
+          const nameParts = response.fullName?.split(' ') || [];
+          response.ime = nameParts[0] || '';
+          response.prezime = nameParts.slice(1).join(' ') || '';
+          
+          // Dodaj aliase za kompatibilnost
+          response.korisnikId = response.userId;
+          response.uloga = response.role;
+          
+          localStorage.setItem('token', response.accessToken);
+          localStorage.setItem('refreshToken', response.refreshToken);
           localStorage.setItem('currentUser', JSON.stringify(response));
           this.currentUserSubject.next(response);
         }
@@ -55,7 +67,7 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/kupac']);
   }
 
   getToken(): string | null {

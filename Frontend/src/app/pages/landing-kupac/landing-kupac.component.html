@@ -7,11 +7,11 @@
       </div>
 
       <div class="nav-links">
-        <a routerLink="/">Naslovna</a>
+        <a routerLink="/kupac">Naslovna</a>
         <a routerLink="/oglasi">Pretraga</a>
-        <a routerLink="/kupac/edit-profile">Ponude</a>
-        <a routerLink="/oglasi/create">Majstori</a>
-        <a routerLink="">Popusti</a>
+        <a routerLink="/ponude">Ponude</a>
+        <a routerLink="/majstori">Majstori</a>
+        <a routerLink="/oglasi">Popusti</a>
         
         <!-- Prikaži dugme za prijavu/registraciju ako korisnik nije ulogovan -->
         <a *ngIf="!isAuthenticated" routerLink="/login" class="btn-primary">Prijava/Registracija</a>

@@ -47,8 +47,11 @@ export class LoginComponent {
 
   onSubmit() {
     this.submitted = true;
+    console.log('Submit clicked, form valid:', this.loginForm.valid);
+    console.log('Form values:', this.loginForm.value);
 
     if (this.loginForm.invalid) {
+      console.log('Form is invalid');
       return;
     }
 
@@ -58,14 +61,18 @@ export class LoginComponent {
       password: this.f['password'].value
     };
 
+    console.log('Sending login request:', credentials);
+
     this.authService.login(credentials).subscribe({
       next: (response) => {
-        if (response.success) {
-          this.router.navigate(['/']);
+        console.log('Login response:', response);
+        if (response.accessToken) {
+          this.router.navigate(['/kupac']);
         }
         this.loading = false;
       },
-      error: () => {
+      error: (err) => {
+        console.error('Login error:', err);
         this.loading = false;
       }
     });

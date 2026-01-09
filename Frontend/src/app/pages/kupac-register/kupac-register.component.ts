@@ -10,7 +10,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatStepperModule } from '@angular/material/stepper';
 import { KupacService } from '../../services/kupac.service';
-import { RecaptchaModule } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-kupac-register',
@@ -25,8 +24,7 @@ import { RecaptchaModule } from 'ng-recaptcha';
     MatSelectModule,
     MatCardModule,
     MatIconModule,
-    MatStepperModule,
-    RecaptchaModule
+    MatStepperModule
   ],
   templateUrl: './kupac-register.component.html',
   styleUrls: ['./kupac-register.component.scss']
@@ -35,7 +33,6 @@ export class KupacRegisterComponent {
   personalInfoForm: FormGroup;
   locationInfoForm: FormGroup;
   profileInfoForm: FormGroup;
-  recaptchaToken: string | null = null;
   
   gradovi = ['Sarajevo', 'Banja Luka', 'Tuzla', 'Zenica', 'Mostar', 'Bijeljina', 'Brčko', 'Travnik'];
   
@@ -77,10 +74,6 @@ export class KupacRegisterComponent {
     const password = group.get('lozinka')?.value;
     const confirmPassword = group.get('potvrdaLozinke')?.value;
     return password === confirmPassword ? null : { passwordMismatch: true };
-  }
-
-  onRecaptchaResolved(token: string | null) {
-    this.recaptchaToken = token;
   }
 
   onFileSelected(event: Event): void {

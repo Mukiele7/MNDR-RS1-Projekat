@@ -6,6 +6,26 @@
   .content-wrapper {
     max-width: 900px;
     margin: 0 auto;
+    position: relative;
+  }
+
+  .back-button {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 10;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    
+    mat-icon {
+      color: rgb(19, 171, 37);
+    }
+
+    &:hover {
+      background-color: #f5f5f5;
+      transform: translateX(-2px);
+      transition: all 0.3s ease;
+    }
   }
 
   .loading {

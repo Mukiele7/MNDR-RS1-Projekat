@@ -12,8 +12,6 @@ import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { KupacService } from '../../services/kupac.service';
-import { CustomDatePipe } from '../../shared/pipes/date.pipe';
-import { CustomCurrencyPipe } from '../../shared/pipes/currency.pipe';
 import { CustomPhonePipe } from '../../shared/pipes/phone.pipe';
 
 interface Kupac {
@@ -45,9 +43,7 @@ interface Kupac {
     MatCardModule,
     MatDialogModule,
     MatSelectModule,
-    CustomPhonePipe,
-    CustomDatePipe,
-    CustomCurrencyPipe
+    CustomPhonePipe
   ],
   templateUrl: './kupci.component.html',
   styleUrls: ['./kupci.component.scss']

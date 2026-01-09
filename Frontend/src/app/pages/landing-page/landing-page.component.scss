@@ -1,7 +1,7 @@
 .landing-page {
   overflow-x: hidden;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: rgb(206, 206, 206);
 }
 
 .hero {
@@ -13,21 +13,29 @@
   color: white;
   min-height: 90vh;
 
+
   .hero-content {
     text-align: center;
     max-width: 900px;
+    border: 5px solid rgb(19,171,36);
+    padding: 30px;
+    border-radius: 20px;
+    background-color: white;
+
 
     h1 {
       font-size: 56px;
       font-weight: bold;
       margin-bottom: 15px;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      color: rgb(19,171,36);
     }
 
     .subtitle {
       font-size: 22px;
       margin-bottom: 60px;
       opacity: 0.95;
+      color:rgb(19,171,36)
     }
 
     .user-type-selection {
@@ -35,6 +43,7 @@
         font-size: 32px;
         margin-bottom: 40px;
         font-weight: 500;
+        color:rgb(19,171,36)
       }
 
       .choice-cards {
@@ -91,7 +100,7 @@
         }
 
         &.kupac-card {
-          border-top: 5px solid #f5576c;
+          border-top: 5px solid rgb(19,171,36);
 
           &:hover {
             background: linear-gradient(135deg, rgba(245, 87, 108, 0.1) 0%, rgba(255, 255, 255, 0.95) 100%);
@@ -112,7 +121,7 @@
 
 .quick-links {
   padding: 30px 40px;
-  background: rgba(255, 255, 255, 0.1);
+  background:rgb(19,171,36,100%);
   backdrop-filter: blur(10px);
 
   .container {

@@ -35,8 +35,20 @@ export class KupacEditProfileComponent implements OnInit {
   saving = false;
   kupacId: number = 0;
   
-  gradovi = ['Sarajevo', 'Banja Luka', 'Tuzla', 'Zenica', 'Mostar', 'Bijeljina', 'Brčko', 'Travnik'];
+gradovi = ['Sarajevo','Banja Luka','Tuzla','Zenica','Mostar','Bijeljina','Prijedor','Brčko','Bihać','Doboj',
 
+  'Banovići','Bosanska Dubica','Bosanska Gradiška','Bosanska Krupa','Bosanski Brod','Bosanski Novi','Bosanski Petrovac',
+  'Bosansko Grahovo','Bratunac','Breza','Bugojno','Busovača','Bužim','Cazin','Čajniče','Čapljina',
+  'Čelić','Čitluk','Derventa','Donji Vakuf','Drvar','Foča','Fojnica','Gacko','Glamoč','Goražde','Gornji Vakuf - Uskoplje',
+  'Gradačac','Gradiška','Hadžići','Han Pijesak','Ilidža','Ilijaš','Istočna Ilidža','Istočni Drvar','Istočni Mostar',
+  'Istočno Novo Sarajevo','Istočni Stari Grad','Jablanica','Jajce','Jezero','Kakanj','Kalesija','Kalinovik',
+  'Kiseljak','Ključ','Kladanj','Konjic','Kotor Varoš','Kreševo','Kupres','Laktaši','Livno','Lopare',
+  'Lukavac','Ljubinje','Maglaj','Modriča','Mrkonjić Grad','Neum','Nevesinje','Novi Grad','Novo Goražde',
+  'Odžak','Olovo','Orašje','Pale','Pelagićevo','Posušje','Prozor-Rama','Rogatica','Rudo','Sanski Most',
+  'Sapna','Srebrenica','Srebrenik','Stolac','Šamac','Šekovići','Široki Brijeg','Teočak','Teslić',
+  'Tomislavgrad','Travnik','Trebinje','Trnovo','Ugljevik','Usora','Vareš','Velika Kladuša','Visoko',
+  'Višegrad','Vitez','Vogošća','Zavidovići','Zvornik','Žepče','Živinice'
+];
   constructor(
     private formBuilder: FormBuilder,
     private kupacService: KupacService,
@@ -97,14 +109,22 @@ export class KupacEditProfileComponent implements OnInit {
   }
 
   updateProfile(): void {
+    console.log('Update profile clicked');
+    console.log('Form valid:', this.editForm.valid);
+    console.log('Form value:', this.editForm.value);
+    console.log('Kupac ID:', this.kupacId);
+    
     if (this.editForm.valid) {
       this.saving = true;
-      this.kupacService.updateKupac(this.kupacId, this.editForm.value).subscribe({
+      const updateData = this.editForm.value;
+      console.log('Sending update request:', updateData);
+      
+      this.kupacService.updateKupac(this.kupacId, updateData).subscribe({
         next: (response) => {
+          console.log('Update response:', response);
           alert('Profil uspješno ažuriran!');
           this.saving = false;
-          // Možda redirektovati na dashboard ili profil stranicu
-          // this.router.navigate(['/kupac/profile']);
+          this.router.navigate(['/kupac/moj-profil']);
         },
         error: (error) => {
           console.error('Greška pri ažuriranju:', error);
@@ -113,13 +133,14 @@ export class KupacEditProfileComponent implements OnInit {
         }
       });
     } else {
+      console.log('Form is invalid');
       alert('Molimo popunite sva obavezna polja pravilno!');
     }
   }
 
   cancel(): void {
     if (confirm('Da li ste sigurni da želite otkazati? Sve izmjene će biti izgubljene.')) {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/kupac/profile', this.kupacId]);
     }
   }
 
