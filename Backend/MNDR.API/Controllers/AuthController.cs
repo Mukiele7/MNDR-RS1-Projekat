@@ -2,6 +2,7 @@ using MNDR.Application.Modules.Auth.Commands.Login;
 using MNDR.Application.Modules.Auth.Commands.Logout;
 using MNDR.Application.Modules.Auth.Commands.RefreshToken;
 using MNDR.Application.Modules.Auth.Commands.Register;
+using MNDR.API.Attributes;
 
 namespace MNDR.API.Controllers;
 
@@ -17,6 +18,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
+    [ValidateRecaptcha]
     public async Task<ActionResult<RegisterCommandDto>> Register([FromBody] RegisterCommand command)
     {
         var result = await _mediator.Send(command);

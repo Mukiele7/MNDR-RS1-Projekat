@@ -29,6 +29,13 @@
         margin-top: 10px;
         font-size: 14px;
       }
+
+  .recaptcha-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+  }
+
   // Globalni stilovi za radio button
   ::ng-deep .mat-mdc-radio-button.mat-mdc-radio-checked .mdc-radio__background .mdc-radio__outer-circle {
     border-color: rgb(19, 171, 37) !important;

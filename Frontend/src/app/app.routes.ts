@@ -5,6 +5,7 @@ import { LandingKupacComponent } from './pages/landing-kupac/landing-kupac.compo
 import { LoginComponent } from './pages/auth/login/login.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
 import { OglasListComponent } from './pages/oglasi/oglas-list.component';
+import { OglasQrComponent } from './pages/oglas-qr/oglas-qr.component';
 import { CreateOglasWizardComponent } from './pages/oglasi/create-oglas-wizard/create-oglas-wizard.component';
 import { RazgovorComponent } from './pages/razgovori/razgovor.component';
 import { RecenzijeComponent } from './pages/recenzije/recenzije.component';
@@ -42,6 +43,7 @@ export const routes: Routes = [
   { path: 'kupac/delete-profile/:id', component: KupacDeleteProfileComponent },
   { path: 'oglasi', component: OglasListComponent },
   { path: 'oglasi/create', component: CreateOglasWizardComponent },
+  { path: 'oglasi/:id', component: OglasQrComponent },
   { path: 'kupci', component: KupciComponent },
   { path: 'razgovori/:id', component: RazgovorComponent },
   { path: 'recenzije', component: RecenzijeComponent },

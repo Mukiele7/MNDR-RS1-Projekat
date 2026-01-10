@@ -10,25 +10,20 @@ public class ListKupciQueryHandler(IAppDbContext context)
             .Where(k => k.Korisnik != null)
             .AsQueryable();
 
-        // Filter 1: Grad
         if (!string.IsNullOrEmpty(request.Grad))
             query = query.Where(k => k.Korisnik!.Grad == request.Grad);
 
-        // Filter 2: Općina
         if (!string.IsNullOrEmpty(request.Opcina))
             query = query.Where(k => k.Korisnik!.Opcina == request.Opcina);
 
-        // Filter 3: Search term (ime ili prezime)
         if (!string.IsNullOrEmpty(request.SearchTerm))
             query = query.Where(k => 
                 k.Korisnik!.Ime.Contains(request.SearchTerm) || 
                 k.Korisnik.Prezime.Contains(request.SearchTerm));
 
-        // Filter 4: MinOcjena
         if (request.MinOcjena.HasValue)
             query = query.Where(k => k.OcjenaPouzdanosti >= request.MinOcjena.Value);
 
-        // Filter 5: MinBrojNarudzbi
         if (request.MinBrojNarudzbi.HasValue)
             query = query.Where(k => k.BrojNarudzbi >= request.MinBrojNarudzbi.Value);
 

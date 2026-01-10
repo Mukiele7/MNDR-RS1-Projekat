@@ -6,10 +6,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +20,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatButtonModule,
     MatCardModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule,
     RouterModule
   ],
   templateUrl: './login.component.html',
@@ -36,8 +33,7 @@ export class LoginComponent {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private router: Router,
-    private snackBar: MatSnackBar
+    private router: Router
   ) {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -51,9 +47,11 @@ export class LoginComponent {
 
   onSubmit() {
     this.submitted = true;
+    console.log('Submit clicked, form valid:', this.loginForm.valid);
+    console.log('Form values:', this.loginForm.value);
 
     if (this.loginForm.invalid) {
-      this.snackBar.open('Molimo popunite sve obavezne polje ispravno', 'Zatvori', { duration: 3000 });
+      console.log('Form is invalid');
       return;
     }
 
@@ -63,18 +61,18 @@ export class LoginComponent {
       password: this.f['password'].value
     };
 
+    console.log('Sending login request:', credentials);
+
     this.authService.login(credentials).subscribe({
       next: (response) => {
-        if (response.success) {
-          this.snackBar.open('Uspešna prijava!', 'Zatvori', { duration: 2000 });
-          this.router.navigate(['/']);
-        } else {
-          this.snackBar.open(response.message, 'Zatvori', { duration: 3000 });
+        console.log('Login response:', response);
+        if (response.accessToken) {
+          this.router.navigate(['/kupac']);
         }
         this.loading = false;
       },
-      error: () => {
-        this.snackBar.open('Greška pri prijavi. Pokušajte ponovo.', 'Zatvori', { duration: 3000 });
+      error: (err) => {
+        console.error('Login error:', err);
         this.loading = false;
       }
     });

@@ -1,5 +1,10 @@
 <div class="moj-profil-container">
   <div class="content-wrapper">
+    <!-- Back button -->
+    <button mat-icon-button class="back-button" routerLink="/kupac" matTooltip="Nazad na početnu">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+
     <!-- Loading spinner -->
     <div class="loading" *ngIf="loading">
       <mat-spinner diameter="60" color="primary"></mat-spinner>

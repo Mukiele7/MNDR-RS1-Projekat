@@ -6,12 +6,32 @@
 // custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
+// Definišemo custom zelenu paletu
+$green-palette: (
+  0: rgb(19,171,36,100%),
+  10: rgb(19,171,36,100%),
+  20: rgb(19,171,36,100%),
+  25: rgb(19,171,36,100%),
+  30: rgb(19,171,36,100%),
+  35: rgb(19,171,36,100%),
+  40: rgb(19,171,36,100%),
+  50: rgb(19,171,36,100%),
+  60: rgb(19,171,36,100%),
+  70: rgb(19,171,36,100%),
+  80: rgb(19,171,36,100%),
+  90: rgb(19,171,36,100%),
+  95: rgb(19,171,36,100%),
+  98: rgb(19,171,36,100%),
+  99: rgb(19,171,36,100%),
+  100: rgb(19,171,36,100%),
+);
+
 html {
   height: 100%;
   @include mat.theme((
     color: (
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
+      primary: $green-palette,
+      tertiary: $green-palette,
     ),
     typography: 'Poppins, sans-serif',
     density: 0,
@@ -43,6 +63,20 @@ body {
 // Smooth scrolling
 html {
   scroll-behavior: smooth;
+}
+
+// Error snackbar styling
+.error-snackbar {
+  background-color: #f44336 !important;
+  color: white !important;
+  
+  .mat-mdc-snack-bar-label {
+    color: white !important;
+  }
+  
+  .mat-mdc-button {
+    color: white !important;
+  }
 }
 
 // Default font improvements
