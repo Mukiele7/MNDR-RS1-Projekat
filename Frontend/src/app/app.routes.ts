@@ -23,6 +23,7 @@ import { KupacMojProfilComponent } from './pages/kupac-moj-profil/kupac-moj-prof
 import { SettingsComponent } from './pages/settings/settings.component';
 import { FavoritesComponent } from './pages/favorites/favorites.component';
 import { MajstorProfilComponent } from './pages/majstor-profil/majstor-profil.component';
+import { MajstorMapComponent } from './pages/majstor-map/majstor-map.component';
 
 export const routes: Routes = [
   { path: 'settings', component: SettingsComponent },
@@ -32,6 +33,7 @@ export const routes: Routes = [
   { path: 'majstor/delete-profile/:id', component: MajstorDeleteProfileComponent },
   { path: 'majstor/:id', component: MajstorProfilComponent },
   { path: 'majstor', component: LandingMajstorComponent },
+  { path: 'majstor-map', component: MajstorMapComponent },
   { path: 'kupac', component: LandingKupacComponent },
   { path: 'favorites', component: FavoritesComponent },
   { path: 'dashboard', component: DashboardComponent },

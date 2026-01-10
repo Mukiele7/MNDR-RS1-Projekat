@@ -89,7 +89,9 @@ public class ListMajstoriQueryHandler(IAppDbContext context)
                 ProsjecnaOcjena = m.ProsjecnaOcjena,
                 BrojZavrsenihPoslova = m.BrojZavrsenihPoslova,
                 DetaljanOpisProfila = m.DetaljanOpisProfila,
-                DatumRegistracije = m.Korisnik.DatumRegistracije
+                DatumRegistracije = m.Korisnik.DatumRegistracije,
+                Latitude = m.Latitude,
+                Longitude = m.Longitude
             })
             .ToListAsync(cancellationToken);
 

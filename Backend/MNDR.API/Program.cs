@@ -16,6 +16,7 @@ builder.Services.AddControllers()
     {
         // JSON serialization za decimale, datume
         options.JsonSerializerOptions.WriteIndented = true;
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
     });
 
 builder.Services.AddSwaggerGen();

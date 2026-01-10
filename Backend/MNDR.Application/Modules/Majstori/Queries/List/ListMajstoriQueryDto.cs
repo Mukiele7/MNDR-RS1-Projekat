@@ -17,4 +17,6 @@ public class ListMajstoriQueryDto
     public int BrojZavrsenihPoslova { get; set; }
     public string? DetaljanOpisProfila { get; set; }
     public DateTime DatumRegistracije { get; set; }
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
 }

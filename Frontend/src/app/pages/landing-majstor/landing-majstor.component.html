@@ -189,7 +189,21 @@
         <button class="quick-chip" (click)="quickFilter('Stolarija')">Stolar</button>
         <button class="quick-chip" (click)="quickFilter('Molerski radovi')">Moler</button>
       </div>
+    </div>
+  </section>
 
+  <!-- Map Section -->
+  <section class="map-section">
+    <div class="container">
+      <h2>Pronađi Majstore u Blizini</h2>
+      <p class="map-subtitle">Pogledaj lokacije svih dostupnih majstora na mapi</p>
+      <app-majstor-map></app-majstor-map>
+    </div>
+  </section>
+
+  <!-- Search Filters Continue -->
+  <section class="search-filters">
+    <div class="container">
       <!-- Search Results Section -->
       <div class="search-results" *ngIf="hasSearched">
         <div class="results-header" *ngIf="!isLoading">

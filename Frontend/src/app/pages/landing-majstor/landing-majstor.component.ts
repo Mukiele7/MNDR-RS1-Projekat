@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MajstorService } from '../../services/majstor.service';
 import { AuthService } from '../../services/auth.service';
 import { FavoritesService } from '../../services/favorites.service';
+import { MajstorMapComponent } from '../majstor-map/majstor-map.component';
 import { debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 
 @Component({
@@ -26,7 +27,8 @@ import { debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
     MatButtonModule,
     MatAutocompleteModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MajstorMapComponent
   ],
   templateUrl: './landing-majstor.component.html',
   styleUrl: './landing-majstor.component.scss'
@@ -117,17 +119,17 @@ export class LandingMajstorComponent implements OnInit {
   loadMajstori(): void {
     this.isLoading = true;
     this.hasSearched = true;
-    this.majstorService.getMajstori(
-      this.pageNumber,
-      this.pageSize,
-      this.filters.specijalizacija || undefined,
-      this.filters.minOcjena || undefined,
-      this.filters.grad || undefined,
-      this.filters.minGodineIskustva || undefined,
-      this.filters.maxCijena || undefined,
-      this.sortBy || undefined,
-      this.sortOrder
-    ).subscribe({
+    this.majstorService.getMajstori({
+      pageNumber: this.pageNumber,
+      pageSize: this.pageSize,
+      specijalizacija: this.filters.specijalizacija || undefined,
+      minOcjena: this.filters.minOcjena || undefined,
+      grad: this.filters.grad || undefined,
+      minGodineIskustva: this.filters.minGodineIskustva || undefined,
+      maxCijena: this.filters.maxCijena || undefined,
+      sortBy: this.sortBy || undefined,
+      sortOrder: this.sortOrder
+    }).subscribe({
       next: (response) => {
         this.majstori = [...response.items];
         this.totalCount = response.totalCount;
