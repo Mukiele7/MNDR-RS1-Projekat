@@ -6,9 +6,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { OglasService } from '../../services/oglas.service';
+import { RazgovorService } from '../../services/razgovor.service';
+import { AuthService } from '../../services/auth.service';
 
 interface OglasDetails {
   oglasId: number;
+  majstorId: number;
   naslov: string;
   opis: string;
   datumObjave: string;
@@ -229,7 +232,9 @@ export class OglasQrComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private oglasService: OglasService
+    private oglasService: OglasService,
+    private razgovorService: RazgovorService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -256,8 +261,42 @@ export class OglasQrComponent implements OnInit {
   }
 
   contactMajstor() {
-    console.log('Kontaktiraj majstora za oglas', this.oglasId);
-    // Implementiraj logiku za kontaktiranje
+    const currentUser = this.authService.getCurrentUser();
+    
+    if (!currentUser) {
+      alert('Morate biti prijavljeni da biste kontaktirali majstora.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    if (currentUser.role !== 'Kupac') {
+      alert('Samo kupci mogu kontaktirati majstore.');
+      return;
+    }
+
+    if (!this.oglas || !this.oglasId) {
+      alert('Oglas nije pronađen.');
+      return;
+    }
+
+    const kupacId = currentUser.userId;
+    const majstorId = this.oglas.majstorId;
+
+    // Kreiraj novi razgovor
+    this.razgovorService.createRazgovor(kupacId, majstorId, this.oglasId).subscribe({
+      next: (response) => {
+        if (response.success) {
+          // Preusmjeri na novi razgovor
+          this.router.navigate(['/razgovori', response.razgovorId]);
+        } else {
+          alert(response.message || 'Greška prilikom kreiranja razgovora.');
+        }
+      },
+      error: (err) => {
+        console.error('Greška prilikom kreiranja razgovora:', err);
+        alert('Došlo je do greške prilikom kreiranja razgovora.');
+      }
+    });
   }
 
   goBack() {

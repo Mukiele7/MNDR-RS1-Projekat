@@ -14,8 +14,8 @@ export class RazgovorService {
     return this.http.get<any>(`${this.apiUrl}/user/${korisnikId}`);
   }
 
-  getRazgovor(razgovorId: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${razgovorId}`);
+  getRazgovor(razgovorId: number, korisnikId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${razgovorId}?korisnikId=${korisnikId}`);
   }
 
   createRazgovor(kupacId: number, majstorId: number, oglasId: number): Observable<any> {

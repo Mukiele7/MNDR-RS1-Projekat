@@ -3,6 +3,7 @@ using MNDR.Application;
 using MNDR.Infrastructure;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -70,6 +71,9 @@ builder.Services.AddCors(options =>
     });
 });
 
+// SignalR
+builder.Services.AddSignalR();
+
 // ============================================
 // MIDDLEWARE PIPELINE
 // ============================================
@@ -118,5 +122,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<MNDR.API.Hubs.ChatHub>("/hubs/chat");
 
 app.Run();

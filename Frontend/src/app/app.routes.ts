@@ -8,6 +8,7 @@ import { OglasListComponent } from './pages/oglasi/oglas-list.component';
 import { OglasQrComponent } from './pages/oglas-qr/oglas-qr.component';
 import { CreateOglasWizardComponent } from './pages/oglasi/create-oglas-wizard/create-oglas-wizard.component';
 import { RazgovorComponent } from './pages/razgovori/razgovor.component';
+import { RazgovoriListComponent } from './pages/razgovori/razgovori-list.component';
 import { RecenzijeComponent } from './pages/recenzije/recenzije.component';
 import { KreditiComponent } from './pages/krediti/krediti.component';
 import { UgovoriComponent } from './pages/ugovori/ugovori.component';
@@ -47,6 +48,7 @@ export const routes: Routes = [
   { path: 'oglasi/create', component: CreateOglasWizardComponent },
   { path: 'oglasi/:id', component: OglasQrComponent },
   { path: 'kupci', component: KupciComponent },
+  { path: 'razgovori', component: RazgovoriListComponent },
   { path: 'razgovori/:id', component: RazgovorComponent },
   { path: 'recenzije', component: RecenzijeComponent },
   { path: 'krediti', component: KreditiComponent },

@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import * as L from 'leaflet';
 import { MajstorService } from '../../services/majstor.service';
 
@@ -104,14 +104,20 @@ export class MajstorMapComponent implements OnInit, AfterViewInit, OnDestroy {
   private map!: L.Map;
   private markers: L.Marker[] = [];
   majstori: MajstorLocation[] = [];
+  searchQuery: string = '';
 
   constructor(
     private majstorService: MajstorService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.loadMajstori();
+    // Get search query from URL params
+    this.route.queryParams.subscribe(params => {
+      this.searchQuery = params['search'] || '';
+      this.loadMajstori();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -136,7 +142,16 @@ export class MajstorMapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private loadMajstori(): void {
-    this.majstorService.getMajstori({ pageNumber: 1, pageSize: 100 }).subscribe({
+    const params: any = { pageNumber: 1, pageSize: 100 };
+    
+    // Add search term if provided
+    if (this.searchQuery) {
+      // Search can be used for grad, specijalizacija, or name
+      // Backend will handle the search logic
+      params.searchTerm = this.searchQuery;
+    }
+
+    this.majstorService.getMajstori(params).subscribe({
       next: (response: any) => {
         this.majstori = response.items
           .filter((m: any) => m.latitude && m.longitude)
@@ -210,5 +225,9 @@ export class MajstorMapComponent implements OnInit, AfterViewInit, OnDestroy {
     if (spec.includes('mol') || spec.includes('farbaj') || spec.includes('bojadis')) return '#10b981'; // Green za molere
     
     return '#6b7280'; // Gray za ostale
+  }
+
+  goToProfile(korisnikId: number): void {
+    this.router.navigate(['/majstor-profil', korisnikId]);
   }
 }

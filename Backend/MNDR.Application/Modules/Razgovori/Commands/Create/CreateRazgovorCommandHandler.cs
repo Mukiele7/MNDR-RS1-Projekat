@@ -18,6 +18,23 @@ public sealed class CreateRazgovorCommandHandler : IRequestHandler<CreateRazgovo
         if (!kupacExists || !majstorExists || !oglasExists)
             return new CreateRazgovorCommandDto { Success = false, Message = "Neispravni podaci" };
 
+        // Provjeri da li razgovor već postoji za isti oglas između istih korisnika
+        var existingRazgovor = await _context.Razgovori
+            .FirstOrDefaultAsync(r => r.KupacId == request.KupacId 
+                && r.MajstorId == request.MajstorId 
+                && r.OglasId == request.OglasId, 
+                cancellationToken);
+
+        if (existingRazgovor != null)
+        {
+            return new CreateRazgovorCommandDto
+            {
+                RazgovorId = existingRazgovor.RazgovorId,
+                Success = true,
+                Message = "Razgovor već postoji"
+            };
+        }
+
         var razgovor = new Razgovor
         {
             KupacId = request.KupacId,

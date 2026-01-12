@@ -107,6 +107,24 @@ public static class DependencyInjection
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero // Nema dodatnog vremena za expiraciju
             };
+            
+            // Podrška za SignalR - čitaj token iz query parametra
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var accessToken = context.Request.Query["access_token"];
+                    var path = context.HttpContext.Request.Path;
+                    
+                    // Ako je zahtev za SignalR hub i ima token u query stringu
+                    if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                    {
+                        context.Token = accessToken;
+                    }
+                    
+                    return Task.CompletedTask;
+                }
+            };
         });
 
         services.AddAuthorization();

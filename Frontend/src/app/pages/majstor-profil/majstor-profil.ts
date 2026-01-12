@@ -126,7 +126,9 @@ export class MajstorProfil implements OnInit {
   }
 
   getDefaultAvatar(): string {
-    return 'assets/default-avatar.png';
+    const firstName = this.majstor?.ime || 'M';
+    const lastName = this.majstor?.prezime || 'M';
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(firstName + '+' + lastName)}&size=200&background=13ab24&color=ffffff&bold=true`;
   }
 
   goBack(): void {

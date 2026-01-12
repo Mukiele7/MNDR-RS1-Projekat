@@ -36,6 +36,7 @@ import { debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 export class LandingMajstorComponent implements OnInit {
   newsletterEmail: string = '';
   isMenuOpen: boolean = false;
+  isDropdownOpen = false;
   Math = Math; // For template
 
   // Autocomplete
@@ -83,6 +84,33 @@ export class LandingMajstorComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone
   ) {}
+
+  get currentUser() {
+    return this.authService.getCurrentUser();
+  }
+
+  get isAuthenticated() {
+    return this.authService.isAuthenticated();
+  }
+
+  getProfileImage(): string {
+    const user = this.currentUser;
+    if (user?.slikaProfila) {
+      return `http://localhost:5017${user.slikaProfila}`;
+    }
+    const firstName = this.currentUser?.ime || 'K';
+    const lastName = this.currentUser?.prezime || 'K';
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(firstName + '+' + lastName)}&size=200&background=13ab24&color=ffffff&bold=true`;
+  }
+
+  toggleDropdown(): void {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  logout(): void {
+    this.isDropdownOpen = false;
+    this.authService.logout();
+  }
 
   ngOnInit(): void {
     // Ne učitavaj automatski - čekaj da korisnik klikne na pretragu

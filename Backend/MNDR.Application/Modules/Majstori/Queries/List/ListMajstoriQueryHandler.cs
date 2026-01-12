@@ -22,11 +22,13 @@ public class ListMajstoriQueryHandler(IAppDbContext context)
         if (!string.IsNullOrEmpty(request.Opcina))
             query = query.Where(m => m.Korisnik!.Opcina == request.Opcina);
 
-        // Filter 4: Search term (ime ili prezime)
+        // Filter 4: Search term (ime, prezime, specijalizacija ili grad)
         if (!string.IsNullOrEmpty(request.SearchTerm))
             query = query.Where(m => 
                 m.Korisnik!.Ime.Contains(request.SearchTerm) || 
-                m.Korisnik.Prezime.Contains(request.SearchTerm));
+                m.Korisnik.Prezime.Contains(request.SearchTerm) ||
+                m.Specijalizacija.Contains(request.SearchTerm) ||
+                (m.Korisnik.Grad != null && m.Korisnik.Grad.Contains(request.SearchTerm)));
 
         // Filter 5: MinGodineIskustva
         if (request.MinGodineIskustva.HasValue)

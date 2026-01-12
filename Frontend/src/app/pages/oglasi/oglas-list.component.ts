@@ -10,10 +10,14 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { OglasService } from '../../services/oglas.service';
+import { RazgovorService } from '../../services/razgovor.service';
+import { AuthService } from '../../services/auth.service';
 import { QRCodeModule } from 'angularx-qrcode';
+import { Router } from '@angular/router';
 
 interface Oglas {
   oglasId: number;
+  majstorId: number;
   naslov: string;
   opis: string;
   datumObjave: string;
@@ -258,6 +262,9 @@ export class OglasListComponent implements OnInit {
 
   constructor(
     private oglasService: OglasService,
+    private razgovorService: RazgovorService,
+    private authService: AuthService,
+    private router: Router,
     private dialog: MatDialog
   ) {}
 
@@ -313,7 +320,44 @@ export class OglasListComponent implements OnInit {
   }
 
   startConversation(oglasId: number) {
-    console.log('Početak razgovora za oglas', oglasId);
+    const currentUser = this.authService.getCurrentUser();
+    
+    if (!currentUser) {
+      alert('Morate biti prijavljeni da biste kontaktirali majstora.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    if (currentUser.role !== 'Kupac') {
+      alert('Samo kupci mogu kontaktirati majstore.');
+      return;
+    }
+
+    const kupacId = currentUser.userId;
+    const oglas = this.oglasi.find(o => o.oglasId === oglasId);
+    
+    if (!oglas) {
+      alert('Oglas nije pronađen.');
+      return;
+    }
+
+    const majstorId = oglas.majstorId;
+
+    // Kreiraj novi razgovor
+    this.razgovorService.createRazgovor(kupacId, majstorId, oglasId).subscribe({
+      next: (response) => {
+        if (response.success) {
+          // Preusmjeri na novi razgovor
+          this.router.navigate(['/razgovori', response.razgovorId]);
+        } else {
+          alert(response.message || 'Greška prilikom kreiranja razgovora.');
+        }
+      },
+      error: (err) => {
+        console.error('Greška prilikom kreiranja razgovora:', err);
+        alert('Došlo je do greške prilikom kreiranja razgovora.');
+      }
+    });
   }
 
   openQRCodeDialog(oglas: Oglas) {

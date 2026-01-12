@@ -16,21 +16,21 @@
           <!-- Korak 1: Lični podaci -->
           <mat-step [stepControl]="personalInfoForm">
             <form [formGroup]="personalInfoForm">
-              <ng-template matStepLabel>Lični podaci</ng-template>
+              <ng-template matStepLabel>Lične podaci</ng-template>
               
               <div class="step-content">
                 <h3>Osnovne informacije</h3>
                 
                 <div class="form-row">
                   <mat-form-field appearance="outline">
-                    <mat-label>Ime</mat-label>
+                    <mat-label>Ime*</mat-label>
                     <input matInput formControlName="ime" placeholder="Unesite vaše ime">
                     <mat-icon matPrefix>person</mat-icon>
                     <mat-error>{{getErrorMessage('ime', personalInfoForm)}}</mat-error>
                   </mat-form-field>
 
                   <mat-form-field appearance="outline">
-                    <mat-label>Prezime</mat-label>
+                    <mat-label>Prezime*</mat-label>
                     <input matInput formControlName="prezime" placeholder="Unesite vaše prezime">
                     <mat-icon matPrefix>person</mat-icon>
                     <mat-error>{{getErrorMessage('prezime', personalInfoForm)}}</mat-error>
@@ -38,28 +38,28 @@
                 </div>
 
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Email</mat-label>
+                  <mat-label>Email*</mat-label>
                   <input matInput formControlName="email" type="email" placeholder="primer@email.com">
                   <mat-icon matPrefix>email</mat-icon>
                   <mat-error>{{getErrorMessage('email', personalInfoForm)}}</mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Telefon</mat-label>
+                  <mat-label>Telefon*</mat-label>
                   <input matInput formControlName="telefon" placeholder="+38761234567">
                   <mat-icon matPrefix>phone</mat-icon>
                   <mat-error>{{getErrorMessage('telefon', personalInfoForm)}}</mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Lozinka</mat-label>
+                  <mat-label>Lozinka*</mat-label>
                   <input matInput formControlName="lozinka" type="password" placeholder="Minimum 6 karaktera">
                   <mat-icon matPrefix>lock</mat-icon>
                   <mat-error>{{getErrorMessage('lozinka', personalInfoForm)}}</mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Potvrda lozinke</mat-label>
+                  <mat-label>Potvrda lozinke*</mat-label>
                   <input matInput formControlName="potvrdaLozinke" type="password" placeholder="Ponovite lozinku">
                   <mat-icon matPrefix>lock</mat-icon>
                   <mat-error *ngIf="personalInfoForm.hasError('passwordMismatch')">Lozinke se ne podudaraju</mat-error>
@@ -67,7 +67,7 @@
 
                 <div class="step-actions">
                   <button mat-raised-button matStepperNext color="primary" [disabled]="!personalInfoForm.valid">
-                    Sljedeći korak <mat-icon>arrow_forward</mat-icon>
+                    Sljedeći korak
                   </button>
                 </div>
               </div>

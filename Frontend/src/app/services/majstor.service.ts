@@ -20,6 +20,7 @@ export class MajstorService {
     maxCijena?: number;
     sortBy?: string;
     sortOrder?: string;
+    searchTerm?: string;
   }): Observable<any> {
     let httpParams = new HttpParams()
       .set('pageNumber', (params?.pageNumber || 1).toString())
@@ -32,6 +33,7 @@ export class MajstorService {
     if (params?.maxCijena) httpParams = httpParams.set('maxCijena', params.maxCijena.toString());
     if (params?.sortBy) httpParams = httpParams.set('sortBy', params.sortBy);
     if (params?.sortOrder) httpParams = httpParams.set('sortOrder', params.sortOrder);
+    if (params?.searchTerm) httpParams = httpParams.set('searchTerm', params.searchTerm);
 
     return this.http.get<any>(this.apiUrl, { params: httpParams });
   }

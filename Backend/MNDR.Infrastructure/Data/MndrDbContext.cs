@@ -39,10 +39,28 @@ namespace MNDR.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // Global configuration: Ignore BaseEntity properties for all entities
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                // Check if entity inherits from BaseEntity
+                if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
+                {
+                    modelBuilder.Entity(entityType.ClrType).Ignore("Id");
+                    modelBuilder.Entity(entityType.ClrType).Ignore("CreatedAtUtc");
+                    modelBuilder.Entity(entityType.ClrType).Ignore("ModifiedAtUtc");
+                    modelBuilder.Entity(entityType.ClrType).Ignore("IsDeleted");
+                }
+            }
+
             // Korisnik Configuration
             modelBuilder.Entity<Korisnik>()
                 .ToTable("Korisnik")
                 .HasKey(k => k.KorisnikId);
+            
+            // Map KorisnickoIme property to KorisnikoIme column
+            modelBuilder.Entity<Korisnik>()
+                .Property(k => k.KorisnickoIme)
+                .HasColumnName("KorisnikoIme");
             
             modelBuilder.Entity<Korisnik>()
                 .HasIndex(k => k.Email)
@@ -75,6 +93,10 @@ namespace MNDR.Infrastructure.Data
             modelBuilder.Entity<Majstor>()
                 .ToTable("Majstor")
                 .HasKey(m => m.KorisnikId);
+            
+            // Ignore properties that don't exist in Majstor table
+            modelBuilder.Entity<Majstor>().Ignore(m => m.DatumRegistracije);
+            modelBuilder.Entity<Majstor>().Ignore(m => m.OpisProfila);
             
             modelBuilder.Entity<Majstor>()
                 .HasOne(m => m.Korisnik)

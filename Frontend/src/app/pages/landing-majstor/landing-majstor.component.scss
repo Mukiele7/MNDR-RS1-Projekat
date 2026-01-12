@@ -117,6 +117,106 @@
           }
         }
 
+        // Profile dropdown styles
+        .profile-dropdown {
+          position: relative;
+
+          .profile-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px;
+            border: 2px solid rgb(19,171,36);
+            border-radius: 25px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+
+            &:hover {
+              background: rgb(19,171,36);
+              
+              .profile-name {
+                color: white;
+              }
+            }
+
+            .profile-avatar {
+              width: 35px;
+              height: 35px;
+              border-radius: 50%;
+              object-fit: cover;
+              border: 2px solid rgb(19,171,36);
+            }
+
+            .profile-name {
+              color: rgb(19,171,36);
+              font-weight: 700;
+              font-size: 14px;
+              transition: color 0.3s;
+            }
+          }
+
+          .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s;
+            overflow: hidden;
+            z-index: 1000;
+
+            &.open {
+              opacity: 1;
+              visibility: visible;
+              transform: translateY(0);
+            }
+
+            .dropdown-item {
+              display: flex;
+              align-items: center;
+              gap: 12px;
+              padding: 14px 18px;
+              color: #333;
+              text-decoration: none;
+              transition: all 0.2s;
+              cursor: pointer;
+              font-weight: 600;
+              font-size: 14px;
+
+              svg {
+                width: 20px;
+                height: 20px;
+                stroke: rgb(19,171,36);
+              }
+
+              &:hover {
+                background: #f9fafb;
+                padding-left: 22px;
+              }
+
+              &.logout {
+                border-top: 1px solid #e5e7eb;
+                color: #ef4444;
+
+                svg {
+                  stroke: #ef4444;
+                }
+
+                &:hover {
+                  background: #fef2f2;
+                }
+              }
+            }
+          }
+        }
+
         @media (max-width: 968px) {
           position: fixed;
           top: 0;
@@ -1783,6 +1883,26 @@
     .suggestion-specialization {
       font-size: 0.8rem;
       color: #718096;
+    }
+  }
+}
+
+// Mat-menu styling (fix transparency)
+::ng-deep .mat-mdc-menu-panel {
+  background: white !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+  border-radius: 8px !important;
+  
+  .mat-mdc-menu-content {
+    background: white !important;
+    padding: 8px 0 !important;
+  }
+  
+  .mat-mdc-menu-item {
+    background: white !important;
+    
+    &:hover {
+      background: #f7fafc !important;
     }
   }
 }
