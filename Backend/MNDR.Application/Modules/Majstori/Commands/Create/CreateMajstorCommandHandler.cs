@@ -46,7 +46,9 @@ public class CreateMajstorCommandHandler(
             CijenaMjesecne = request.CijenaMjesecne,
             DetaljanOpisProfila = request.DetaljanOpisProfila?.Trim(),
             ProsjecnaOcjena = 0,
-            BrojZavrsenihPoslova = 0
+            BrojZavrsenihPoslova = 0,
+            Latitude = request.Latitude,
+            Longitude = request.Longitude
         };
 
         context.Majstori.Add(majstor);

@@ -13,6 +13,8 @@ public class CreateMajstorCommand : IRequest<CreateMajstorResponse>
     public int GodineIskustva { get; set; }
     public decimal CijenaMjesecne { get; set; }
     public string? DetaljanOpisProfila { get; set; }
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
 }
 
 public class CreateMajstorResponse

@@ -10,30 +10,32 @@ export class MajstorService {
 
   constructor(private http: HttpClient) { }
 
-  getMajstori(
-    pageNumber: number = 1, 
-    pageSize: number = 10, 
-    specijalizacija?: string,
-    minOcjena?: number,
-    grad?: string,
-    minGodineIskustva?: number,
-    maxCijena?: number,
-    sortBy?: string,
-    sortOrder?: string
-  ): Observable<any> {
-    let params = new HttpParams()
-      .set('pageNumber', pageNumber.toString())
-      .set('pageSize', pageSize.toString());
+  getMajstori(params?: {
+    pageNumber?: number;
+    pageSize?: number;
+    specijalizacija?: string;
+    minOcjena?: number;
+    grad?: string;
+    minGodineIskustva?: number;
+    maxCijena?: number;
+    sortBy?: string;
+    sortOrder?: string;
+    searchTerm?: string;
+  }): Observable<any> {
+    let httpParams = new HttpParams()
+      .set('pageNumber', (params?.pageNumber || 1).toString())
+      .set('pageSize', (params?.pageSize || 10).toString());
 
-    if (specijalizacija) params = params.set('specijalizacija', specijalizacija);
-    if (minOcjena) params = params.set('minOcjena', minOcjena.toString());
-    if (grad) params = params.set('grad', grad);
-    if (minGodineIskustva) params = params.set('minGodineIskustva', minGodineIskustva.toString());
-    if (maxCijena) params = params.set('maxCijena', maxCijena.toString());
-    if (sortBy) params = params.set('sortBy', sortBy);
-    if (sortOrder) params = params.set('sortOrder', sortOrder);
+    if (params?.specijalizacija) httpParams = httpParams.set('specijalizacija', params.specijalizacija);
+    if (params?.minOcjena) httpParams = httpParams.set('minOcjena', params.minOcjena.toString());
+    if (params?.grad) httpParams = httpParams.set('grad', params.grad);
+    if (params?.minGodineIskustva) httpParams = httpParams.set('minGodineIskustva', params.minGodineIskustva.toString());
+    if (params?.maxCijena) httpParams = httpParams.set('maxCijena', params.maxCijena.toString());
+    if (params?.sortBy) httpParams = httpParams.set('sortBy', params.sortBy);
+    if (params?.sortOrder) httpParams = httpParams.set('sortOrder', params.sortOrder);
+    if (params?.searchTerm) httpParams = httpParams.set('searchTerm', params.searchTerm);
 
-    return this.http.get<any>(this.apiUrl, { params });
+    return this.http.get<any>(this.apiUrl, { params: httpParams });
   }
 
   getMajstorById(id: number): Observable<any> {

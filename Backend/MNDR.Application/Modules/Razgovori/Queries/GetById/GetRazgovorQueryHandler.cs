@@ -23,6 +23,10 @@ public sealed class GetRazgovorQueryHandler : IRequestHandler<GetRazgovorQuery, 
         if (razgovor == null)
             throw new KeyNotFoundException($"Razgovor sa ID {request.RazgovorId} nije pronađen");
 
+        // Provera autorizacije - korisnik mora biti učesnik razgovora
+        if (razgovor.KupacId != request.KorisnikId && razgovor.MajstorId != request.KorisnikId)
+            throw new UnauthorizedAccessException("Nemate pravo pristupa ovom razgovoru");
+
         return new RazgovorDetailDto
         {
             RazgovorId = razgovor.RazgovorId,

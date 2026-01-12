@@ -27,9 +27,13 @@ namespace MNDR.API.Controllers
         }
 
         [HttpGet("{razgovorId}")]
-        public async Task<IActionResult> GetRazgovor(int razgovorId)
+        public async Task<IActionResult> GetRazgovor(int razgovorId, [FromQuery] int korisnikId)
         {
-            var query = new GetRazgovorQuery { RazgovorId = razgovorId };
+            var query = new GetRazgovorQuery 
+            { 
+                RazgovorId = razgovorId,
+                KorisnikId = korisnikId 
+            };
             var result = await _mediator.Send(query);
             return Ok(result);
         }

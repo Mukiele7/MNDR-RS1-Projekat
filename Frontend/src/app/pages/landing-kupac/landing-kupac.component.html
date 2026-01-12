@@ -10,8 +10,8 @@
         <a routerLink="/kupac">Naslovna</a>
         <a routerLink="/oglasi">Pretraga</a>
         <a routerLink="/ponude">Ponude</a>
-        <a routerLink="/majstori">Majstori</a>
-        <a routerLink="/oglasi">Popusti</a>
+        <a routerLink="/majstor">Majstori</a>
+        <a routerLink="/razgovori">Razgovori</a>
         
         <!-- Prikaži dugme za prijavu/registraciju ako korisnik nije ulogovan -->
         <a *ngIf="!isAuthenticated" routerLink="/login" class="btn-primary">Prijava/Registracija</a>
@@ -53,10 +53,17 @@
         <p class="subtitle">
           Povežite se sa stotinama provjerenih majstora Dobijte najbolje ponude i ostvarite svoj projekat uz sigurnost i kvalitet
         </p>
-        <p class="hero-description">Unesite poštanski kod da vidite dostupnost majstora u vašem okruženju</p>
+        <p class="hero-description">Pretražite majstore po imenu, prezimenu, gradu ili specijalnosti</p>
         <div class="search-group">
-          <input type="text" class="search-input" placeholder="npr. 71000" />
-          <button mat-raised-button color="accent" class="hero-btn">
+          <input type="text" 
+                 class="search-input" 
+                 [(ngModel)]="searchQuery"
+                 (keydown.enter)="searchMajstori()"
+                 placeholder="npr. električar, vodoinstalater, moler..." />
+          <button mat-raised-button 
+                  color="accent" 
+                  class="hero-btn"
+                  (click)="searchMajstori()">
             Pretraga
           </button>
         </div>

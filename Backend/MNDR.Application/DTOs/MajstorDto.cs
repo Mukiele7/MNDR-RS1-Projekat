@@ -8,6 +8,7 @@ namespace MNDR.Application.DTOs
         public string Email { get; set; } = string.Empty;
         public string Telefon { get; set; } = string.Empty;
         public string Grad { get; set; } = string.Empty;
+        public string? Opcina { get; set; }
         public string Specijalizacija { get; set; } = string.Empty;
         public int GodineIskustva { get; set; }
         public decimal ProsjecnaOcjena { get; set; }
@@ -16,6 +17,8 @@ namespace MNDR.Application.DTOs
         public decimal CijenaSat { get; set; }
         public string? OpisProfila { get; set; }
         public DateTime DatumRegistracije { get; set; }
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
     }
 
     public class PagedMajstoriResult

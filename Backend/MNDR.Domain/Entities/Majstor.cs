@@ -12,6 +12,8 @@ namespace MNDR.Domain.Entities
         public decimal CijenaMjesecne { get; set; }
         public decimal CijenaSat { get; set; }
         public DateTime DatumRegistracije { get; set; } = DateTime.Now;
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
 
         // Properties for compatibility
         public string Ime => Korisnik?.Ime ?? "";

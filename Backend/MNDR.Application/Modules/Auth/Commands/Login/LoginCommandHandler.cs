@@ -39,18 +39,20 @@ public sealed class LoginCommandHandler : IRequestHandler<LoginCommand, LoginCom
         // Generiši par tokena (access + refresh)
         var tokenPair = _jwtService.IssueTokens(user);
 
-        // Sačuvaj refresh token u bazi
+        // TODO: Sačuvaj refresh token u bazi kada RefreshTokens tabela bude kreirana
+        /*
         var refreshToken = new Domain.Entities.RefreshToken
         {
             TokenHash = tokenPair.RefreshTokenHash,
             ExpiresAtUtc = tokenPair.RefreshTokenExpiresAtUtc,
             UserId = user.KorisnikId,
-            Fingerprint = request.DeviceFingerprint, // Browser+IP hash
+            Fingerprint = request.DeviceFingerprint,
             IsRevoked = false
         };
 
         _context.RefreshTokens.Add(refreshToken);
         await _context.SaveChangesAsync(cancellationToken);
+        */
 
         return new LoginCommandDto
         {

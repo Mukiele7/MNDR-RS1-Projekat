@@ -1,4 +1,5 @@
 using MNDR.Domain.Common;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MNDR.Domain.Entities
 {
@@ -7,6 +8,8 @@ namespace MNDR.Domain.Entities
         public int KorisnikId { get; set; }
         public string Ime { get; set; } = string.Empty;
         public string Prezime { get; set; } = string.Empty;
+        
+        [Column("KorisnikoIme")]
         public string? KorisnickoIme { get; set; }
         public string Email { get; set; } = string.Empty;
         public string Lozinka { get; set; } = string.Empty;

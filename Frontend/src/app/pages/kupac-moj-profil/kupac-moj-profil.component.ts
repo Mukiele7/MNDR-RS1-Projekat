@@ -29,7 +29,6 @@ import { KupacService } from '../../services/kupac.service';
 export class KupacMojProfilComponent implements OnInit {
   loading = true;
   kupac: any = null;
-  defaultAvatar = 'assets/default-avatar.png';
 
   constructor(
     private authService: AuthService,
@@ -55,27 +54,40 @@ export class KupacMojProfilComponent implements OnInit {
     const userId = currentUser.korisnikId || currentUser.userId;
     console.log('Loading profile for userId:', userId);
 
-    this.kupacService.getKupacById(userId).subscribe({
-      next: (data) => {
-        console.log('Kupac data loaded:', data);
-        this.kupac = data;
-        this.loading = false;
-        this.cdr.detectChanges();
-        console.log('Loading set to false, kupac:', this.kupac);
-      },
-      error: (err) => {
-        console.error('Greška pri učitavanju profila:', err);
-        this.loading = false;
-        this.cdr.detectChanges();
-      }
-    });
+    // Za sada koristimo mock podatke jer Kupac endpoint nije implementiran
+    this.kupac = {
+      ime: currentUser.ime || 'Korisnik',
+      prezime: currentUser.prezime || '',
+      email: currentUser.email || '',
+      telefon: currentUser.telefon || 'Nije navedeno',
+      grad: 'Sarajevo',
+      adresa: 'Nije navedeno'
+    };
+    this.loading = false;
+    console.log('Mock kupac data:', this.kupac);
+
+    // TODO: Implementirati pravi API call kada bude dostupan
+    // this.kupacService.getKupacById(userId).subscribe({
+    //   next: (data) => {
+    //     console.log('Kupac data loaded:', data);
+    //     this.kupac = data;
+    //     this.loading = false;
+    //   },
+    //   error: (err) => {
+    //     console.error('Greška pri učitavanju profila:', err);
+    //     this.loading = false;
+    //   }
+    // });
   }
 
   getProfileImage(): string {
     if (this.kupac?.slikaProfila) {
       return `http://localhost:5017${this.kupac.slikaProfila}`;
     }
-    return this.defaultAvatar;
+    // Fallback na UI Avatars sa inicijalima
+    const firstName = this.kupac?.ime || 'K';
+    const lastName = this.kupac?.prezime || 'K';
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(firstName + '+' + lastName)}&size=200&background=13ab24&color=ffffff&bold=true`;
   }
 
   navigateToEdit(): void {

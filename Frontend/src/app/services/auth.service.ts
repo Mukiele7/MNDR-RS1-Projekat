@@ -20,6 +20,7 @@ export interface LoginResponse {
   userId: number;
   korisnikId?: number; // Alias za userId
   slikaProfila?: string;
+  telefon?: string;
 }
 
 @Injectable({

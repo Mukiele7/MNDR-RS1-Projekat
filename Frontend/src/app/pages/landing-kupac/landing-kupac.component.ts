@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 
@@ -14,8 +14,12 @@ import { AuthService } from '../../services/auth.service';
 export class LandingKupacComponent {
   newsletterEmail: string = '';
   isDropdownOpen = false;
+  searchQuery: string = '';
 
-  constructor(public authService: AuthService) {}
+  constructor(
+    public authService: AuthService,
+    private router: Router
+  ) {}
 
   get currentUser() {
     return this.authService.getCurrentUser();
@@ -30,7 +34,9 @@ export class LandingKupacComponent {
     if (user?.slikaProfila) {
       return `http://localhost:5017${user.slikaProfila}`;
     }
-    return 'assets/default-avatar.png';
+    const firstName = this.currentUser?.ime || 'K';
+    const lastName = this.currentUser?.prezime || 'K';
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(firstName + '+' + lastName)}&size=200&background=13ab24&color=ffffff&bold=true`;
   }
 
   toggleDropdown(): void {
@@ -122,6 +128,17 @@ export class LandingKupacComponent {
       // Ovde dodaj logiku za slanje email-a na backend
       alert('Hvala što ste se pretplatili!');
       this.newsletterEmail = '';
+    }
+  }
+
+  searchMajstori(): void {
+    // Navigate to majstor map page with search query
+    if (this.searchQuery.trim()) {
+      this.router.navigate(['/majstor-map'], { 
+        queryParams: { search: this.searchQuery.trim() } 
+      });
+    } else {
+      this.router.navigate(['/majstor-map']);
     }
   }
 }

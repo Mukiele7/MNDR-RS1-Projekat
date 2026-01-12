@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -26,10 +26,29 @@ export class FavoritesComponent implements OnInit {
 
   constructor(
     private favoritesService: FavoritesService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    // Check if user is logged in as Kupac
+    const currentUser = this.authService.getCurrentUser();
+    
+    if (!currentUser || !currentUser.korisnikId) {
+      alert('Morate biti prijavljeni da biste pristupili favoritima.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    // Check if user has Kupac role
+    const userRole = localStorage.getItem('userRole');
+    if (userRole !== 'Kupac') {
+      alert('Samo kupci mogu pristupiti favoritima.');
+      this.router.navigate(['/']);
+      return;
+    }
+
     this.loadFavorites();
   }
 
@@ -41,16 +60,20 @@ export class FavoritesComponent implements OnInit {
     }
 
     this.isLoading = true;
+    this.cdr.detectChanges();
+    
     this.favoritesService.getFavorites(currentUser.korisnikId, this.pageNumber, this.pageSize)
       .subscribe({
         next: (response) => {
           this.favoriteMajstori = response.items;
           this.totalCount = response.totalCount;
           this.isLoading = false;
+          this.cdr.detectChanges();
         },
         error: (error) => {
           console.error('Greška pri učitavanju favorita:', error);
           this.isLoading = false;
+          this.cdr.detectChanges();
         }
       });
   }

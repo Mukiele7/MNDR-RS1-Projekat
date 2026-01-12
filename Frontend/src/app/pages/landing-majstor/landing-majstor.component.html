@@ -18,8 +18,36 @@
         <a routerLink="/oglasi" (click)="closeMenu()">Ponude</a>
         <a routerLink="/majstor" (click)="closeMenu()" class="active">Majstori</a>
         <a routerLink="/favorites" (click)="closeMenu()">Omiljeni</a>
-        <a routerLink="" (click)="closeMenu()">Popusti</a>
-        <a routerLink="/login" class="btn-primary" (click)="closeMenu()">Prijava/Registracija</a>
+        <a routerLink="/razgovori" (click)="closeMenu()">Razgovori</a>
+        
+        <!-- Prikaži dugme za prijavu/registraciju ako korisnik nije ulogovan -->
+        <a *ngIf="!isAuthenticated" routerLink="/login" class="btn-primary" (click)="closeMenu()">Prijava/Registracija</a>
+        
+        <!-- Prikaži profil dugme sa dropdown menijem ako je korisnik ulogovan -->
+        <div *ngIf="isAuthenticated" class="profile-dropdown">
+          <button class="profile-button" (click)="toggleDropdown()">
+            <img [src]="getProfileImage()" alt="Profil" class="profile-avatar">
+            <span class="profile-name">{{currentUser?.ime}} {{currentUser?.prezime}}</span>
+          </button>
+          
+          <div class="dropdown-menu" [class.open]="isDropdownOpen">
+            <a routerLink="/kupac/moj-profil" (click)="isDropdownOpen = false; closeMenu()" class="dropdown-item">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              Moj profil
+            </a>
+            <a (click)="logout(); closeMenu()" class="dropdown-item logout">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              Odjavi se
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </nav>
@@ -287,6 +315,15 @@
     </div>
   </section>
 
+  <!-- Map Section -->
+  <section class="map-section">
+    <div class="container">
+      <h2>Pronađi Majstore u Blizini</h2>
+      <p class="map-subtitle">Pogledaj lokacije svih dostupnih majstora na mapi</p>
+      <app-majstor-map></app-majstor-map>
+    </div>
+  </section>
+
   <!-- Original Hero Section -->
   <section class="hero">
     <div class="container">
@@ -296,7 +333,7 @@
           Pridruži se platformi gde su tvoje veštine cenjene. Pronađi nove klijente, radi na zanimljivim projektima i gradi svoju reputaciju.
         </p>
         <div class="cta-buttons">
-          <a routerLink="/register" class="btn-primary-large">Pridruži se Besplatno</a>
+          <a routerLink="/majstor/register" class="btn-primary-large">Pridruži se Besplatno</a>
           <a routerLink="/oglasi" class="btn-secondary-large">Pogledaj Oglase</a>
         </div>
         <div class="stats">

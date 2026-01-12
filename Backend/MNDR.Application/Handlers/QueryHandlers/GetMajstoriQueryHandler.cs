@@ -95,12 +95,15 @@ namespace MNDR.Application.Handlers.QueryHandlers
                     Email = m.Korisnik.Email,
                     Telefon = m.Korisnik.Telefon,
                     Grad = m.Korisnik.Grad,
+                    Opcina = m.Korisnik.Opcina,
                     Specijalizacija = m.Specijalizacija,
                     GodineIskustva = m.GodineIskustva,
                     ProsjecnaOcjena = m.ProsjecnaOcjena,
                     BrojZavrsenihPoslova = m.BrojZavrsenihPoslova,
                     CijenaMjesecne = m.CijenaMjesecne,
-                    CijenaSat = m.CijenaMjesecne / 160 // Približno 160 sati mjesečno
+                    CijenaSat = m.CijenaMjesecne / 160, // Približno 160 sati mjesečno
+                    Latitude = m.Latitude,
+                    Longitude = m.Longitude
                 })
                 .ToListAsync(cancellationToken);
 
@@ -143,7 +146,9 @@ namespace MNDR.Application.Handlers.QueryHandlers
                     CijenaMjesecne = m.CijenaMjesecne,
                     CijenaSat = m.CijenaMjesecne,
                     OpisProfila = m.DetaljanOpisProfila,
-                    DatumRegistracije = m.Korisnik.DatumRegistracije
+                    DatumRegistracije = m.Korisnik.DatumRegistracije,
+                    Latitude = m.Latitude,
+                    Longitude = m.Longitude
                 })
                 .FirstOrDefaultAsync(cancellationToken);
 
