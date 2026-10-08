@@ -196,11 +196,20 @@ CREATE INDEX IX_Notifikacija_KorisnikId ON Notifikacija(KorisnikId);
 CREATE INDEX IX_Notifikacija_Procitano ON Notifikacija(Procitano);
 
 -- Insert sample data
+-- Test credentials:
+--   Majstor: petar@mail.com / Petar123
+--   Majstor: marko@mail.com / Marko123
+--   Kupac:   ana@mail.com   / Ana123
+--   Admin:   admin@test.com / Admin123
 INSERT INTO Korisnik (Ime, Prezime, Email, Lozinka, Telefon, Uloga, Grad, Opcina, OpisProfila)
 VALUES 
-    ('Petar', 'Petrovic', 'petar@mail.com', 'hash1', '06123456789', 'Majstor', 'Beograd', 'Voždovac', 'Iskusan vodoinstalatera'),
-    ('Marko', 'Markovic', 'marko@mail.com', 'hash2', '06987654321', 'Majstor', 'Novi Sad', 'Novo Naselje', 'Keramicar sa iskustvom'),
-    ('Ana', 'Anic', 'ana@mail.com', 'hash3', '06111111111', 'Kupac', 'Beograd', 'Voždovac', 'Trebam vodoinstalatera');
+    ('Petar', 'Petrovic', 'petar@mail.com', 'AQAAAAIAAYagAAAAELU4GRi5Z1/J6MipL2muHEW6XRZhVqSdIBn9MC4AUZ2iImSdzDbLvwNhsebkwfZnUQ==', '06123456789', 'Majstor', 'Beograd', 'Voždovac', 'Iskusan vodoinstalatera'),
+    ('Marko', 'Markovic', 'marko@mail.com', 'AQAAAAIAAYagAAAAEBHS462nGvkD8wJ+Y2sE4v2FBMyLPFt+bRDYj71rDNJmXmNafEoBmEdx/vIZnuWNqg==', '06987654321', 'Majstor', 'Novi Sad', 'Novo Naselje', 'Keramicar sa iskustvom'),
+    ('Ana', 'Anic', 'ana@mail.com', 'AQAAAAIAAYagAAAAEDA+1PMRKS9SYV3y3iBFziltcqBA2sRapMpjLElZcri2m0tfoaYP6jn+8cUxzfYZsA==', '06111111111', 'Kupac', 'Beograd', 'Voždovac', 'Trebam vodoinstalatera'),
+    ('Admin', 'Test', 'admin@test.com', 'AQAAAAIAAYagAAAAEAutilOyW1MejNFpdhk+ItAvOd4OBUg1mrgyPstJgvToufbBWXDt6MSLlXe/JQBAMA==', '0612345678', 'Administrator', 'Beograd', 'Voždovac', 'Test administratorski nalog');
+
+INSERT INTO Administrator (KorisnikId, NivoPristupa)
+VALUES (4, 'Standard');
 
 INSERT INTO Majstor (KorisnikId, DetaljanOpisProfila, GodineIskustva, ProsjecnaOcjena, BrojZavrsenihPoslova, Specijalizacija, CijenaMjesecne)
 VALUES 

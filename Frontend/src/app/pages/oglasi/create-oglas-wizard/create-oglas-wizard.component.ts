@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { OglasService } from '../../../services/oglas.service';
 import { CustomDatePipe } from '../../../shared/pipes/date.pipe';
+import { AuthService } from '../../../services/auth.service';
 
 interface Kategorija {
   kategorijaId: number;
@@ -41,48 +42,14 @@ export class CreateOglasWizardComponent implements OnInit {
   basicInfoForm: FormGroup;
   categoryForm: FormGroup;
   isSubmitting = false;
+  submitError = '';
   currentDate = new Date();
 
   kategorije: Kategorija[] = [
-    { kategorijaId: 1, naziv: 'Vodoinstalater' },
-    { kategorijaId: 2, naziv: 'Električar' },
-    { kategorijaId: 3, naziv: 'Automehaničar' },
-    { kategorijaId: 4, naziv: 'Gradjevinar' },
-    { kategorijaId: 5, naziv: 'Moler' },
-    { kategorijaId: 6, naziv: 'Stolar' },
-    { kategorijaId: 7, naziv: 'Limar' },
-    { kategorijaId: 8, naziv: 'Krovopokrivač' },
-    { kategorijaId: 9, naziv: 'Zidar' },
-    { kategorijaId: 10, naziv: 'Keramičar' },
-    { kategorijaId: 11, naziv: 'Bravar' },
-    { kategorijaId: 12, naziv: 'Soboslikar' },
-    { kategorijaId: 13, naziv: 'Baštovan' },
-    { kategorijaId: 14, naziv: 'Čistač' },
-    { kategorijaId: 15, naziv: 'Klimatizacija i grijanje' },
-    { kategorijaId: 16, naziv: 'Drugo' },
-    { kategorijaId: 17, naziv: 'Majstor za bijelu tehniku' },
-    { kategorijaId: 18, naziv: 'Majstor za računare' },
-    { kategorijaId: 19, naziv: 'Majstor za mobilne telefone' },
-    { kategorijaId: 20, naziv: 'Majstor za TV i audio opremu' },
-    { kategorijaId: 21, naziv: 'Majstor za vrtne mašine' },
-    { kategorijaId: 22, naziv: 'Majstor za kućne aparate' },
-    { kategorijaId: 23, naziv: 'Majstor za sigurnosne sisteme' },
-    { kategorijaId: 24, naziv: 'Majstor za solarne sisteme' },
-    { kategorijaId: 25, naziv: 'Majstor za bazene' },
-    { kategorijaId: 26, naziv: 'Majstor za podne obloge' },
-    { kategorijaId: 27, naziv: 'Majstor za fasade' },
-    { kategorijaId: 28, naziv: 'Majstor za izolacije' },
-    { kategorijaId: 29, naziv: 'Majstor za demontažu i montažu namještaja' },
-    { kategorijaId: 30, naziv: 'Majstor za selidbe' },
-    { kategorijaId: 31, naziv: 'Majstor za popravku prozora i vrata' },
-    { kategorijaId: 32, naziv: 'Majstor za popravku podova' },
-    { kategorijaId: 34, naziv: 'Majstor za popravku ograda' },
-    { kategorijaId: 35, naziv: 'Majstor za popravku dimnjaka' },
-    { kategorijaId: 36, naziv: 'Majstor za popravku roletni i žaluzina' },
-    { kategorijaId: 37, naziv: 'Majstor za popravku rasvjete' },
-    { kategorijaId: 38, naziv: 'Majstor za popravku kanalizacionih sistema' },
-    { kategorijaId: 39, naziv: 'Majstor za popravku grijanja' } 
-
+    { kategorijaId: 1, naziv: 'Vodoinstalacije' },
+    { kategorijaId: 2, naziv: 'Keramika' },
+    { kategorijaId: 3, naziv: 'Grejanje' },
+    { kategorijaId: 4, naziv: 'Elektrika' }
   ];
 
   selectedKategorije: Kategorija[] = [];
@@ -90,7 +57,8 @@ export class CreateOglasWizardComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private oglasService: OglasService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
     this.basicInfoForm = this.formBuilder.group({
       naslov: ['', [
@@ -100,7 +68,7 @@ export class CreateOglasWizardComponent implements OnInit {
       ]],
       opis: ['', [
         Validators.required, 
-        Validators.minLength(50),
+        Validators.minLength(10),
         Validators.maxLength(1000)
       ]]
     });
@@ -112,6 +80,10 @@ export class CreateOglasWizardComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  goBack(): void {
+    this.router.navigate(['/majstor']);
+  }
 
   // Dodaj kategoriju
   addKategorija(kategorija: Kategorija): void {
@@ -142,9 +114,11 @@ export class CreateOglasWizardComponent implements OnInit {
   onSubmit(): void {
     if (this.basicInfoForm.valid && this.categoryForm.valid) {
       this.isSubmitting = true;
+      this.submitError = '';
 
       const oglasData = {
-        majstorId: 1, // TODO: Uzeti iz sesije/auth servisa
+        majstorId: this.authService.getCurrentUser()?.korisnikId
+          ?? this.authService.getCurrentUser()?.userId,
         naslov: this.basicInfoForm.value.naslov,
         opis: this.basicInfoForm.value.opis,
         kategorijeIds: this.categoryForm.value.kategorijeIds,
@@ -158,6 +132,9 @@ export class CreateOglasWizardComponent implements OnInit {
         },
         error: (error) => {
           console.error('Greška pri kreiranju oglasa:', error);
+          this.submitError = error.error?.errors?.message
+            ?? error.error?.message
+            ?? 'Oglas nije moguće objaviti. Pokušajte ponovo.';
           this.isSubmitting = false;
         }
       });

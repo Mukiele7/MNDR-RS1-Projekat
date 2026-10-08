@@ -29,6 +29,22 @@ export class LandingKupacComponent {
     return this.authService.isAuthenticated();
   }
 
+  get profileRoute(): string {
+    const user = this.currentUser;
+    if (user?.uloga === 'Administrator' || user?.role === 'Administrator') {
+      return '/admin';
+    }
+    if (user?.uloga === 'Majstor') {
+      return `/majstor/${user.korisnikId ?? user.userId}`;
+    }
+    return '/kupac/moj-profil';
+  }
+
+  get isAdmin(): boolean {
+    const user = this.currentUser;
+    return user?.uloga === 'Administrator' || user?.role === 'Administrator';
+  }
+
   getProfileImage(): string {
     const user = this.currentUser;
     if (user?.slikaProfila) {

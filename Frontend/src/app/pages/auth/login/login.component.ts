@@ -67,7 +67,11 @@ export class LoginComponent {
       next: (response) => {
         console.log('Login response:', response);
         if (response.accessToken) {
-          this.router.navigate(['/kupac']);
+          const returnUrl = this.router.parseUrl(
+            this.router.url
+          ).queryParams['returnUrl'];
+          const destination = returnUrl || this.getRouteForRole(response.role);
+          this.router.navigateByUrl(destination);
         }
         this.loading = false;
       },
@@ -77,5 +81,16 @@ export class LoginComponent {
       }
     });
   }
-}
 
+  private getRouteForRole(role: string): string {
+    switch (role) {
+      case 'Majstor':
+        return '/majstor';
+      case 'Administrator':
+        return '/admin';
+      case 'Kupac':
+      default:
+        return '/kupac';
+    }
+  }
+}

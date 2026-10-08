@@ -36,6 +36,7 @@ export class MajstorProfil implements OnInit {
   isFavorite = false;
   majstorId!: number;
   isMenuOpen = false;
+  isDropdownOpen = false;
   showImageZoom = false;
   zoomLevel = 1;
   profileImages: { [key: number]: string } = {};
@@ -48,6 +49,49 @@ export class MajstorProfil implements OnInit {
     private favoritesService: FavoritesService,
     private authService: AuthService
   ) {}
+
+  get currentUser() {
+    return this.authService.getCurrentUser();
+  }
+
+  get isAuthenticated(): boolean {
+    return this.authService.isAuthenticated();
+  }
+
+  get profileRoute(): string {
+    const user = this.currentUser;
+    if (user?.uloga === 'Administrator' || user?.role === 'Administrator') {
+      return '/admin';
+    }
+    if (user?.uloga === 'Majstor') {
+      return `/majstor/${user.korisnikId ?? user.userId}`;
+    }
+    return '/kupac/moj-profil';
+  }
+
+  get isAdmin(): boolean {
+    const user = this.currentUser;
+    return user?.uloga === 'Administrator' || user?.role === 'Administrator';
+  }
+
+  getProfileImage(): string {
+    const user = this.currentUser;
+    if (user?.slikaProfila) {
+      return `http://localhost:5017${user.slikaProfila}`;
+    }
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      `${user?.ime || 'K'}+${user?.prezime || 'K'}`
+    )}&size=200&background=13ab24&color=ffffff&bold=true`;
+  }
+
+  logout(): void {
+    this.isDropdownOpen = false;
+    this.authService.logout();
+  }
+
+  toggleDropdown(): void {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
 
   ngOnInit(): void {
     console.log('MajstorProfil ngOnInit pozvan');
@@ -62,7 +106,7 @@ export class MajstorProfil implements OnInit {
       console.log('MajstorId:', this.majstorId);
       if (this.majstorId && !isNaN(this.majstorId)) {
         this.loadMajstorProfile();
-        if (this.currentKupacId) {
+        if (currentUser?.uloga === 'Kupac' && this.currentKupacId) {
           this.checkIfFavorite();
         }
       } else {

@@ -31,12 +31,31 @@
           </button>
           
           <div class="dropdown-menu" [class.open]="isDropdownOpen">
-            <a routerLink="/kupac/moj-profil" (click)="isDropdownOpen = false; closeMenu()" class="dropdown-item">
+            <a *ngIf="!isAdmin" href="#" (click)="openProfile($event); closeMenu()" class="dropdown-item">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
               Moj profil
+            </a>
+            <a *ngIf="!isAdmin && (currentUser?.uloga === 'Majstor' || currentUser?.role === 'Majstor')"
+               routerLink="/oglasi/create"
+               (click)="closeMenu()"
+               class="dropdown-item">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14"></path>
+                <path d="M5 12h14"></path>
+              </svg>
+              Kreiraj oglas
+            </a>
+            <a *ngIf="isAdmin" routerLink="/admin" (click)="closeMenu()" class="dropdown-item">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+              </svg>
+              Admin panel
             </a>
             <a (click)="logout(); closeMenu()" class="dropdown-item logout">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -164,7 +183,9 @@
         </div>
 
         <!-- Autocomplete Search Row -->
-        <div class="autocomplete-search-row">
+        <div
+          class="autocomplete-search-row"
+          [class.autocomplete-open]="suggestions.length > 0 && searchControl.value">
           <div class="filter-group autocomplete-filter">
             <label>
               <mat-icon>search</mat-icon>

@@ -450,6 +450,10 @@
       .autocomplete-search-row {
         margin-bottom: 25px;
 
+        &.autocomplete-open {
+          margin-bottom: 100px;
+        }
+
         .filter-group.autocomplete-filter {
           max-width: 450px;
           margin: 0 auto;
@@ -548,6 +552,9 @@
       }
 
       .filter-actions {
+        position: relative;
+        z-index: 1;
+        margin-top: 16px;
         display: flex;
         gap: 15px;
         justify-content: center;
@@ -1897,7 +1904,7 @@
     background: white !important;
     padding: 8px 0 !important;
   }
-  
+
   .mat-mdc-menu-item {
     background: white !important;
     
@@ -1905,4 +1912,26 @@
       background: #f7fafc !important;
     }
   }
+
+}
+
+// Autocomplete is rendered in the global CDK overlay, outside the component.
+::ng-deep .mat-mdc-autocomplete-panel {
+  z-index: 1100 !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border-radius: 0 0 8px 8px !important;
+  opacity: 1 !important;
+}
+
+::ng-deep .mat-mdc-autocomplete-panel .mat-mdc-option {
+  min-height: 56px !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+::ng-deep .mat-mdc-autocomplete-panel .mat-mdc-option:hover,
+::ng-deep .mat-mdc-autocomplete-panel .mat-mdc-option.mat-active {
+  background: #f7fafc !important;
 }

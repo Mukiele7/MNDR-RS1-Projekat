@@ -228,6 +228,6 @@ export class MajstorMapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   goToProfile(korisnikId: number): void {
-    this.router.navigate(['/majstor-profil', korisnikId]);
+    this.router.navigate(['/majstor', korisnikId]);
   }
 }

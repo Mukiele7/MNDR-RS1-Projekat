@@ -76,10 +76,27 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return !!this.getToken();
+    return !!this.getToken() && !!this.getCurrentUser();
   }
 
   getCurrentUser(): LoginResponse | null {
-    return this.currentUserSubject.value;
+    const currentUser = this.currentUserSubject.value;
+    if (currentUser) {
+      return currentUser;
+    }
+
+    const storedUser = localStorage.getItem('currentUser');
+    if (!storedUser) {
+      return null;
+    }
+
+    try {
+      const parsedUser = JSON.parse(storedUser) as LoginResponse;
+      this.currentUserSubject.next(parsedUser);
+      return parsedUser;
+    } catch {
+      localStorage.removeItem('currentUser');
+      return null;
+    }
   }
 }

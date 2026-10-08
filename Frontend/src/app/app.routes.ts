@@ -25,6 +25,10 @@ import { SettingsComponent } from './pages/settings/settings.component';
 import { FavoritesComponent } from './pages/favorites/favorites.component';
 import { MajstorProfilComponent } from './pages/majstor-profil/majstor-profil.component';
 import { MajstorMapComponent } from './pages/majstor-map/majstor-map.component';
+import { AdminDashboardComponent } from './pages/admin/admin-dashboard.component';
+import { adminGuard } from './guards/admin.guard';
+import { majstorGuard } from './guards/majstor.guard';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: 'settings', component: SettingsComponent },
@@ -36,8 +40,9 @@ export const routes: Routes = [
   { path: 'majstor', component: LandingMajstorComponent },
   { path: 'majstor-map', component: MajstorMapComponent },
   { path: 'kupac', component: LandingKupacComponent },
-  { path: 'favorites', component: FavoritesComponent },
+  { path: 'favorites', component: FavoritesComponent, canActivate: [authGuard] },
   { path: 'dashboard', component: DashboardComponent },
+  { path: 'admin', component: AdminDashboardComponent, canActivate: [adminGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'kupac/register', component: KupacRegisterComponent },
@@ -45,7 +50,7 @@ export const routes: Routes = [
   { path: 'kupac/edit-profile/:id', component: KupacEditProfileComponent },
   { path: 'kupac/delete-profile/:id', component: KupacDeleteProfileComponent },
   { path: 'oglasi', component: OglasListComponent },
-  { path: 'oglasi/create', component: CreateOglasWizardComponent },
+  { path: 'oglasi/create', component: CreateOglasWizardComponent, canActivate: [majstorGuard] },
   { path: 'oglasi/:id', component: OglasQrComponent },
   { path: 'kupci', component: KupciComponent },
   { path: 'razgovori', component: RazgovoriListComponent },

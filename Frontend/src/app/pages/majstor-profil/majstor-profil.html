@@ -19,7 +19,21 @@
         <a routerLink="/majstor" (click)="closeMenu()" class="active">Majstori</a>
         <a routerLink="/favorites" (click)="closeMenu()">Omiljeni</a>
         <a routerLink="/razgovori" (click)="closeMenu()">Razgovori</a>
-        <a routerLink="/login" class="btn-primary" (click)="closeMenu()">Prijava/Registracija</a>
+        <a *ngIf="!isAuthenticated" routerLink="/login" class="btn-primary" (click)="closeMenu()">Prijava/Registracija</a>
+        <div *ngIf="isAuthenticated" class="profile-dropdown">
+          <button class="profile-button" (click)="toggleDropdown()">
+            <img [src]="getProfileImage()" alt="Profil" class="profile-avatar">
+            <span class="profile-name">{{ currentUser?.ime }} {{ currentUser?.prezime }}</span>
+          </button>
+          <div class="dropdown-menu" [class.open]="isDropdownOpen">
+            <a [routerLink]="profileRoute" (click)="closeMenu()" class="dropdown-item">
+              {{ isAdmin ? 'Admin panel' : 'Moj profil' }}
+            </a>
+            <a (click)="logout(); closeMenu()" class="dropdown-item logout">
+              Odjavi se
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </nav>

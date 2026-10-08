@@ -65,7 +65,7 @@ interface RazgovorPreview {
               </button>
               
               <div class="dropdown-menu" [class.open]="isDropdownOpen">
-                <a routerLink="/kupac/moj-profil" (click)="isDropdownOpen = false; closeMenu()" class="dropdown-item">
+                <a [routerLink]="profileRoute" (click)="isDropdownOpen = false; closeMenu()" class="dropdown-item">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
@@ -984,6 +984,17 @@ export class RazgovoriListComponent implements OnInit {
 
   get isAuthenticated() {
     return this.authService.isAuthenticated();
+  }
+
+  get profileRoute(): string {
+    const user = this.currentUser;
+    if (user?.uloga === 'Majstor') {
+      return `/majstor/${user.korisnikId ?? user.userId}`;
+    }
+    if (user?.uloga === 'Administrator' || user?.role === 'Administrator') {
+      return '/dashboard';
+    }
+    return '/kupac/moj-profil';
   }
 
   getProfileImage(): string {

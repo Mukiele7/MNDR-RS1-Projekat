@@ -1,5 +1,7 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MNDR.Application.Abstractions;
 using MNDR.Application.Modules.Oglasi.Commands.Create;
 using MNDR.Application.Modules.Oglasi.Queries.GetAll;
 
@@ -10,10 +12,12 @@ namespace MNDR.API.Controllers
     public class OglasController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IAppCurrentUser _currentUser;
 
-        public OglasController(IMediator mediator)
+        public OglasController(IMediator mediator, IAppCurrentUser currentUser)
         {
             _mediator = mediator;
+            _currentUser = currentUser;
         }
 
         [HttpGet]
@@ -38,9 +42,14 @@ namespace MNDR.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOglas([FromBody] CreateOglasCommand command)
+        [Authorize(Roles = "Majstor")]
+        public async Task<IActionResult> CreateOglas([FromBody] CreateOglasCommand command, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(command);
+            var majstorId = _currentUser.UserId
+                ?? throw new UnauthorizedAccessException("Majstor nije prijavljen.");
+
+            command.MajstorId = majstorId;
+            var result = await _mediator.Send(command, cancellationToken);
             if (!result.Success)
                 return BadRequest(result);
 

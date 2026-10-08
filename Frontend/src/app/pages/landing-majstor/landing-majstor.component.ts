@@ -1,18 +1,18 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MajstorService } from '../../services/majstor.service';
 import { AuthService } from '../../services/auth.service';
 import { FavoritesService } from '../../services/favorites.service';
 import { MajstorMapComponent } from '../majstor-map/majstor-map.component';
-import { debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, of, catchError } from 'rxjs';
 
 @Component({
   selector: 'app-landing-majstor',
@@ -42,6 +42,7 @@ export class LandingMajstorComponent implements OnInit {
   // Autocomplete
   searchControl = new FormControl('');
   suggestions: any[] = [];
+  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
 
   // Filter properties
   filters = {
@@ -82,7 +83,8 @@ export class LandingMajstorComponent implements OnInit {
     private authService: AuthService,
     private favoritesService: FavoritesService,
     private cdr: ChangeDetectorRef,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private router: Router
   ) {}
 
   get currentUser() {
@@ -91,6 +93,22 @@ export class LandingMajstorComponent implements OnInit {
 
   get isAuthenticated() {
     return this.authService.isAuthenticated();
+  }
+
+  get profileRoute(): string {
+    const user = this.currentUser;
+    if (user?.uloga === 'Administrator' || user?.role === 'Administrator') {
+      return '/admin';
+    }
+    if (user?.uloga === 'Majstor') {
+      return `/majstor/${user.korisnikId ?? user.userId}`;
+    }
+    return '/kupac/moj-profil';
+  }
+
+  get isAdmin(): boolean {
+    const user = this.currentUser;
+    return user?.uloga === 'Administrator' || user?.role === 'Administrator';
   }
 
   getProfileImage(): string {
@@ -107,6 +125,13 @@ export class LandingMajstorComponent implements OnInit {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
+  openProfile(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDropdownOpen = false;
+    this.router.navigateByUrl(this.profileRoute);
+  }
+
   logout(): void {
     this.isDropdownOpen = false;
     this.authService.logout();
@@ -121,12 +146,20 @@ export class LandingMajstorComponent implements OnInit {
       distinctUntilChanged(),
       switchMap(value => {
         if (value && typeof value === 'string' && value.trim().length >= 2) {
-          return this.majstorService.getSuggestions(value.trim());
+          return this.majstorService.getSuggestions(value.trim()).pipe(
+            catchError(() => of([]))
+          );
         }
         return of([]);
       })
     ).subscribe(suggestions => {
-      this.suggestions = suggestions;
+      this.suggestions = suggestions.filter(suggestion =>
+        `${suggestion.ime} ${suggestion.prezime}`.toLowerCase() !== 'string string'
+      );
+      this.cdr.detectChanges();
+      if (this.suggestions.length > 0 && this.searchControl.value) {
+        this.autocompleteTrigger?.openPanel();
+      }
     });
   }
 
@@ -266,17 +299,24 @@ export class LandingMajstorComponent implements OnInit {
 
   isCurrentUserMajstor(korisnikId: number): boolean {
     const currentUser = this.authService.getCurrentUser();
-    return currentUser?.korisnikId === korisnikId;
+    return (currentUser?.korisnikId ?? currentUser?.userId) === korisnikId;
   }
 
   loadFavoriteStatuses(): void {
     const currentUser = this.authService.getCurrentUser();
-    if (!currentUser || currentUser.uloga !== 'Kupac' || !currentUser.korisnikId) {
+    const userRole = currentUser?.uloga ?? currentUser?.role;
+    const kupacId = currentUser?.korisnikId ?? currentUser?.userId;
+    if (
+      !this.authService.isAuthenticated() ||
+      !currentUser ||
+      userRole !== 'Kupac' ||
+      !kupacId
+    ) {
       return;
     }
 
     this.majstori.forEach(majstor => {
-      this.favoritesService.isFavorite(currentUser.korisnikId!, majstor.korisnikId)
+      this.favoritesService.isFavorite(kupacId, majstor.korisnikId)
         .subscribe({
           next: (isFavorite) => {
             this.favoriteStatuses.set(majstor.korisnikId, isFavorite);
@@ -297,12 +337,16 @@ export class LandingMajstorComponent implements OnInit {
     event.preventDefault();
     
     const currentUser = this.authService.getCurrentUser();
-    if (!currentUser) {
-      alert('Opcija dostupna samo prijavljenim korisnicima');
+    if (!this.authService.isAuthenticated() || !currentUser) {
+      this.router.navigate(['/login'], {
+        queryParams: { returnUrl: '/majstor' }
+      });
       return;
     }
     
-    if (currentUser.uloga !== 'Kupac' || !currentUser.korisnikId) {
+    const userRole = currentUser.uloga ?? currentUser.role;
+    const kupacId = currentUser.korisnikId ?? currentUser.userId;
+    if (userRole !== 'Kupac' || !kupacId) {
       alert('Samo kupci mogu dodavati omiljene majstore.');
       return;
     }
@@ -310,7 +354,7 @@ export class LandingMajstorComponent implements OnInit {
     const isFav = this.isFavorite(majstor.korisnikId);
     
     if (isFav) {
-      this.favoritesService.removeFavorite(currentUser.korisnikId!, majstor.korisnikId)
+      this.favoritesService.removeFavorite(kupacId, majstor.korisnikId)
         .subscribe({
           next: () => {
             this.favoriteStatuses.set(majstor.korisnikId, false);
@@ -320,7 +364,7 @@ export class LandingMajstorComponent implements OnInit {
           }
         });
     } else {
-      this.favoritesService.addFavorite(currentUser.korisnikId!, majstor.korisnikId)
+      this.favoritesService.addFavorite(kupacId, majstor.korisnikId)
         .subscribe({
           next: () => {
             this.favoriteStatuses.set(majstor.korisnikId, true);
@@ -334,7 +378,7 @@ export class LandingMajstorComponent implements OnInit {
 
   isKupac(): boolean {
     const currentUser = this.authService.getCurrentUser();
-    return currentUser?.uloga === 'Kupac';
+    return this.authService.isAuthenticated() &&
+      (currentUser?.uloga === 'Kupac' || currentUser?.role === 'Kupac');
   }
 }
-

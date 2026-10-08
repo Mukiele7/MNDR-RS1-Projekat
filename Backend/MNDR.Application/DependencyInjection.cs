@@ -24,6 +24,7 @@ public static class DependencyInjection
 
         // Pipeline Behaviors - automatska validacija
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddScoped<Modules.Admin.IAdminService, Modules.Admin.AdminService>();
 
         return services;
     }

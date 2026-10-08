@@ -1,4 +1,5 @@
 using MNDR.Domain.Common;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MNDR.Domain.Entities
 {
@@ -6,7 +7,9 @@ namespace MNDR.Domain.Entities
     {
         public int RecenzijaId { get; set; }
         public int UgovorId { get; set; }
+        [NotMapped]
         public int MajstorId { get; set; }
+        [NotMapped]
         public int KupacId { get; set; }
         public int Ocjena { get; set; }
         public int Ocena => Ocjena;  // Alias for compatibility

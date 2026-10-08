@@ -9,6 +9,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { MajstorService } from '../../services/majstor.service';
 import { FavoritesService } from '../../services/favorites.service';
+import { AuthService } from '../../services/auth.service';
 import { PortfolioGalleryComponent } from '../portfolio-gallery/portfolio-gallery.component';
 import { PortfolioCarouselComponent } from '../portfolio-carousel/portfolio-carousel.component';
 
@@ -39,6 +40,7 @@ export class MajstorProfilComponent implements OnInit {
   showImageZoom = false;
   zoomLevel = 1;
   isMenuOpen = false;
+  isDropdownOpen = false;
   
   // Portfolio images (mock data for now)
   portfolioImages: any[] = [];
@@ -107,8 +109,66 @@ export class MajstorProfilComponent implements OnInit {
     private router: Router,
     private majstorService: MajstorService,
     private favoritesService: FavoritesService,
+    private authService: AuthService,
     private cdr: ChangeDetectorRef
   ) {}
+
+  get currentUser() {
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser) {
+      return currentUser;
+    }
+
+    const storedUser = localStorage.getItem('currentUser');
+    if (!storedUser) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(storedUser);
+    } catch {
+      return null;
+    }
+  }
+
+  get isAuthenticated(): boolean {
+    return !!localStorage.getItem('token') && !!this.currentUser;
+  }
+
+  get profileRoute(): string {
+    const user = this.currentUser;
+    if (user?.uloga === 'Administrator' || user?.role === 'Administrator') {
+      return '/admin';
+    }
+    if (user?.uloga === 'Majstor') {
+      return `/majstor/${user.korisnikId ?? user.userId}`;
+    }
+    return '/kupac/moj-profil';
+  }
+
+  get isAdmin(): boolean {
+    const user = this.currentUser;
+    return user?.uloga === 'Administrator' || user?.role === 'Administrator';
+  }
+
+  getProfileImage(): string {
+    const user = this.currentUser;
+    if (user?.slikaProfila) {
+      return `http://localhost:5017${user.slikaProfila}`;
+    }
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      `${user?.ime || 'K'}+${user?.prezime || 'K'}`
+    )}&size=200&background=13ab24&color=ffffff&bold=true`;
+  }
+
+  logout(): void {
+    this.isDropdownOpen = false;
+    this.authService.logout();
+  }
+
+  toggleDropdown(): void {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
 
   ngOnInit(): void {
     console.log('MajstorProfil ngOnInit pozvan');
@@ -118,7 +178,9 @@ export class MajstorProfilComponent implements OnInit {
       console.log('MajstorId:', this.majstorId);
       if (this.majstorId && !isNaN(this.majstorId)) {
         this.loadMajstorProfile();
-        this.checkIfFavorite();
+        if (this.currentUser?.uloga === 'Kupac') {
+          this.checkIfFavorite();
+        }
         this.loadPortfolioImages();
       } else {
         console.error('Invalidan majstorId');
@@ -157,8 +219,12 @@ export class MajstorProfilComponent implements OnInit {
   }
 
   checkIfFavorite(): void {
-    // TODO: Get current user's kupacId from auth service
-    const currentKupacId = 1; // Temporary hardcoded value
+    const currentUser = this.currentUser;
+    if (currentUser?.uloga !== 'Kupac' || !currentUser.korisnikId) {
+      return;
+    }
+
+    const currentKupacId = currentUser.korisnikId;
     this.favoritesService.isFavorite(currentKupacId, this.majstorId).subscribe({
       next: (result) => {
         this.isFavorite = result;
@@ -170,7 +236,12 @@ export class MajstorProfilComponent implements OnInit {
   }
 
   toggleFavorite(): void {
-    const currentKupacId = 1; // Temporary hardcoded value
+    const currentUser = this.currentUser;
+    if (currentUser?.uloga !== 'Kupac' || !currentUser.korisnikId) {
+      return;
+    }
+
+    const currentKupacId = currentUser.korisnikId;
     if (this.isFavorite) {
       this.favoritesService.removeFavorite(currentKupacId, this.majstorId).subscribe({
         next: () => {

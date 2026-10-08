@@ -140,7 +140,7 @@ gradovi = ['Sarajevo','Banja Luka','Tuzla','Zenica','Mostar','Bijeljina','Prijed
 
   cancel(): void {
     if (confirm('Da li ste sigurni da želite otkazati? Sve izmjene će biti izgubljene.')) {
-      this.router.navigate(['/kupac/profile', this.kupacId]);
+      this.router.navigate(['/kupac/moj-profil']);
     }
   }
 

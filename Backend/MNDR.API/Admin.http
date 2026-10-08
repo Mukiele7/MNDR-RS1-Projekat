@@ -1,0 +1,48 @@
+@baseUrl = http://localhost:5017
+@token = REPLACE_WITH_ADMIN_ACCESS_TOKEN
+
+### Admin overview
+GET {{baseUrl}}/api/admin/overview
+Authorization: Bearer {{token}}
+
+### Users
+GET {{baseUrl}}/api/admin/users
+Authorization: Bearer {{token}}
+
+### Search users
+GET {{baseUrl}}/api/admin/users?search=marko
+Authorization: Bearer {{token}}
+
+### Listings
+GET {{baseUrl}}/api/admin/listings
+Authorization: Bearer {{token}}
+
+### Reviews
+GET {{baseUrl}}/api/admin/reviews
+Authorization: Bearer {{token}}
+
+### Change listing status
+PATCH {{baseUrl}}/api/admin/listings/1/status
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "status": "Odobren"
+}
+
+### Change user role
+PATCH {{baseUrl}}/api/admin/users/2/role
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "uloga": "Majstor"
+}
+
+### Delete review
+DELETE {{baseUrl}}/api/admin/reviews/1
+Authorization: Bearer {{token}}
+
+### Delete user
+DELETE {{baseUrl}}/api/admin/users/2
+Authorization: Bearer {{token}}

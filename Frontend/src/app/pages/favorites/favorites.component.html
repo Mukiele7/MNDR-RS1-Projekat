@@ -19,13 +19,54 @@
         <a routerLink="/majstor" (click)="closeMenu()">Majstori</a>
         <a routerLink="/favorites" (click)="closeMenu()" class="active">Omiljeni</a>
         <a routerLink="/razgovori" (click)="closeMenu()">Razgovori</a>
-        <a routerLink="/login" class="btn-primary" (click)="closeMenu()">Prijava/Registracija</a>
+        <a *ngIf="!isAuthenticated"
+           routerLink="/login"
+           class="btn-primary"
+           (click)="closeMenu()">Prijava/Registracija</a>
+        <div *ngIf="isAuthenticated" class="profile-dropdown">
+          <button class="profile-button" (click)="toggleDropdown()">
+            <img [src]="getProfileImage()" alt="Profil" class="profile-avatar">
+            <span class="profile-name">{{ currentUser?.ime }} {{ currentUser?.prezime }}</span>
+          </button>
+
+          <div class="dropdown-menu" [class.open]="isDropdownOpen">
+            <a [routerLink]="profileRoute" (click)="isDropdownOpen = false" class="dropdown-item">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              {{ isAdmin ? 'Admin panel' : 'Moj profil' }}
+            </a>
+            <a *ngIf="currentUser?.uloga === 'Kupac' || currentUser?.role === 'Kupac'"
+               routerLink="/favorites"
+               (click)="isDropdownOpen = false"
+               class="dropdown-item">
+              <mat-icon>favorite</mat-icon>
+              Omiljeni
+            </a>
+            <a *ngIf="currentUser?.uloga === 'Majstor' || currentUser?.role === 'Majstor'"
+               routerLink="/oglasi/create"
+               (click)="isDropdownOpen = false"
+               class="dropdown-item">
+              <mat-icon>add</mat-icon>
+              Kreiraj oglas
+            </a>
+            <a (click)="logout()" class="dropdown-item logout">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              Odjavi se
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </nav>
 
   <!-- Hero Section -->
-  <section class="hero-section">
+  <section class="hero-section" *ngIf="isAuthorized">
     <div class="container">
       <div class="hero-content">
         <h1>
@@ -38,7 +79,7 @@
   </section>
 
   <!-- Content Section -->
-  <section class="content-section">
+  <section class="content-section" *ngIf="isAuthorized">
     <div class="container">
       <div class="section-header">
         <h2>
@@ -122,7 +163,7 @@
   </section>
 
   <!-- Footer -->
-  <footer class="footer">
+  <footer class="footer" *ngIf="isAuthorized">
     <div class="container">
       <div class="footer-main">
         <!-- Logo i Social Media -->

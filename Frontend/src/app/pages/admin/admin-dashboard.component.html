@@ -1,0 +1,56 @@
+<div class="admin-shell">
+  <header class="admin-header">
+    <div>
+      <span class="eyebrow">MNDR ADMIN</span>
+      <h1>Administratorski panel</h1>
+      <p>Dobrodošao, {{ adminName }}. Upravljaj korisnicima i sadržajem platforme.</p>
+    </div>
+    <div class="header-actions">
+      <button routerLink="/" class="secondary-button">Nazad na sajt</button>
+      <button (click)="logout()" class="danger-button">Odjavi se</button>
+    </div>
+  </header>
+
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+  <div *ngIf="loading" class="loading">Učitavanje podataka...</div>
+
+  <ng-container *ngIf="!loading">
+    <nav class="tabs">
+      <button [class.active]="selectedTab === 'overview'" (click)="selectedTab = 'overview'">Pregled</button>
+      <button [class.active]="selectedTab === 'users'" (click)="selectedTab = 'users'">Korisnici</button>
+      <button [class.active]="selectedTab === 'listings'" (click)="selectedTab = 'listings'">Oglasi</button>
+      <button [class.active]="selectedTab === 'reviews'" (click)="selectedTab = 'reviews'">Recenzije</button>
+    </nav>
+
+    <section *ngIf="selectedTab === 'overview' && overview" class="stats-grid">
+      <article class="stat-card"><span>Korisnici</span><strong>{{ overview.ukupnoKorisnika }}</strong><small>{{ overview.ukupnoKupaca }} kupaca · {{ overview.ukupnoMajstora }} majstora</small></article>
+      <article class="stat-card blue"><span>Oglasi</span><strong>{{ overview.ukupnoOglasa }}</strong><small>{{ overview.aktivniOglasi }} aktivnih</small></article>
+      <article class="stat-card purple"><span>Ugovori</span><strong>{{ overview.ukupnoUgovora }}</strong><small>ukupno na platformi</small></article>
+      <article class="stat-card orange"><span>Aktivnost</span><strong>{{ overview.ukupnoRazgovora }}</strong><small>{{ overview.ukupnoRecenzija }} recenzija</small></article>
+    </section>
+
+    <section *ngIf="selectedTab === 'users'" class="panel">
+      <div class="panel-heading">
+        <h2>Korisnici</h2>
+        <div class="search"><input [(ngModel)]="search" (keyup.enter)="searchUsers()" placeholder="Pretraži ime ili email"><button (click)="searchUsers()">Pretraži</button></div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Korisnik</th><th>Email</th><th>Uloga</th><th>Grad</th><th>Akcije</th></tr></thead><tbody>
+        <tr *ngFor="let user of users"><td><b>{{ user.ime }} {{ user.prezime }}</b><small>ID: {{ user.korisnikId }}</small></td><td>{{ user.email }}</td><td><select [ngModel]="user.uloga" (ngModelChange)="changeUserRole(user, $event)"><option *ngFor="let role of roles" [value]="role">{{ role }}</option></select></td><td>{{ user.grad || '—' }}</td><td><button class="link-danger" (click)="deleteUser(user)">Obriši</button></td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section *ngIf="selectedTab === 'listings'" class="panel">
+      <div class="panel-heading"><h2>Moderacija oglasa</h2><span>{{ listings.length }} oglasa</span></div>
+      <div class="table-wrap"><table><thead><tr><th>Naslov</th><th>Majstor</th><th>Datum</th><th>Status</th></tr></thead><tbody>
+        <tr *ngFor="let listing of listings"><td><b>{{ listing.naslov }}</b><small>ID: {{ listing.oglasId }}</small></td><td>{{ listing.majstorIme }}</td><td>{{ listing.datumObjave | date:'dd.MM.yyyy.' }}</td><td><select [ngModel]="listing.status" (ngModelChange)="changeListingStatus(listing, $event)"><option *ngFor="let status of statuses" [value]="status">{{ status }}</option></select></td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section *ngIf="selectedTab === 'reviews'" class="panel">
+      <div class="panel-heading"><h2>Recenzije</h2><span>{{ reviews.length }} recenzija</span></div>
+      <div class="table-wrap"><table><thead><tr><th>Ocena</th><th>Komentar</th><th>Majstor</th><th>Akcije</th></tr></thead><tbody>
+        <tr *ngFor="let review of reviews"><td class="rating">★ {{ review.ocjena }}/5</td><td>{{ review.komentar || 'Bez komentara' }}</td><td>#{{ review.majstorId }}</td><td><button class="link-danger" (click)="deleteReview(review)">Obriši</button></td></tr>
+      </tbody></table></div>
+    </section>
+  </ng-container>
+</div>
