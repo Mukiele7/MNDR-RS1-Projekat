@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OglasService {
-  private apiUrl = 'http://localhost:5017/api/oglas';
+  private apiUrl = `${environment.apiUrl}/oglas`;
 
   constructor(private http: HttpClient) { }
 

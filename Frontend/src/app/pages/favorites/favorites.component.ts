@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { FavoritesService } from '../../services/favorites.service';
 import { AuthService } from '../../services/auth.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-favorites',
@@ -60,7 +61,7 @@ export class FavoritesComponent implements OnInit {
   getProfileImage(): string {
     const user = this.currentUser;
     if (user?.slikaProfila) {
-      return `http://localhost:5017${user.slikaProfila}`;
+      return `${environment.apiRoot}${user.slikaProfila}`;
     }
     const name = `${user?.ime ?? 'K'}+${user?.prezime ?? 'K'}`;
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&size=200&background=13ab24&color=ffffff&bold=true`;

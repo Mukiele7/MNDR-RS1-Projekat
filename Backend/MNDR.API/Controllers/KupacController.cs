@@ -7,6 +7,7 @@ using MNDR.Application.Modules.Kupci.Commands.Delete;
 using MNDR.Application.Modules.Kupci.Queries.GetById;
 using MNDR.Application.Modules.Kupci.Queries.List;
 using MNDR.API.Attributes;
+using System.Security.Claims;
 
 namespace MNDR.API.Controllers
 {
@@ -45,18 +46,23 @@ namespace MNDR.API.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Kupac,Administrator")]
-        public async Task Update(int id, [FromBody] UpdateKupacCommand command, CancellationToken ct)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateKupacCommand command, CancellationToken ct)
         {
+            if (!User.IsInRole("Administrator") && User.FindFirstValue(ClaimTypes.NameIdentifier) != id.ToString())
+                return Forbid();
             command.KorisnikId = id;
             await sender.Send(command, ct);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Kupac,Administrator")]
-        public async Task Delete(int id, CancellationToken ct)
+        public async Task<IActionResult> Delete(int id, CancellationToken ct)
         {
+            if (!User.IsInRole("Administrator") && User.FindFirstValue(ClaimTypes.NameIdentifier) != id.ToString())
+                return Forbid();
             await sender.Send(new DeleteKupacCommand { KorisnikId = id }, ct);
+                return NoContent();
         }
     }
 }
-

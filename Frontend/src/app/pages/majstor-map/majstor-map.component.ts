@@ -179,14 +179,20 @@ export class MajstorMapComponent implements OnInit, AfterViewInit, OnDestroy {
       const marker = L.marker([majstor.latitude, majstor.longitude], { icon })
         .addTo(this.map);
 
+      const escapeHtml = (value: unknown): string => String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
       const popupContent = `
         <div style="padding: 10px; min-width: 200px;">
-          <h3 style="margin: 0 0 10px 0; font-size: 16px;">${majstor.ime} ${majstor.prezime}</h3>
-          <p style="margin: 5px 0;"><strong>Specijalizacija:</strong> ${majstor.specijalizacija}</p>
-          <p style="margin: 5px 0;"><strong>Ocjena:</strong> ⭐ ${majstor.prosjecnaOcjena.toFixed(1)}</p>
-          <p style="margin: 5px 0;"><strong>Cijena:</strong> ${majstor.cijenaMjesecne} KM/mjesec</p>
+          <h3 style="margin: 0 0 10px 0; font-size: 16px;">${escapeHtml(majstor.ime)} ${escapeHtml(majstor.prezime)}</h3>
+          <p style="margin: 5px 0;"><strong>Specijalizacija:</strong> ${escapeHtml(majstor.specijalizacija)}</p>
+          <p style="margin: 5px 0;"><strong>Ocjena:</strong> ⭐ ${Number(majstor.prosjecnaOcjena).toFixed(1)}</p>
+          <p style="margin: 5px 0;"><strong>Cijena:</strong> ${escapeHtml(majstor.cijenaMjesecne)} KM/mjesec</p>
           <button 
-            onclick="window.location.href='/majstor/${majstor.korisnikId}'" 
+            onclick="window.location.href='/majstor/${encodeURIComponent(String(majstor.korisnikId))}'"
             style="margin-top: 10px; padding: 8px 16px; background-color: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; width: 100%;">
             Pogledaj profil
           </button>

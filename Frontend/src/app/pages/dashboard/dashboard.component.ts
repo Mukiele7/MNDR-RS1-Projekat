@@ -271,13 +271,14 @@ export class DashboardComponent implements OnInit {
   }
 
   loadStats() {
-    // TODO: Implementirati servis za učitavanje statistike
+    // Statistics are populated by the role-specific dashboards.
+    // Do not display fabricated values while a real source is unavailable.
     this.stats = {
-      totalOglasi: 5,
-      aktivniRazgovori: 3,
-      zavrseniUgovori: 12,
-      prosecnaOcena: 4.5,
-      stanjeSuma: 250
+      totalOglasi: 0,
+      aktivniRazgovori: 0,
+      zavrseniUgovori: 0,
+      prosecnaOcena: 0,
+      stanjeSuma: 0
     };
   }
 }

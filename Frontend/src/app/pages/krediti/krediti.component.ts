@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { KreditService } from '../../services/kredit.service';
+import { AuthService } from '../../services/auth.service';
 
 interface Kredit {
   kreditId: number;
@@ -166,11 +167,15 @@ export class KreditiComponent implements OnInit {
   krediti: Kredit[] = [];
   currentBalance = 0;
   displayedColumns: string[] = ['datumTransakcije', 'tip', 'kolicina', 'status'];
-  korisnikId = 1; // TODO: Get from auth service
+  korisnikId = 0;
 
-  constructor(private kreditService: KreditService) {}
+  constructor(private kreditService: KreditService, private authService: AuthService) {}
 
   ngOnInit() {
+    this.korisnikId = this.authService.getCurrentUser()?.userId ?? 0;
+    if (!this.korisnikId) {
+      return;
+    }
     this.loadKrediti();
   }
 

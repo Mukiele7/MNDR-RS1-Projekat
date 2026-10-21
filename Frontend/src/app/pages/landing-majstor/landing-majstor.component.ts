@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MajstorService } from '../../services/majstor.service';
 import { AuthService } from '../../services/auth.service';
+import { environment } from '../../../environments/environment';
 import { FavoritesService } from '../../services/favorites.service';
 import { MajstorMapComponent } from '../majstor-map/majstor-map.component';
 import { debounceTime, distinctUntilChanged, switchMap, of, catchError } from 'rxjs';
@@ -114,7 +115,7 @@ export class LandingMajstorComponent implements OnInit {
   getProfileImage(): string {
     const user = this.currentUser;
     if (user?.slikaProfila) {
-      return `http://localhost:5017${user.slikaProfila}`;
+      return `${environment.apiRoot}${user.slikaProfila}`;
     }
     const firstName = this.currentUser?.ime || 'K';
     const lastName = this.currentUser?.prezime || 'K';

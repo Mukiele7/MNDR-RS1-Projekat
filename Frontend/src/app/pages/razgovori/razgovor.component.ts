@@ -647,7 +647,7 @@ export class RazgovorComponent implements OnInit, OnDestroy, AfterViewChecked {
       this.signalRService.userTyping$
         .pipe(takeUntil(this.destroy$))
         .subscribe(indicator => {
-          if (indicator.razgovorId === this.razgovor?.razgovorId && indicator.userId !== this.currentUserId) {
+          if (indicator.razgovorId === this.razgovor?.razgovorId && indicator.korisnikId !== this.currentUserId) {
             this.isOtherUserTyping = true;
             this.shouldScrollToBottom = true;
           }
@@ -657,7 +657,7 @@ export class RazgovorComponent implements OnInit, OnDestroy, AfterViewChecked {
       this.signalRService.userStoppedTyping$
         .pipe(takeUntil(this.destroy$))
         .subscribe(indicator => {
-          if (indicator.razgovorId === this.razgovor?.razgovorId && indicator.userId !== this.currentUserId) {
+          if (indicator.razgovorId === this.razgovor?.razgovorId && indicator.korisnikId !== this.currentUserId) {
             this.isOtherUserTyping = false;
           }
         });

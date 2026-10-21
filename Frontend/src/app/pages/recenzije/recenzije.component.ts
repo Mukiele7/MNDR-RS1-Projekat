@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { RecenzijaService } from '../../services/recenzija.service';
+import { AuthService } from '../../services/auth.service';
 
 interface Recenzija {
   recenzijaId: number;
@@ -159,7 +160,7 @@ interface Recenzija {
 })
 export class RecenzijeComponent implements OnInit {
   recenzije: Recenzija[] = [];
-  majstorId = 1; // TODO: Get from route or auth
+  majstorId = 0;
   averageRating = 0;
 
   newReview = {
@@ -168,9 +169,16 @@ export class RecenzijeComponent implements OnInit {
     komentar: ''
   };
 
-  constructor(private recenzijaService: RecenzijaService) {}
+  constructor(
+    private recenzijaService: RecenzijaService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
+    this.majstorId = this.authService.getCurrentUser()?.userId ?? 0;
+    if (!this.majstorId) {
+      return;
+    }
     this.loadRecenzije();
   }
 

@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using MNDR.Application.Modules.Razgovori.Commands.Create;
 using MNDR.Application.Modules.Razgovori.Commands.SendPoruka;
 using MNDR.Application.Modules.Razgovori.Queries.GetById;
@@ -9,6 +10,7 @@ namespace MNDR.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class RazgovorController : ControllerBase
     {
         private readonly IMediator _mediator;

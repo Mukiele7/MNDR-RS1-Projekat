@@ -41,6 +41,20 @@ namespace MNDR.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("{id:int}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetOglasById(int id, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new GetOglasQuery
+            {
+                OglasId = id,
+                PageNumber = 1,
+                PageSize = 1
+            }, cancellationToken);
+            var oglas = result.Items.FirstOrDefault();
+            return oglas is null ? NotFound() : Ok(oglas);
+        }
+
         [HttpPost]
         [Authorize(Roles = "Majstor")]
         public async Task<IActionResult> CreateOglas([FromBody] CreateOglasCommand command, CancellationToken cancellationToken)

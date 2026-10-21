@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../../environments/environment';
 import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { AuthService } from './auth.service';
@@ -16,8 +17,8 @@ export interface SignalRMessage {
 
 export interface TypingIndicator {
   razgovorId: number;
-  userId: number;
-  userName: string;
+  korisnikId: number;
+  isTyping: boolean;
 }
 
 @Injectable({
@@ -44,7 +45,7 @@ export class SignalRService {
   public userStoppedTyping$ = this.userStoppedTyping.asObservable();
 
   // Observable for message read receipts
-  private messageRead = new Subject<{ razgovorPorukaId: number, primaocId: number }>();
+  private messageRead = new Subject<{ razgovorPorukaId: number, status: string }>();
   public messageRead$ = this.messageRead.asObservable();
 
   // Observable for online users
@@ -75,7 +76,7 @@ export class SignalRService {
 
     // SignalR connection - token mora biti u query parametru za negotiate endpoint
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`http://localhost:5017/hubs/chat?access_token=${encodeURIComponent(token)}`)
+      .withUrl(`${environment.signalrUrl}?access_token=${encodeURIComponent(token)}`)
       .withAutomaticReconnect([0, 2000, 5000, 10000, 30000]) // Retry intervals
       .configureLogging(signalR.LogLevel.Information)
       .build();
@@ -139,19 +140,13 @@ export class SignalRService {
     });
 
     // Handle typing indicator
-    this.hubConnection.on('UserIsTyping', (indicator: TypingIndicator) => {
+    this.hubConnection.on('TypingIndicator', (indicator: TypingIndicator) => {
       console.log('User is typing:', indicator);
-      this.userTyping.next(indicator);
-    });
-
-    // Handle stopped typing
-    this.hubConnection.on('UserStoppedTyping', (indicator: TypingIndicator) => {
-      console.log('User stopped typing:', indicator);
-      this.userStoppedTyping.next(indicator);
+      (indicator.isTyping ? this.userTyping : this.userStoppedTyping).next(indicator);
     });
 
     // Handle message read receipts
-    this.hubConnection.on('MessageRead', (data: { razgovorPorukaId: number, primaocId: number }) => {
+    this.hubConnection.on('MessageRead', (data: { razgovorPorukaId: number, status: string }) => {
       console.log('Message read:', data);
       this.messageRead.next(data);
     });

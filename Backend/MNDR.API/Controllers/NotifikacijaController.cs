@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using MNDR.Application.Modules.Notifikacije.Commands.Create;
 using MNDR.Application.Modules.Notifikacije.Commands.MarkAsRead;
 using MNDR.Application.Modules.Notifikacije.Queries.GetNotifikacije;
@@ -8,6 +9,7 @@ namespace MNDR.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class NotifikacijaController : ControllerBase
     {
         private readonly IMediator _mediator;

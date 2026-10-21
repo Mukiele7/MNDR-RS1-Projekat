@@ -12,6 +12,7 @@ import { FavoritesService } from '../../services/favorites.service';
 import { AuthService } from '../../services/auth.service';
 import { PortfolioGalleryComponent } from '../portfolio-gallery/portfolio-gallery.component';
 import { PortfolioCarouselComponent } from '../portfolio-carousel/portfolio-carousel.component';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-majstor-profil',
@@ -154,7 +155,7 @@ export class MajstorProfilComponent implements OnInit {
   getProfileImage(): string {
     const user = this.currentUser;
     if (user?.slikaProfila) {
-      return `http://localhost:5017${user.slikaProfila}`;
+      return `${environment.apiRoot}${user.slikaProfila}`;
     }
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(
       `${user?.ime || 'K'}+${user?.prezime || 'K'}`

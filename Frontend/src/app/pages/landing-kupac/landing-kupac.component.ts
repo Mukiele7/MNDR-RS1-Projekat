@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-landing-kupac',
@@ -48,7 +49,7 @@ export class LandingKupacComponent {
   getProfileImage(): string {
     const user = this.currentUser;
     if (user?.slikaProfila) {
-      return `http://localhost:5017${user.slikaProfila}`;
+      return `${environment.apiRoot}${user.slikaProfila}`;
     }
     const firstName = this.currentUser?.ime || 'K';
     const lastName = this.currentUser?.prezime || 'K';

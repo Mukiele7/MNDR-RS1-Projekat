@@ -211,15 +211,11 @@ namespace MNDR.Infrastructure.Data
                 .HasKey(u => u.UgovorId);
             
             modelBuilder.Entity<Ugovor>()
-                .Ignore(u => u.MajstorId)
-                .Ignore(u => u.DatumOd)
-                .Ignore(u => u.DatumDo)
-                .Ignore(u => u.Cena)
-                .Ignore(u => u.Opis);
-            
-            modelBuilder.Entity<Ugovor>()
                 .Property(u => u.DatumKreiranja)
                 .HasColumnName("DatumSklapanja");
+            modelBuilder.Entity<Ugovor>()
+                .Property(u => u.Opis)
+                .HasColumnName("OpisPosla");
             
             modelBuilder.Entity<Ugovor>()
                 .HasOne(u => u.Oglas)
@@ -234,7 +230,7 @@ namespace MNDR.Infrastructure.Data
             modelBuilder.Entity<Ugovor>()
                 .HasOne(u => u.Majstor)
                 .WithMany(m => m.Ugovori)
-                .HasForeignKey(u => u.OglasId)
+                .HasForeignKey(u => u.MajstorId)
                 .HasPrincipalKey(m => m.KorisnikId)
                 .OnDelete(DeleteBehavior.NoAction);
             
@@ -355,4 +351,3 @@ namespace MNDR.Infrastructure.Data
         }
     }
 }
-

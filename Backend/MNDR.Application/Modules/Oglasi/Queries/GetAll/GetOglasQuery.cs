@@ -2,6 +2,7 @@ namespace MNDR.Application.Modules.Oglasi.Queries.GetAll;
 
 public sealed class GetOglasQuery : IRequest<PagedOglasResult>
 {
+    public int? OglasId { get; set; }
     public int PageNumber { get; set; } = 1;
     public int PageSize { get; set; } = 10;
     

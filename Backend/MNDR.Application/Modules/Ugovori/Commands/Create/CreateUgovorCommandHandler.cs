@@ -3,24 +3,29 @@ namespace MNDR.Application.Modules.Ugovori.Commands.Create;
 public sealed class CreateUgovorCommandHandler : IRequestHandler<CreateUgovorCommand, CreateUgovorCommandDto>
 {
     private readonly IAppDbContext _context;
+    private readonly IAppCurrentUser _currentUser;
 
-    public CreateUgovorCommandHandler(IAppDbContext context)
+    public CreateUgovorCommandHandler(IAppDbContext context, IAppCurrentUser currentUser)
     {
         _context = context;
+        _currentUser = currentUser;
     }
 
     public async Task<CreateUgovorCommandDto> Handle(CreateUgovorCommand request, CancellationToken cancellationToken)
     {
         var kupacExists = await _context.Kupci.AnyAsync(k => k.KorisnikId == request.KupacId, cancellationToken);
-        var oglasExists = await _context.Oglasi.AnyAsync(o => o.OglasId == request.OglasId, cancellationToken);
+        var oglas = await _context.Oglasi.FirstOrDefaultAsync(o => o.OglasId == request.OglasId, cancellationToken);
 
-        if (!kupacExists || !oglasExists)
+        if (!kupacExists || oglas is null || !string.Equals(oglas.Status, "Aktivan", StringComparison.OrdinalIgnoreCase))
             return new CreateUgovorCommandDto { Success = false, Message = "Neispravni podaci" };
+        if (_currentUser.UserId != request.KupacId || request.DatumDo <= request.DatumOd || request.Cena < 0)
+            return new CreateUgovorCommandDto { Success = false, Message = "Neispravni podaci ugovora." };
 
         var ugovor = new Ugovor
         {
             KupacId = request.KupacId,
             OglasId = request.OglasId,
+            MajstorId = oglas.MajstorId,
             DatumOd = request.DatumOd,
             DatumDo = request.DatumDo,
             Cena = request.Cena,

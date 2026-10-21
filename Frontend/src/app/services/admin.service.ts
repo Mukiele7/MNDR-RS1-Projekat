@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -43,7 +44,7 @@ export interface AdminReview {
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
-  private readonly apiUrl = 'http://localhost:5017/api/admin';
+  private readonly apiUrl = `${environment.apiUrl}/admin`;
 
   constructor(private http: HttpClient) {}
 

@@ -7,6 +7,7 @@ using MNDR.Application.Modules.Majstori.Commands.Delete;
 using MNDR.Application.Modules.Majstori.Queries.GetById;
 using MNDR.Application.Modules.Majstori.Queries.List;
 using MNDR.Application.Modules.Majstori.Queries.Suggestions;
+using System.Security.Claims;
 
 namespace MNDR.API.Controllers
 {
@@ -55,21 +56,24 @@ namespace MNDR.API.Controllers
         }
 
         [HttpPut("{id}")]
-        [AllowAnonymous] // Privremeno za testiranje
+        [Authorize(Roles = "Majstor,Administrator")]
         public async Task<IActionResult> UpdateMajstor(int id, [FromBody] UpdateMajstorCommand command, CancellationToken ct)
         {
+            if (!User.IsInRole("Administrator") && User.FindFirstValue(ClaimTypes.NameIdentifier) != id.ToString())
+                return Forbid();
             command.KorisnikId = id;
             var result = await sender.Send(command, ct);
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
         [HttpDelete("{id}")]
-        [AllowAnonymous] // Privremeno za testiranje
+        [Authorize(Roles = "Majstor,Administrator")]
         public async Task<IActionResult> DeleteMajstor(int id, CancellationToken ct)
         {
+            if (!User.IsInRole("Administrator") && User.FindFirstValue(ClaimTypes.NameIdentifier) != id.ToString())
+                return Forbid();
             var result = await sender.Send(new DeleteMajstorCommand { KorisnikId = id }, ct);
             return result.Success ? Ok(result) : BadRequest(result);
         }
     }
 }
-

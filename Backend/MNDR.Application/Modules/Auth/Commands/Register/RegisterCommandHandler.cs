@@ -28,20 +28,6 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, Re
             throw new MndrConflictException("Email je već registrovan.");
         }
 
-        // TODO: PRIVREMENO ISKLJUČENO ZA TESTIRANJE - Vratiti posle!
-        // Ograniči kreiranje administratora - samo prva 2 korisnika
-        /*
-        if (request.Role == 2) // Administrator
-        {
-            var adminCount = await _context.Administratori.CountAsync(cancellationToken);
-            if (adminCount >= 2)
-            {
-                throw new MndrForbiddenException(
-                    "Maksimalan broj administratora je dostignut. Registrujte se kao Majstor ili Kupac.");
-            }
-        }
-        */
-
         // Kreiraj korisnika
         var user = new Korisnik
         {
@@ -62,17 +48,6 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, Re
         // Na osnovu uloge, kreiraj odgovarajući entitet
         switch (request.Role)
         {
-            case 2: // Administrator
-                var admin = new Administrator
-                {
-                    KorisnikId = user.KorisnikId,
-                    NivoPristupa = "Standard",
-                    DatumDodavanja = DateTime.UtcNow,
-                    Aktivan = true
-                };
-                _context.Administratori.Add(admin);
-                break;
-
             case 1: // Majstor
                 var majstor = new Majstor
                 {
@@ -112,6 +87,6 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, Re
         0 => "Kupac",
         1 => "Majstor",
         2 => "Administrator",
-        _ => throw new ArgumentException("Nepoznata uloga")
+        _ => throw new ArgumentException("Javna registracija ne dozvoljava ovu ulogu")
     };
 }

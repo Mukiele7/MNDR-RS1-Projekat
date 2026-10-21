@@ -91,6 +91,8 @@ using (var scope = app.Services.CreateScope())
     {
         var canConnect = dbContext.Database.CanConnect();
         Console.WriteLine($"=== Database connection: {(canConnect ? "SUCCESS" : "FAILED")} ===");
+        if (canConnect)
+            await MNDR.Infrastructure.Data.AppDataSeeder.SeedAsync(dbContext);
     }
     catch (Exception ex)
     {

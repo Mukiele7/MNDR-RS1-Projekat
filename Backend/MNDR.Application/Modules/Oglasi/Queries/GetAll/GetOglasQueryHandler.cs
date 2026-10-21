@@ -13,6 +13,9 @@ public sealed class GetOglasQueryHandler : IRequestHandler<GetOglasQuery, PagedO
     {
         var query = _context.Oglasi.AsQueryable();
 
+        if (request.OglasId.HasValue)
+            query = query.Where(o => o.OglasId == request.OglasId.Value);
+
         // Filter 1: Status
         if (!string.IsNullOrEmpty(request.Status))
             query = query.Where(o => o.Status == request.Status);

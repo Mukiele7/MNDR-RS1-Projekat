@@ -48,7 +48,7 @@ export class SettingsComponent implements OnInit {
   };
 
   languages = [
-    { value: 'Ba-Latn-BA', label: 'bosanski (Latinica)' },
+    { value: 'bs-Latn-BA', label: 'bosanski (Latinica)' },
     { value: 'Ba-Cyrl-BA', label: 'bosanski (Ćirilica)' },
     { value: 'en-US', label: 'English' }
   ];
@@ -87,7 +87,7 @@ export class SettingsComponent implements OnInit {
 
   resetSettings(): void {
     this.settings = {
-      language: 'Ba-Latn-BA',
+      language: 'bs-Latn-BA',
       theme: 'light',
       enableNotifications: true,
       emailNotifications: true,

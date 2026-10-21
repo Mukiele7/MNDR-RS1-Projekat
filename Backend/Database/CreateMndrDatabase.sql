@@ -150,11 +150,16 @@ CREATE TABLE Ugovor (
     UgovorId INT PRIMARY KEY IDENTITY(1,1),
     OglasId INT NOT NULL,
     KupacId INT NOT NULL,
+    MajstorId INT NOT NULL,
+    DatumOd DATETIME2(7) NOT NULL,
+    DatumDo DATETIME2(7) NOT NULL,
+    Cena DECIMAL(18,2) NOT NULL,
     DatumSklapanja DATETIME2(7) NOT NULL DEFAULT GETUTCDATE(),
     Status NVARCHAR(20) NOT NULL,
     OpisPosla NVARCHAR(1000) NULL,
     FOREIGN KEY (OglasId) REFERENCES Oglas(OglasId),
-    FOREIGN KEY (KupacId) REFERENCES Kupac(KorisnikId)
+    FOREIGN KEY (KupacId) REFERENCES Kupac(KorisnikId),
+    FOREIGN KEY (MajstorId) REFERENCES Majstor(KorisnikId)
 );
 
 -- 14. Recenzija (Review)

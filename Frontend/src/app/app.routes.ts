@@ -1,62 +1,35 @@
 import { Routes } from '@angular/router';
-import { LandingPageComponent } from './pages/landing-page/landing-page.component';
-import { LandingMajstorComponent } from './pages/landing-majstor/landing-majstor.component';
-import { LandingKupacComponent } from './pages/landing-kupac/landing-kupac.component';
-import { LoginComponent } from './pages/auth/login/login.component';
-import { RegisterComponent } from './pages/auth/register/register.component';
-import { OglasListComponent } from './pages/oglasi/oglas-list.component';
-import { OglasQrComponent } from './pages/oglas-qr/oglas-qr.component';
-import { CreateOglasWizardComponent } from './pages/oglasi/create-oglas-wizard/create-oglas-wizard.component';
-import { RazgovorComponent } from './pages/razgovori/razgovor.component';
-import { RazgovoriListComponent } from './pages/razgovori/razgovori-list.component';
-import { RecenzijeComponent } from './pages/recenzije/recenzije.component';
-import { KreditiComponent } from './pages/krediti/krediti.component';
-import { UgovoriComponent } from './pages/ugovori/ugovori.component';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { KupciComponent } from './pages/kupci/kupci.component';
-import { MajstorRegisterComponent } from './pages/majstor-register/majstor-register.component';
-import { MajstorEditProfileComponent } from './pages/majstor-edit-profile/majstor-edit-profile.component';
-import { MajstorDeleteProfileComponent } from './pages/majstor-delete-profile/majstor-delete-profile.component';
-import { KupacRegisterComponent } from './pages/kupac-register/kupac-register.component';
-import { KupacEditProfileComponent } from './pages/kupac-edit-profile/kupac-edit-profile.component';
-import { KupacDeleteProfileComponent } from './pages/kupac-delete-profile/kupac-delete-profile.component';
-import { KupacMojProfilComponent } from './pages/kupac-moj-profil/kupac-moj-profil.component';
-import { SettingsComponent } from './pages/settings/settings.component';
-import { FavoritesComponent } from './pages/favorites/favorites.component';
-import { MajstorProfilComponent } from './pages/majstor-profil/majstor-profil.component';
-import { MajstorMapComponent } from './pages/majstor-map/majstor-map.component';
-import { AdminDashboardComponent } from './pages/admin/admin-dashboard.component';
 import { adminGuard } from './guards/admin.guard';
 import { majstorGuard } from './guards/majstor.guard';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  { path: 'settings', component: SettingsComponent },
-  { path: '', component: LandingPageComponent },
-  { path: 'majstor/register', component: MajstorRegisterComponent },
-  { path: 'majstor/edit-profile/:id', component: MajstorEditProfileComponent },
-  { path: 'majstor/delete-profile/:id', component: MajstorDeleteProfileComponent },
-  { path: 'majstor/:id', component: MajstorProfilComponent },
-  { path: 'majstor', component: LandingMajstorComponent },
-  { path: 'majstor-map', component: MajstorMapComponent },
-  { path: 'kupac', component: LandingKupacComponent },
-  { path: 'favorites', component: FavoritesComponent, canActivate: [authGuard] },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'admin', component: AdminDashboardComponent, canActivate: [adminGuard] },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'kupac/register', component: KupacRegisterComponent },
-  { path: 'kupac/moj-profil', component: KupacMojProfilComponent },
-  { path: 'kupac/edit-profile/:id', component: KupacEditProfileComponent },
-  { path: 'kupac/delete-profile/:id', component: KupacDeleteProfileComponent },
-  { path: 'oglasi', component: OglasListComponent },
-  { path: 'oglasi/create', component: CreateOglasWizardComponent, canActivate: [majstorGuard] },
-  { path: 'oglasi/:id', component: OglasQrComponent },
-  { path: 'kupci', component: KupciComponent },
-  { path: 'razgovori', component: RazgovoriListComponent },
-  { path: 'razgovori/:id', component: RazgovorComponent },
-  { path: 'recenzije', component: RecenzijeComponent },
-  { path: 'krediti', component: KreditiComponent },
-  { path: 'ugovori', component: UgovoriComponent },
+  { path: 'settings', loadComponent: () => import('./pages/settings/settings.component').then(m => m.SettingsComponent) },
+  { path: '', loadComponent: () => import('./pages/landing-page/landing-page.component').then(m => m.LandingPageComponent) },
+  { path: 'majstor/register', loadComponent: () => import('./pages/majstor-register/majstor-register.component').then(m => m.MajstorRegisterComponent) },
+  { path: 'majstor/edit-profile/:id', loadComponent: () => import('./pages/majstor-edit-profile/majstor-edit-profile.component').then(m => m.MajstorEditProfileComponent) },
+  { path: 'majstor/delete-profile/:id', loadComponent: () => import('./pages/majstor-delete-profile/majstor-delete-profile.component').then(m => m.MajstorDeleteProfileComponent) },
+  { path: 'majstor/:id', loadComponent: () => import('./pages/majstor-profil/majstor-profil.component').then(m => m.MajstorProfilComponent) },
+  { path: 'majstor', loadComponent: () => import('./pages/landing-majstor/landing-majstor.component').then(m => m.LandingMajstorComponent) },
+  { path: 'majstor-map', loadComponent: () => import('./pages/majstor-map/majstor-map.component').then(m => m.MajstorMapComponent) },
+  { path: 'kupac', loadComponent: () => import('./pages/landing-kupac/landing-kupac.component').then(m => m.LandingKupacComponent) },
+  { path: 'favorites', loadComponent: () => import('./pages/favorites/favorites.component').then(m => m.FavoritesComponent), canActivate: [authGuard] },
+  { path: 'dashboard', loadComponent: () => import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent) },
+  { path: 'admin', loadComponent: () => import('./pages/admin/admin-dashboard.component').then(m => m.AdminDashboardComponent), canActivate: [adminGuard] },
+  { path: 'login', loadComponent: () => import('./pages/auth/login/login.component').then(m => m.LoginComponent) },
+  { path: 'register', loadComponent: () => import('./pages/auth/register/register.component').then(m => m.RegisterComponent) },
+  { path: 'kupac/register', loadComponent: () => import('./pages/kupac-register/kupac-register.component').then(m => m.KupacRegisterComponent) },
+  { path: 'kupac/moj-profil', loadComponent: () => import('./pages/kupac-moj-profil/kupac-moj-profil.component').then(m => m.KupacMojProfilComponent) },
+  { path: 'kupac/edit-profile/:id', loadComponent: () => import('./pages/kupac-edit-profile/kupac-edit-profile.component').then(m => m.KupacEditProfileComponent) },
+  { path: 'kupac/delete-profile/:id', loadComponent: () => import('./pages/kupac-delete-profile/kupac-delete-profile.component').then(m => m.KupacDeleteProfileComponent) },
+  { path: 'oglasi', loadComponent: () => import('./pages/oglasi/oglas-list.component').then(m => m.OglasListComponent) },
+  { path: 'oglasi/create', loadComponent: () => import('./pages/oglasi/create-oglas-wizard/create-oglas-wizard.component').then(m => m.CreateOglasWizardComponent), canActivate: [majstorGuard] },
+  { path: 'oglasi/:id', loadComponent: () => import('./pages/oglas-qr/oglas-qr.component').then(m => m.OglasQrComponent) },
+  { path: 'kupci', loadComponent: () => import('./pages/kupci/kupci.component').then(m => m.KupciComponent) },
+  { path: 'razgovori', loadComponent: () => import('./pages/razgovori/razgovori-list.component').then(m => m.RazgovoriListComponent) },
+  { path: 'razgovori/:id', loadComponent: () => import('./pages/razgovori/razgovor.component').then(m => m.RazgovorComponent) },
+  { path: 'recenzije', loadComponent: () => import('./pages/recenzije/recenzije.component').then(m => m.RecenzijeComponent) },
+  { path: 'krediti', loadComponent: () => import('./pages/krediti/krediti.component').then(m => m.KreditiComponent) },
+  { path: 'ugovori', loadComponent: () => import('./pages/ugovori/ugovori.component').then(m => m.UgovoriComponent) },
   { path: '**', redirectTo: '' }
 ];

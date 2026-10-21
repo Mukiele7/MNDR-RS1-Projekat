@@ -3,6 +3,7 @@ using MNDR.Application.Modules.Auth.Commands.Logout;
 using MNDR.Application.Modules.Auth.Commands.RefreshToken;
 using MNDR.Application.Modules.Auth.Commands.Register;
 using MNDR.API.Attributes;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MNDR.API.Controllers;
 
@@ -18,6 +19,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
+    [AllowAnonymous]
     [ValidateRecaptcha]
     public async Task<ActionResult<RegisterCommandDto>> Register([FromBody] RegisterCommand command)
     {
@@ -26,6 +28,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [AllowAnonymous]
     public async Task<ActionResult<LoginCommandDto>> Login([FromBody] LoginCommand command)
     {
         var result = await _mediator.Send(command);
@@ -33,6 +36,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("logout")]
+    [AllowAnonymous]
     public async Task<ActionResult<LogoutCommandDto>> Logout([FromBody] LogoutCommand command)
     {
         var result = await _mediator.Send(command);

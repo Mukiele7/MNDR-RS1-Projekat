@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RazgovorService } from '../../services/razgovor.service';
 import { AuthService } from '../../services/auth.service';
+import { environment } from '../../../environments/environment';
 
 interface RazgovorPreview {
   razgovorId: number;
@@ -1000,7 +1001,7 @@ export class RazgovoriListComponent implements OnInit {
   getProfileImage(): string {
     const user = this.currentUser;
     if (user?.slikaProfila) {
-      return `http://localhost:5017${user.slikaProfila}`;
+      return `${environment.apiRoot}${user.slikaProfila}`;
     }
     const firstName = this.currentUser?.ime || 'K';
     const lastName = this.currentUser?.prezime || 'K';

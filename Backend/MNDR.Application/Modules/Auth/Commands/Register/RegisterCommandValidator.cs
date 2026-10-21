@@ -17,9 +17,7 @@ public sealed class RegisterCommandValidator : AbstractValidator<RegisterCommand
 
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email je obavezan")
-            .EmailAddress().WithMessage("Email nije ispravan")
-            .Matches(@"^[^@\s]+@[^@\s]+\.com$")
-            .WithMessage("Email mora biti u formatu: primer@domen.com");
+            .EmailAddress().WithMessage("Email nije ispravan");
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Lozinka je obavezna")
@@ -37,7 +35,7 @@ public sealed class RegisterCommandValidator : AbstractValidator<RegisterCommand
             .WithMessage("Unesite broj: 061234567 ili +38761234567");
 
         RuleFor(x => x.Role)
-            .InclusiveBetween(0, 2).WithMessage("Role mora biti 0 (Kupac), 1 (Majstor) ili 2 (Administrator)");
+            .InclusiveBetween(0, 1).WithMessage("Javna registracija dozvoljava samo uloge Kupac ili Majstor");
     }
 
     private bool BeValidPhoneNumber(string phone)

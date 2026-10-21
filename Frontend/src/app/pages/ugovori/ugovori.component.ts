@@ -7,6 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatChipsModule } from '@angular/material/chips';
 import { UgovorService } from '../../services/ugovor.service';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 interface Ugovor {
   ugovorId: number;
@@ -88,9 +90,6 @@ interface Ugovor {
                 <td mat-cell *matCellDef="let element">
                   <button mat-icon-button color="primary" (click)="completeContract(element.ugovorId)">
                     <mat-icon>done</mat-icon>
-                  </button>
-                  <button mat-icon-button color="warn" (click)="cancelContract(element.ugovorId)">
-                    <mat-icon>close</mat-icon>
                   </button>
                 </td>
               </ng-container>
@@ -203,15 +202,23 @@ export class UgovoriComponent implements OnInit {
   zavrseniUgovori: Ugovor[] = [];
   displayedColumns = ['oglasNaslov', 'kupacIme', 'datumOd', 'datumDo', 'cena', 'akcije'];
   zavrseniColumns = ['oglasNaslov', 'kupacIme', 'cena', 'datumKreiranja', 'akcije'];
-  korisnikId = 1; // TODO: Get from auth service
+  korisnikId = 0;
   
   // Sorting
   sortBy: string = 'datumkreiranja';
   sortOrder: string = 'desc';
 
-  constructor(private ugovorService: UgovorService) {}
+  constructor(
+    private ugovorService: UgovorService,
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
+    this.korisnikId = this.authService.getCurrentUser()?.userId ?? 0;
+    if (!this.korisnikId) {
+      return;
+    }
     this.loadUgovori();
   }
 
@@ -243,21 +250,20 @@ export class UgovoriComponent implements OnInit {
   }
 
   completeContract(ugovorId: number) {
+    if (!window.confirm('Da li ste sigurni da želite završiti ovaj ugovor? Ova akcija se ne može poništiti.')) {
+      return;
+    }
     this.ugovorService.completeUgovor(ugovorId).subscribe({
       next: () => {
         this.loadUgovori();
       },
       error: (err: any) => {
-        console.error('Greška pri završavanju ugovora', err);
+        window.alert(err?.error?.message ?? 'Ugovor nije moguće završiti.');
       }
     });
   }
 
-  cancelContract(ugovorId: number) {
-    console.log('Otkaži ugovor', ugovorId);
-  }
-
   reviewContract(ugovorId: number) {
-    console.log('Napraviti recenziju za ugovor', ugovorId);
+    this.router.navigate(['/recenzije'], { queryParams: { ugovorId } });
   }
 }

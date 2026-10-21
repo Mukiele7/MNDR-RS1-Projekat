@@ -45,7 +45,11 @@ public class ChatHub : Hub
             throw new HubException("User not authenticated");
         }
 
-        // Kreiraj poruku u bazi
+        var razgovor = await _context.Razgovori.FindAsync(razgovorId);
+        if (razgovor is null || !IsParticipant(razgovor, posiljalacId.Value))
+            throw new HubException("Nemate pristup ovom razgovoru.");
+        var actualRecipientId = razgovor.KupacId == posiljalacId.Value ? razgovor.MajstorId : razgovor.KupacId;
+
         var razgovorPoruka = new RazgovorPoruka
         {
             RazgovorId = razgovorId,
@@ -59,7 +63,7 @@ public class ChatHub : Hub
         await _context.SaveChangesAsync();
 
         // Pošalji poruku primaocu ako je online
-        var primaocConnectionId = GetConnectionIdForUser(primaocId);
+        var primaocConnectionId = GetConnectionIdForUser(actualRecipientId);
         if (primaocConnectionId != null)
         {
             await Clients.Client(primaocConnectionId).SendAsync("ReceiveMessage", new
@@ -91,11 +95,13 @@ public class ChatHub : Hub
     {
         var posiljalacId = GetUserId();
         if (!posiljalacId.HasValue) return;
+        var razgovor = await _context.Razgovori.FindAsync(razgovorId);
+        if (razgovor is null || !IsParticipant(razgovor, posiljalacId.Value)) return;
 
-        var primaocConnectionId = GetConnectionIdForUser(primaocId);
+        var primaocConnectionId = GetConnectionIdForUser(razgovor.KupacId == posiljalacId.Value ? razgovor.MajstorId : razgovor.KupacId);
         if (primaocConnectionId != null)
         {
-            await Clients.Client(primaocConnectionId).SendAsync("UserIsTyping", razgovorId, posiljalacId.Value);
+            await Clients.Client(primaocConnectionId).SendAsync("TypingIndicator", new { razgovorId, korisnikId = posiljalacId.Value, isTyping = true });
         }
     }
 
@@ -103,11 +109,13 @@ public class ChatHub : Hub
     {
         var posiljalacId = GetUserId();
         if (!posiljalacId.HasValue) return;
+        var razgovor = await _context.Razgovori.FindAsync(razgovorId);
+        if (razgovor is null || !IsParticipant(razgovor, posiljalacId.Value)) return;
 
-        var primaocConnectionId = GetConnectionIdForUser(primaocId);
+        var primaocConnectionId = GetConnectionIdForUser(razgovor.KupacId == posiljalacId.Value ? razgovor.MajstorId : razgovor.KupacId);
         if (primaocConnectionId != null)
         {
-            await Clients.Client(primaocConnectionId).SendAsync("UserStoppedTyping", razgovorId, posiljalacId.Value);
+            await Clients.Client(primaocConnectionId).SendAsync("TypingIndicator", new { razgovorId, korisnikId = posiljalacId.Value, isTyping = false });
         }
     }
 
@@ -117,7 +125,9 @@ public class ChatHub : Hub
         if (!userId.HasValue) return;
 
         var poruka = await _context.RazgovorPoruke.FindAsync(razgovorPorukaId);
-        if (poruka != null && poruka.Status != "read")
+        var razgovor = poruka is null ? null : await _context.Razgovori.FindAsync(poruka.RazgovorId);
+        if (poruka != null && razgovor is not null && IsParticipant(razgovor, userId.Value) &&
+            poruka.PosiljaocId != userId.Value && poruka.Status != "read")
         {
             poruka.Status = "read";
             await _context.SaveChangesAsync();
@@ -126,7 +136,7 @@ public class ChatHub : Hub
             var posiljalacConnectionId = GetConnectionIdForUser(poruka.PosiljaocId);
             if (posiljalacConnectionId != null)
             {
-                await Clients.Client(posiljalacConnectionId).SendAsync("MessageRead", razgovorPorukaId);
+                await Clients.Client(posiljalacConnectionId).SendAsync("MessageRead", new { razgovorPorukaId, status = "read" });
             }
         }
     }
@@ -140,6 +150,9 @@ public class ChatHub : Hub
         }
         return null;
     }
+
+    private static bool IsParticipant(Razgovor razgovor, int userId) =>
+        razgovor.KupacId == userId || razgovor.MajstorId == userId;
 
     public string? GetConnectionIdForUser(int userId)
     {

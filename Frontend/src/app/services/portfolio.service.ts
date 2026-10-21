@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface PortfolioSlikaDto {
   portfolioSlikaId: number;
@@ -38,7 +39,7 @@ export interface DeletePortfolioSlikaResponse {
   providedIn: 'root'
 })
 export class PortfolioService {
-  private apiUrl = 'http://localhost:5017/api/portfolio';
+  private apiUrl = `${environment.apiUrl}/portfolio`;
 
   constructor(private http: HttpClient) { }
 

@@ -9,6 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { KupacService } from '../../services/kupac.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-kupac-moj-profil',
@@ -82,7 +83,7 @@ export class KupacMojProfilComponent implements OnInit {
 
   getProfileImage(): string {
     if (this.kupac?.slikaProfila) {
-      return `http://localhost:5017${this.kupac.slikaProfila}`;
+      return `${environment.apiRoot}${this.kupac.slikaProfila}`;
     }
     // Fallback na UI Avatars sa inicijalima
     const firstName = this.kupac?.ime || 'K';

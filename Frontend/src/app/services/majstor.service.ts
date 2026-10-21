@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MajstorService {
-  private apiUrl = 'http://localhost:5017/api/majstor';
+  private apiUrl = `${environment.apiUrl}/majstor`;
 
   constructor(private http: HttpClient) { }
 
@@ -27,10 +28,10 @@ export class MajstorService {
       .set('pageSize', (params?.pageSize || 10).toString());
 
     if (params?.specijalizacija) httpParams = httpParams.set('specijalizacija', params.specijalizacija);
-    if (params?.minOcjena) httpParams = httpParams.set('minOcjena', params.minOcjena.toString());
+    if (params?.minOcjena) httpParams = httpParams.set('minProsjecnaOcjena', params.minOcjena.toString());
     if (params?.grad) httpParams = httpParams.set('grad', params.grad);
     if (params?.minGodineIskustva) httpParams = httpParams.set('minGodineIskustva', params.minGodineIskustva.toString());
-    if (params?.maxCijena) httpParams = httpParams.set('maxCijena', params.maxCijena.toString());
+    if (params?.maxCijena) httpParams = httpParams.set('maxCijenaMjesecne', params.maxCijena.toString());
     if (params?.sortBy) httpParams = httpParams.set('sortBy', params.sortBy);
     if (params?.sortOrder) httpParams = httpParams.set('sortOrder', params.sortOrder);
     if (params?.searchTerm) httpParams = httpParams.set('searchTerm', params.searchTerm);

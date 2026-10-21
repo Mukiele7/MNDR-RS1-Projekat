@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using MNDR.Application.Modules.Ugovori.Commands.Create;
 using MNDR.Application.Modules.Ugovori.Commands.Complete;
 using MNDR.Application.Modules.Ugovori.Queries.GetUgovori;
@@ -8,6 +9,7 @@ namespace MNDR.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class UgovorController : ControllerBase
     {
         private readonly IMediator _mediator;

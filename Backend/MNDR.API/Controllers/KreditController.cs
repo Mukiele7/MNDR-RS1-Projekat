@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using MNDR.Application.Modules.Krediti.Commands.Add;
 using MNDR.Application.Modules.Krediti.Commands.Use;
 using MNDR.Application.Modules.Krediti.Queries.GetKrediti;
@@ -8,6 +9,7 @@ namespace MNDR.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class KreditController : ControllerBase
     {
         private readonly IMediator _mediator;
