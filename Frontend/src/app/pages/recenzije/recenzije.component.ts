@@ -7,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RecenzijaService } from '../../services/recenzija.service';
 import { AuthService } from '../../services/auth.service';
 
@@ -32,18 +32,18 @@ interface Recenzija {
     MatListModule,
     MatSelectModule,
     MatIconModule,
-    FormsModule
+    ReactiveFormsModule
   ],
   template: `
     <div class="recenzije-container">
       <h2>Recenzije ({{ averageRating.toFixed(1) }}/5.0)</h2>
       
-      <mat-card class="add-review-card">
+      <mat-card class="add-review-card" [formGroup]="reviewForm">
         <h3>Dodaj recenziju</h3>
         <div class="form-group">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Ocena (1-5)</mat-label>
-            <mat-select [(ngModel)]="newReview.ocena">
+            <mat-select formControlName="ocena">
               <mat-option value="1">⭐ Loše</mat-option>
               <mat-option value="2">⭐⭐ Prihvatljivo</mat-option>
               <mat-option value="3">⭐⭐⭐ Dobro</mat-option>
@@ -55,7 +55,7 @@ interface Recenzija {
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Komentar</mat-label>
           <textarea matInput 
-                    [(ngModel)]="newReview.komentar" 
+                    formControlName="komentar"
                     placeholder="Unesite svoj komentar..."
                     rows="3"></textarea>
         </mat-form-field>
@@ -163,16 +163,19 @@ export class RecenzijeComponent implements OnInit {
   majstorId = 0;
   averageRating = 0;
 
-  newReview = {
-    ugovorId: 0,
-    ocena: 5,
-    komentar: ''
-  };
+  reviewForm: FormGroup;
 
   constructor(
     private recenzijaService: RecenzijaService,
-    private authService: AuthService
-  ) {}
+    private authService: AuthService,
+    private formBuilder: FormBuilder
+  ) {
+    this.reviewForm = this.formBuilder.group({
+      ugovorId: [0, [Validators.required, Validators.min(1)]],
+      ocena: [5, [Validators.required, Validators.min(1), Validators.max(5)]],
+      komentar: ['', [Validators.required, Validators.maxLength(2000)]]
+    });
+  }
 
   ngOnInit() {
     this.majstorId = this.authService.getCurrentUser()?.userId ?? 0;
@@ -204,15 +207,20 @@ export class RecenzijeComponent implements OnInit {
   }
 
   submitReview() {
-    if (!this.newReview.komentar.trim()) return;
+    if (this.reviewForm.invalid) {
+      this.reviewForm.markAllAsTouched();
+      return;
+    }
+
+    const review = this.reviewForm.getRawValue();
 
     this.recenzijaService.createRecenzija(
-      this.newReview.ugovorId,
-      this.newReview.ocena,
-      this.newReview.komentar
+      review.ugovorId,
+      review.ocena,
+      review.komentar
     ).subscribe({
       next: () => {
-        this.newReview = { ugovorId: 0, ocena: 5, komentar: '' };
+        this.reviewForm.reset({ ugovorId: 0, ocena: 5, komentar: '' });
         this.loadRecenzije();
       },
       error: (err: any) => {

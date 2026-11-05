@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { FormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RazgovorService } from '../../services/razgovor.service';
 import { SignalRService, SignalRMessage } from '../../services/signalr.service';
 import { AuthService } from '../../services/auth.service';
@@ -50,7 +50,7 @@ interface RazgovorDetail {
     MatIconModule,
     MatBadgeModule,
     MatProgressSpinnerModule,
-    FormsModule
+    ReactiveFormsModule
   ],
   template: `
     <div class="razgovor-container" *ngIf="razgovor">
@@ -119,8 +119,8 @@ interface RazgovorDetail {
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Vaša poruka</mat-label>
           <textarea matInput 
-                    [(ngModel)]="newMessage" 
-                    (ngModelChange)="onTyping()"
+                    [formControl]="messageControl"
+                    (input)="onTyping()"
                     (keydown.enter)="onEnterPress($any($event))"
                     placeholder="Upišite poruku..."
                     rows="3"></textarea>
@@ -539,6 +539,7 @@ export class RazgovorComponent implements OnInit, OnDestroy, AfterViewChecked {
   
   razgovor: RazgovorDetail | null = null;
   newMessage = '';
+  messageControl = new FormControl('', { nonNullable: true });
   currentUserId: number = 0;
   isSending = false;
   isSignalRConnected = false;
@@ -738,6 +739,7 @@ export class RazgovorComponent implements OnInit, OnDestroy, AfterViewChecked {
       );
       
       this.newMessage = '';
+      this.messageControl.setValue('');
       
       // Stop typing indicator
       if (this.razgovor) {
@@ -752,6 +754,7 @@ export class RazgovorComponent implements OnInit, OnDestroy, AfterViewChecked {
         .subscribe({
           next: () => {
             this.newMessage = '';
+            this.messageControl.setValue('');
             this.loadRazgovor(this.razgovor!.razgovorId);
           },
           error: (err: any) => {
@@ -844,6 +847,7 @@ export class RazgovorComponent implements OnInit, OnDestroy, AfterViewChecked {
    * Handle typing event
    */
   onTyping() {
+    this.newMessage = this.messageControl.value;
     if (!this.razgovor || !this.newMessage.trim()) return;
 
     // Clear existing timeout

@@ -8,7 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { OglasService } from '../../services/oglas.service';
 import { RazgovorService } from '../../services/razgovor.service';
 import { AuthService } from '../../services/auth.service';
@@ -47,22 +47,22 @@ interface PagedResult {
     MatCardModule,
     MatDialogModule,
     QRCodeModule,
-    FormsModule
+    ReactiveFormsModule
   ],
   template: `
     <div class="oglas-container">
       <h2>Dostupni oglasi</h2>
       
-      <mat-card class="filter-card">
+      <mat-card class="filter-card" [formGroup]="filterForm">
         <div class="filter-row">
           <mat-form-field appearance="outline">
             <mat-label>Pretraga</mat-label>
-            <input matInput [(ngModel)]="searchTerm" placeholder="Pretraži oglase...">
+            <input matInput formControlName="searchTerm" placeholder="Pretraži oglase...">
           </mat-form-field>
           
           <mat-form-field appearance="outline">
             <mat-label>Status</mat-label>
-            <input matInput [(ngModel)]="statusFilter" placeholder="Filtera po statusu...">
+            <input matInput formControlName="statusFilter" placeholder="Filtera po statusu...">
           </mat-form-field>
           
           <button mat-raised-button color="primary" (click)="onFilterChange()">
@@ -255,6 +255,7 @@ export class OglasListComponent implements OnInit {
   loading = false;
   searchTerm = '';
   statusFilter = '';
+  filterForm: FormGroup;
   
   // Sorting
   sortBy: string = 'datumobjave';
@@ -265,8 +266,14 @@ export class OglasListComponent implements OnInit {
     private razgovorService: RazgovorService,
     private authService: AuthService,
     private router: Router,
-    private dialog: MatDialog
-  ) {}
+    private dialog: MatDialog,
+    private formBuilder: FormBuilder
+  ) {
+    this.filterForm = this.formBuilder.group({
+      searchTerm: [''],
+      statusFilter: ['']
+    });
+  }
 
   ngOnInit() {
     this.loadOglasi();
@@ -311,6 +318,8 @@ export class OglasListComponent implements OnInit {
   }
 
   onFilterChange() {
+    this.searchTerm = this.filterForm.get('searchTerm')?.value ?? '';
+    this.statusFilter = this.filterForm.get('statusFilter')?.value ?? '';
     this.currentPage = 1;
     this.loadOglasi();
   }
