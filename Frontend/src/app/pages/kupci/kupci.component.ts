@@ -10,7 +10,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
-import { FormsModule } from '@angular/forms';
 import { KupacService } from '../../services/kupac.service';
 import { CustomPhonePipe } from '../../shared/pipes/phone.pipe';
 
@@ -33,7 +32,6 @@ interface Kupac {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    FormsModule,
     MatTableModule,
     MatPaginatorModule,
     MatInputModule,
@@ -63,6 +61,7 @@ export class KupciComponent implements OnInit {
 
   createForm: FormGroup;
   updateForm: FormGroup;
+  filterForm: FormGroup;
   showCreateForm = false;
   showUpdateForm = false;
   selectedKupac: Kupac | null = null;
@@ -92,6 +91,13 @@ export class KupciComponent implements OnInit {
       opcina: [''],
       opisProfila: ['']
     });
+    this.filterForm = this.formBuilder.group({
+      searchFilter: [''],
+      gradFilter: [''],
+      opcinaFilter: [''],
+      minOcjenaFilter: [null],
+      minBrojNarudzbiFilter: [null]
+    });
   }
 
   ngOnInit(): void {
@@ -117,6 +123,12 @@ export class KupciComponent implements OnInit {
   }
 
   applyFilters(): void {
+    const filters = this.filterForm.getRawValue();
+    this.searchFilter = filters.searchFilter;
+    this.gradFilter = filters.gradFilter;
+    this.opcinaFilter = filters.opcinaFilter;
+    this.minOcjenaFilter = filters.minOcjenaFilter;
+    this.minBrojNarudzbiFilter = filters.minBrojNarudzbiFilter;
     this.pageNumber = 1;
     this.loadKupci();
   }
@@ -127,6 +139,13 @@ export class KupciComponent implements OnInit {
     this.searchFilter = '';
     this.minOcjenaFilter = null;
     this.minBrojNarudzbiFilter = null;
+    this.filterForm.reset({
+      searchFilter: '',
+      gradFilter: '',
+      opcinaFilter: '',
+      minOcjenaFilter: null,
+      minBrojNarudzbiFilter: null
+    });
     this.pageNumber = 1;
     this.loadKupci();
   }
@@ -151,7 +170,6 @@ export class KupciComponent implements OnInit {
     if (this.createForm.valid) {
       this.kupacService.createKupac(this.createForm.value).subscribe({
         next: (response) => {
-          console.log('Kupac kreiran:', response);
           this.showCreateForm = false;
           this.createForm.reset();
           this.loadKupci();
@@ -185,7 +203,6 @@ export class KupciComponent implements OnInit {
     if (this.updateForm.valid && this.selectedKupac) {
       this.kupacService.updateKupac(this.selectedKupac.korisnikId, this.updateForm.value).subscribe({
         next: (response) => {
-          console.log('Kupac ažuriran:', response);
           this.showUpdateForm = false;
           this.selectedKupac = null;
           this.updateForm.reset();
@@ -203,7 +220,6 @@ export class KupciComponent implements OnInit {
     if (confirm(`Da li ste sigurni da želite obrisati kupca ${kupac.ime} ${kupac.prezime}?`)) {
       this.kupacService.deleteKupac(kupac.korisnikId).subscribe({
         next: (response) => {
-          console.log('Kupac obrisan:', response);
           this.loadKupci();
         },
         error: (error) => console.error('Greška:', error)

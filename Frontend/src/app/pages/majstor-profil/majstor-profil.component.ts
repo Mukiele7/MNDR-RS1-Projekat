@@ -135,11 +135,8 @@ export class MajstorProfilComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('MajstorProfil ngOnInit pozvan');
     this.route.params.subscribe(params => {
-      console.log('Route params:', params);
       this.majstorId = +params['id'];
-      console.log('MajstorId:', this.majstorId);
       if (this.majstorId && !isNaN(this.majstorId)) {
         this.loadMajstorProfile();
         if (this.currentUser?.uloga === 'Kupac') {
@@ -158,16 +155,13 @@ export class MajstorProfilComponent implements OnInit {
   }
 
   loadMajstorProfile(): void {
-    console.log('Učitavanje profila za majstorId:', this.majstorId);
     this.error = false;
     this.cdr.detectChanges();
     
     this.majstorService.getMajstorById(this.majstorId).subscribe({
       next: (data) => {
-        console.log('Profil učitan:', data);
         this.majstor = data;
         this.loading = false;
-        console.log('Loading flag postavljen na false');
         this.cdr.detectChanges();
       },
       error: (err) => {

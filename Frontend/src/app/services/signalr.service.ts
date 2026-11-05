@@ -70,7 +70,6 @@ export class SignalRService {
     if (this.hubConnection && 
         (this.hubConnection.state === signalR.HubConnectionState.Connected ||
          this.hubConnection.state === signalR.HubConnectionState.Connecting)) {
-      console.log('SignalR already connected or connecting');
       return;
     }
 
@@ -86,23 +85,19 @@ export class SignalRService {
 
     // Handle connection state changes
     this.hubConnection.onreconnecting(() => {
-      console.log('SignalR reconnecting...');
       this.connectionState.next(signalR.HubConnectionState.Reconnecting);
     });
 
     this.hubConnection.onreconnected(() => {
-      console.log('SignalR reconnected successfully');
       this.connectionState.next(signalR.HubConnectionState.Connected);
     });
 
     this.hubConnection.onclose((error) => {
-      console.log('SignalR connection closed:', error?.message || 'No error');
       this.connectionState.next(signalR.HubConnectionState.Disconnected);
     });
 
     try {
       await this.hubConnection.start();
-      console.log('SignalR connection started successfully');
       this.connectionState.next(signalR.HubConnectionState.Connected);
     } catch (error: any) {
       console.warn('Could not start SignalR connection:', error?.message || error);
@@ -129,25 +124,21 @@ export class SignalRService {
 
     // Handle incoming messages
     this.hubConnection.on('ReceiveMessage', (message: SignalRMessage) => {
-      console.log('Message received via SignalR:', message);
       this.messageReceived.next(message);
     });
 
     // Handle message sent confirmation (for sync across devices)
     this.hubConnection.on('MessageSent', (message: SignalRMessage) => {
-      console.log('Message sent confirmation:', message);
       this.messageSent.next(message);
     });
 
     // Handle typing indicator
     this.hubConnection.on('TypingIndicator', (indicator: TypingIndicator) => {
-      console.log('User is typing:', indicator);
       (indicator.isTyping ? this.userTyping : this.userStoppedTyping).next(indicator);
     });
 
     // Handle message read receipts
     this.hubConnection.on('MessageRead', (data: { razgovorPorukaId: number, status: string }) => {
-      console.log('Message read:', data);
       this.messageRead.next(data);
     });
   }
@@ -162,7 +153,6 @@ export class SignalRService {
 
     try {
       await this.hubConnection.invoke('SendMessage', razgovorId, primaocId, poruka);
-      console.log('Message sent successfully');
     } catch (error) {
       console.error('Error sending message:', error);
       throw error;
@@ -209,7 +199,6 @@ export class SignalRService {
 
     try {
       await this.hubConnection.invoke('MarkMessageAsRead', razgovorPorukaId);
-      console.log('Message marked as read:', razgovorPorukaId);
     } catch (error) {
       console.error('Error marking message as read:', error);
     }
@@ -254,7 +243,6 @@ export class SignalRService {
     if (this.hubConnection) {
       try {
         await this.hubConnection.stop();
-        console.log('SignalR connection stopped');
         this.connectionState.next(signalR.HubConnectionState.Disconnected);
       } catch (error) {
         console.error('Error stopping SignalR connection:', error);

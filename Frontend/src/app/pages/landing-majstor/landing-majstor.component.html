@@ -110,14 +110,14 @@
         <p>Filtriraj po specijalizaciji, lokaciji, iskustvu i cijeni</p>
       </div>
       
-      <div class="filters-form">
+      <div class="filters-form" [formGroup]="filterForm">
         <div class="filter-row">
           <div class="filter-group">
             <label>
               <mat-icon>construction</mat-icon>
               Specijalizacija
             </label>
-            <select class="filter-select" [(ngModel)]="filters.specijalizacija">
+            <select class="filter-select" formControlName="specijalizacija">
               <option value="">Sve specijalizacije</option>
               <option value="Vodoinstalacije">Vodoinstalacije</option>
               <option value="Elektrika">Elektrika</option>
@@ -134,7 +134,7 @@
               <mat-icon>location_on</mat-icon>
               Grad
             </label>
-            <select class="filter-select" [(ngModel)]="filters.grad">
+            <select class="filter-select" formControlName="grad">
               <option value="">Svi gradovi</option>
               <option value="Sarajevo">Sarajevo</option>
               <option value="Banja Luka">Banja Luka</option>
@@ -150,7 +150,7 @@
               <mat-icon>star</mat-icon>
               Minimalna Ocjena
             </label>
-            <select class="filter-select" [(ngModel)]="filters.minOcjena">
+            <select class="filter-select" formControlName="minOcjena">
               <option [ngValue]="null">Sve ocjene</option>
               <option [ngValue]="4.5">4.5+ ⭐</option>
               <option [ngValue]="4.0">4.0+ ⭐</option>
@@ -164,7 +164,7 @@
               <mat-icon>trending_up</mat-icon>
               Iskustvo
             </label>
-            <select class="filter-select" [(ngModel)]="filters.minGodineIskustva">
+            <select class="filter-select" formControlName="minGodineIskustva">
               <option [ngValue]="null">Sve nivoe</option>
               <option [ngValue]="10">10+ godina</option>
               <option [ngValue]="5">5+ godina</option>
@@ -178,7 +178,7 @@
               <mat-icon>payments</mat-icon>
               Maksimalna Cijena
             </label>
-            <input type="number" class="filter-input" placeholder="npr. 2000 KM" [(ngModel)]="filters.maxCijena">
+            <input type="number" class="filter-input" placeholder="npr. 2000 KM" formControlName="maxCijena">
           </div>
         </div>
 
@@ -557,7 +557,7 @@
             <input 
               type="email" 
               placeholder="vasemail@gmail.com" 
-              [(ngModel)]="newsletterEmail"
+              [formControl]="newsletterControl"
               name="email"
               required
             />

@@ -39,7 +39,7 @@ describe('SettingsComponent', () => {
   });
 
   it('should save settings to localStorage', () => {
-    component.settings.theme = 'dark';
+    component.settingsForm.patchValue({ theme: 'dark' });
     component.saveSettings();
     
     const saved = localStorage.getItem('appSettings');
@@ -78,13 +78,15 @@ describe('SettingsComponent', () => {
   });
 
   it('should reset settings to defaults', () => {
-    component.settings.language = 'en-US';
-    component.settings.theme = 'dark';
-    component.settings.pageSize = 50;
+    component.settingsForm.patchValue({
+      language: 'en-US',
+      theme: 'dark',
+      pageSize: 50
+    });
     
     component.resetSettings();
     
-    expect(component.settings.language).toBe('sr-Latn-BA');
+    expect(component.settings.language).toBe('bs-Latn-BA');
     expect(component.settings.theme).toBe('light');
     expect(component.settings.pageSize).toBe(10);
   });

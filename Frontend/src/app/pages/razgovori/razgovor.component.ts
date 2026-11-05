@@ -686,11 +686,8 @@ export class RazgovorComponent implements OnInit, OnDestroy, AfterViewChecked {
       console.error('No current user ID');
       return;
     }
-    
-    console.log('Loading razgovor:', razgovorId, 'for user:', this.currentUserId);
     this.razgovorService.getRazgovor(razgovorId, this.currentUserId).subscribe({
       next: (data: any) => {
-        console.log('Razgovor data received:', data);
         this.razgovor = data;
         
         // Determine other user

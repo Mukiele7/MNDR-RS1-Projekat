@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-landing-kupac',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule],
   templateUrl: './landing-kupac.component.html',
   styleUrl: './landing-kupac.component.scss'
 })
@@ -16,6 +16,8 @@ export class LandingKupacComponent {
   newsletterEmail: string = '';
   isDropdownOpen = false;
   searchQuery: string = '';
+  searchControl = new FormControl('', { nonNullable: true });
+  newsletterControl = new FormControl('', { nonNullable: true });
 
   constructor(
     public authService: AuthService,
@@ -140,15 +142,17 @@ export class LandingKupacComponent {
   ];
 
   subscribeNewsletter() {
+    this.newsletterEmail = this.newsletterControl.value;
     if (this.newsletterEmail) {
-      console.log('Newsletter subscription:', this.newsletterEmail);
       // Ovde dodaj logiku za slanje email-a na backend
       alert('Hvala što ste se pretplatili!');
       this.newsletterEmail = '';
+      this.newsletterControl.reset();
     }
   }
 
   searchMajstori(): void {
+    this.searchQuery = this.searchControl.value;
     // Navigate to majstor map page with search query
     if (this.searchQuery.trim()) {
       this.router.navigate(['/majstor-map'], { 

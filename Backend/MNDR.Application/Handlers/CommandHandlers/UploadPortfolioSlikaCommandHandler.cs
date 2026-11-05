@@ -2,6 +2,7 @@ using MediatR;
 using MNDR.Application.Abstractions;
 using MNDR.Application.Commands;
 using MNDR.Domain.Entities;
+using Microsoft.AspNetCore.Http;
 
 namespace MNDR.Application.Handlers.CommandHandlers;
 
@@ -16,14 +17,46 @@ public class UploadPortfolioSlikaCommandHandler : IRequestHandler<UploadPortfoli
 
     public async Task<UploadPortfolioSlikaResponse> Handle(UploadPortfolioSlikaCommand request, CancellationToken cancellationToken)
     {
-        // Validacija URL-a
-        if (string.IsNullOrWhiteSpace(request.SlikaUrl))
+        if (request.Slika is null && string.IsNullOrWhiteSpace(request.SlikaUrl))
         {
             return new UploadPortfolioSlikaResponse
             {
                 Success = false,
-                Message = "URL slike je obavezan"
+                Message = "Slika ili URL slike je obavezan"
             };
+        }
+
+        var slikaUrl = request.SlikaUrl;
+        if (request.Slika is not null)
+        {
+            var allowedContentTypes = new[] { "image/jpeg", "image/png", "image/webp", "image/gif" };
+            if (!allowedContentTypes.Contains(request.Slika.ContentType, StringComparer.OrdinalIgnoreCase))
+            {
+                return new UploadPortfolioSlikaResponse
+                {
+                    Success = false,
+                    Message = "Dozvoljeni su samo JPG, PNG, WEBP i GIF fajlovi"
+                };
+            }
+
+            if (request.Slika.Length > 5 * 1024 * 1024)
+            {
+                return new UploadPortfolioSlikaResponse
+                {
+                    Success = false,
+                    Message = "Maksimalna veličina slike je 5 MB"
+                };
+            }
+
+            var extension = Path.GetExtension(request.Slika.FileName).ToLowerInvariant();
+            var fileName = $"{Guid.NewGuid():N}{extension}";
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "portfolio");
+            Directory.CreateDirectory(uploadsFolder);
+
+            var filePath = Path.Combine(uploadsFolder, fileName);
+            await using var stream = File.Create(filePath);
+            await request.Slika.CopyToAsync(stream, cancellationToken);
+            slikaUrl = $"/uploads/portfolio/{fileName}";
         }
 
         // Validacija da li Majstor postoji
@@ -43,7 +76,7 @@ public class UploadPortfolioSlikaCommandHandler : IRequestHandler<UploadPortfoli
         var portfolioSlika = new PortfolioSlika
         {
             MajstorId = request.MajstorId,
-            SlikaUrl = request.SlikaUrl,
+            SlikaUrl = slikaUrl!,
             Opis = request.Opis,
             DatumKreiranja = DateTime.Now
         };

@@ -5,10 +5,12 @@
       *ngIf="isOwner" 
       mat-raised-button 
       color="primary" 
-      (click)="addImageUrl()">
+      (click)="fileInput.click()">
       <mat-icon>add_photo_alternate</mat-icon>
-      Dodaj Sliku
+      Dodaj sliku
     </button>
+    <input #fileInput type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden
+      (change)="onFileSelected($event)" />
   </div>
 
   <!-- Loading State -->

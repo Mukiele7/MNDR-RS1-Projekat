@@ -109,19 +109,13 @@ gradovi = ['Sarajevo','Banja Luka','Tuzla','Zenica','Mostar','Bijeljina','Prijed
   }
 
   updateProfile(): void {
-    console.log('Update profile clicked');
-    console.log('Form valid:', this.editForm.valid);
-    console.log('Form value:', this.editForm.value);
-    console.log('Kupac ID:', this.kupacId);
     
     if (this.editForm.valid) {
       this.saving = true;
       const updateData = this.editForm.value;
-      console.log('Sending update request:', updateData);
       
       this.kupacService.updateKupac(this.kupacId, updateData).subscribe({
         next: (response) => {
-          console.log('Update response:', response);
           alert('Profil uspješno ažuriran!');
           this.saving = false;
           this.router.navigate(['/kupac/moj-profil']);
@@ -133,7 +127,6 @@ gradovi = ['Sarajevo','Banja Luka','Tuzla','Zenica','Mostar','Bijeljina','Prijed
         }
       });
     } else {
-      console.log('Form is invalid');
       alert('Molimo popunite sva obavezna polja pravilno!');
     }
   }

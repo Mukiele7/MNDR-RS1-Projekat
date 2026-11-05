@@ -7,8 +7,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog } from '@angular/material/dialog';
-import { FormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { KupacService } from '../../services/kupac.service';
+import { AuthService } from '../../services/auth.service';
 import { DeleteConfirmationDialogComponent } from '../../components/delete-confirmation-dialog/delete-confirmation-dialog.component';
 
 @Component({
@@ -17,7 +18,7 @@ import { DeleteConfirmationDialogComponent } from '../../components/delete-confi
   imports: [
     CommonModule,
     RouterModule,
-    FormsModule,
+    ReactiveFormsModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -31,6 +32,7 @@ export class KupacDeleteProfileComponent implements OnInit {
   loading = false;
   deleting = false;
   confirmationChecked = false;
+  confirmationControl = new FormControl(false, { nonNullable: true, validators: Validators.requiredTrue });
   kupacId: number = 0;
   kupacData: any = null;
 
@@ -48,7 +50,8 @@ export class KupacDeleteProfileComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -64,25 +67,14 @@ export class KupacDeleteProfileComponent implements OnInit {
 
   loadKupacData(): void {
     this.loading = true;
-    console.log('🔍 Pozivam API za ID:', this.kupacId);
-    console.log('📡 URL:', `http://localhost:5017/api/kupac/${this.kupacId}`);
     
     this.kupacService.getKupacById(this.kupacId).subscribe({
       next: (data) => {
-        console.log('✅ Dobio response:', data);
-        console.log('📊 Tip podatka:', typeof data, 'Null?', data === null);
-        console.log('🔑 Keys u objektu:', Object.keys(data));
-        console.log('👤 data.ime:', data.ime, 'data.Ime:', data.Ime);
-        
-        console.log('⏹️ PRIJE: this.loading =', this.loading);
         this.loading = false;
-        console.log('⏹️ POSLIJE: this.loading =', this.loading);
         this.cdr.detectChanges(); // 🔥 Forsiraj Angular da detektuje promjene!
-        console.log('✨ Change detection forced!');
         
         if (data) {
           this.kupacData = data;
-          console.log('💾 Podaci sačuvani u component:', this.kupacData);
         } else {
           console.warn('⚠️ Backend vratio null/undefined');
           alert(`Kupac sa ID ${this.kupacId} nije pronađen u bazi!`);
@@ -100,13 +92,13 @@ export class KupacDeleteProfileComponent implements OnInit {
         this.router.navigate(['/']);
       },
       complete: () => {
-        console.log('🏁 Observable completed');
       }
     });
   }
 
   deleteProfile(): void {
-    if (!this.confirmationChecked) {
+    this.confirmationChecked = this.confirmationControl.value;
+    if (this.confirmationControl.invalid) {
       alert('Morate potvrditi da razumijete posljedice brisanja profila.');
       return;
     }
@@ -135,7 +127,7 @@ export class KupacDeleteProfileComponent implements OnInit {
     this.kupacService.deleteKupac(this.kupacId).subscribe({
       next: (response) => {
         alert('Vaš profil je uspješno obrisan. Hvala što ste koristili našu platformu.');
-        // TODO: Logout korisnika i redirektuj na landing
+        this.authService.logout();
         this.router.navigate(['/']);
       },
       error: (error) => {

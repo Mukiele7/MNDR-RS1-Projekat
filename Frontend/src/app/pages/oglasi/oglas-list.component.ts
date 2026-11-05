@@ -325,7 +325,6 @@ export class OglasListComponent implements OnInit {
   }
 
   viewDetails(oglasId: number) {
-    console.log('Prikazi detalje oglasa', oglasId);
   }
 
   startConversation(oglasId: number) {

@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { KupacService } from './kupac.service';
@@ -62,7 +63,7 @@ describe('KupacService', () => {
       expect(kupac.ime).toBe('Marko');
     });
 
-    const req = httpMock.expectOne('http://localhost:5017/api/kupac/1');
+    const req = httpMock.expectOne(`${environment.apiUrl}/kupac/1`);
     expect(req.request.method).toBe('GET');
     req.flush(mockKupac);
   });
@@ -87,7 +88,7 @@ describe('KupacService', () => {
       expect(response.kupacId).toBe(3);
     });
 
-    const req = httpMock.expectOne('http://localhost:5017/api/kupac');
+    const req = httpMock.expectOne(`${environment.apiUrl}/kupac`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(newKupac);
     req.flush(mockResponse);
@@ -103,7 +104,7 @@ describe('KupacService', () => {
       expect(response.success).toBe(true);
     });
 
-    const req = httpMock.expectOne('http://localhost:5017/api/kupac/1');
+    const req = httpMock.expectOne(`${environment.apiUrl}/kupac/1`);
     expect(req.request.method).toBe('DELETE');
     req.flush(mockResponse);
   });

@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, NgZone, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,7 +21,6 @@ import { debounceTime, distinctUntilChanged, switchMap, of, catchError } from 'r
   imports: [
     CommonModule, 
     RouterModule, 
-    FormsModule, 
     ReactiveFormsModule,
     MatIconModule, 
     MatMenuModule, 
@@ -36,12 +35,20 @@ import { debounceTime, distinctUntilChanged, switchMap, of, catchError } from 'r
 })
 export class LandingMajstorComponent implements OnInit {
   newsletterEmail: string = '';
+  newsletterControl = new FormControl('', { nonNullable: true });
   isMenuOpen: boolean = false;
   isDropdownOpen = false;
   Math = Math; // For template
 
   // Autocomplete
   searchControl = new FormControl('');
+  filterForm = new FormGroup({
+    specijalizacija: new FormControl(''),
+    grad: new FormControl(''),
+    minOcjena: new FormControl<number | null>(null),
+    minGodineIskustva: new FormControl<number | null>(null),
+    maxCijena: new FormControl<number | null>(null)
+  });
   suggestions: any[] = [];
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
 
@@ -166,8 +173,7 @@ export class LandingMajstorComponent implements OnInit {
 
   onSuggestionSelected(suggestion: any): void {
     // Navigate to majstor detail or apply filter
-    this.filters.specijalizacija = '';
-    this.filters.grad = '';
+    this.filterForm.patchValue({ specijalizacija: '', grad: '' });
     // Could navigate to detail: this.router.navigate(['/majstor', suggestion.korisnikId]);
     // Or search by name:
     this.searchControl.setValue(`${suggestion.ime} ${suggestion.prezime}`, { emitEvent: false });
@@ -179,6 +185,14 @@ export class LandingMajstorComponent implements OnInit {
   }
 
   loadMajstori(): void {
+    const formFilters = this.filterForm.getRawValue();
+    this.filters = {
+      specijalizacija: formFilters.specijalizacija ?? '',
+      grad: formFilters.grad ?? '',
+      minOcjena: formFilters.minOcjena,
+      minGodineIskustva: formFilters.minGodineIskustva,
+      maxCijena: formFilters.maxCijena
+    };
     this.isLoading = true;
     this.hasSearched = true;
     this.majstorService.getMajstori({
@@ -232,19 +246,19 @@ export class LandingMajstorComponent implements OnInit {
   }
 
   resetFilters(): void {
-    this.filters = {
+    this.filterForm.reset({
       specijalizacija: '',
       grad: '',
       minOcjena: null,
       minGodineIskustva: null,
       maxCijena: null
-    };
+    });
     this.pageNumber = 1;
     this.loadMajstori();
   }
 
   quickFilter(specijalizacija: string): void {
-    this.filters.specijalizacija = specijalizacija;
+    this.filterForm.patchValue({ specijalizacija });
     this.pageNumber = 1;
     this.loadMajstori();
   }
@@ -291,10 +305,11 @@ export class LandingMajstorComponent implements OnInit {
   ];
 
   subscribeNewsletter() {
+    this.newsletterEmail = this.newsletterControl.value;
     if (this.newsletterEmail) {
-      console.log('Newsletter subscription:', this.newsletterEmail);
       alert('Hvala na pretplati!');
       this.newsletterEmail = '';
+      this.newsletterControl.reset();
     }
   }
 

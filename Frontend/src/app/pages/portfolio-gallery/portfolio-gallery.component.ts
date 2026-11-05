@@ -48,8 +48,6 @@ export class PortfolioGalleryComponent implements OnInit {
     this.portfolioService.getPortfolioSlike(this.majstorId).subscribe({
       next: (response: any) => {
         this.portfolioSlike = response.slike || response.Slike || [];
-        console.log('Gallery loaded images:', this.portfolioSlike);
-        console.log('First image URL:', this.portfolioSlike[0]?.slikaUrl);
         this.loading = false;
         this.cdr.detectChanges();
       },
@@ -72,6 +70,39 @@ export class PortfolioGalleryComponent implements OnInit {
     this.selectedImageUrl = '';
   }
 
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      this.snackBar.open('Maksimalna veličina slike je 5 MB', 'Zatvori', { duration: 3000 });
+      input.value = '';
+      return;
+    }
+
+    const opis = prompt('Unesite opis slike (opciono):') || undefined;
+    this.portfolioService.uploadPortfolioSlika({
+      majstorId: this.majstorId,
+      slika: file,
+      opis
+    }).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.snackBar.open('Slika uspješno dodana', 'Zatvori', { duration: 3000 });
+          this.loadPortfolioSlike();
+        }
+      },
+      error: () => {
+        this.snackBar.open('Greška pri dodavanju slike', 'Zatvori', { duration: 3000 });
+      }
+    });
+
+    input.value = '';
+  }
+
   deleteSlika(portfolioSlikaId: number): void {
     if (!confirm('Da li ste sigurni da želite obrisati ovu sliku?')) {
       return;
@@ -89,15 +120,6 @@ export class PortfolioGalleryComponent implements OnInit {
         this.snackBar.open('Greška pri brisanju slike', 'Zatvori', { duration: 3000 });
       }
     });
-  }
-
-  onFileSelected(event: any): void {
-    const files = event.target.files;
-    if (files && files.length > 0) {
-      // TODO: Implement file upload to storage (e.g., Cloudinary, AWS S3)
-      // For now, we'll just accept image URLs
-      this.snackBar.open('Upload funkcionalnost će biti dodana uskoro', 'Zatvori', { duration: 3000 });
-    }
   }
 
   addImageUrl(): void {

@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { FavoritesService } from '../../services/favorites.service';
@@ -11,12 +11,13 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-favorites',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, MatIconModule, MatButtonModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, MatIconModule, MatButtonModule],
   templateUrl: './favorites.component.html',
   styleUrl: './favorites.component.scss'
 })
 export class FavoritesComponent implements OnInit {
   newsletterEmail: string = '';
+  newsletterControl = new FormControl('', { nonNullable: true });
   isMenuOpen: boolean = false;
   isDropdownOpen = false;
   
@@ -171,10 +172,11 @@ export class FavoritesComponent implements OnInit {
   }
 
   subscribeNewsletter(): void {
+    this.newsletterEmail = this.newsletterControl.value;
     if (this.newsletterEmail) {
-      console.log('Newsletter subscription:', this.newsletterEmail);
       alert('Hvala na pretplati!');
       this.newsletterEmail = '';
+      this.newsletterControl.reset();
     }
   }
 

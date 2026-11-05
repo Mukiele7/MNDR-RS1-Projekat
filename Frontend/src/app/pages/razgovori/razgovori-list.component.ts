@@ -1025,11 +1025,9 @@ export class RazgovoriListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log('ngOnInit called, loadingStarted:', this.loadingStarted);
     
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser) {
-      console.log('User not logged in');
       this.loading = false;
       alert('Morate biti prijavljeni da biste vidjeli razgovore.');
       this.router.navigate(['/login']);
@@ -1038,12 +1036,10 @@ export class RazgovoriListComponent implements OnInit {
     
     // Prevent double initialization
     if (this.loadingStarted) {
-      console.log('Already loading, skipping...');
       return;
     }
     
     this.currentUserId = currentUser.userId;
-    console.log('Loading razgovori for user:', this.currentUserId);
     this.loadRazgovori();
   }
 
@@ -1053,17 +1049,14 @@ export class RazgovoriListComponent implements OnInit {
     }
 
     this.loadingStarted = true;
-    console.log('Calling API for razgovori...');
     this.razgovorService.getUserRazgovori(this.currentUserId).subscribe({
       next: (data: any) => {
-        console.log('Razgovori loaded:', data);
         this.razgovori = data.map((r: any) => ({
           ...r,
           otherUserName: r.kupacId === this.currentUserId ? r.majstorIme : r.kupacIme
         }));
         this.loading = false;
         this.cdr.markForCheck(); // Force change detection
-        console.log('Loading set to false, razgovori count:', this.razgovori.length);
       },
       error: (err) => {
         console.error('Greška pri učitavanju razgovora:', err);

@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { catchError, forkJoin, of, timeout } from 'rxjs';
 import { RouterModule } from '@angular/router';
 import {
@@ -15,7 +15,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss']
 })
@@ -26,6 +26,7 @@ export class AdminDashboardComponent implements OnInit {
   reviews: AdminReview[] = [];
   selectedTab = 'overview';
   search = '';
+  searchControl = new FormControl('', { nonNullable: true });
   loading = true;
   error = '';
   readonly statuses = ['Aktivan', 'Neaktivan', 'Završen', 'Odobren', 'Odbijen'];
@@ -103,6 +104,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   searchUsers(): void {
+    this.search = this.searchControl.value;
     this.adminService.getUsers(this.search).subscribe({
       next: users => this.users = users,
       error: () => this.error = 'Pretraga korisnika nije uspela.'

@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { AuthService, LoginRequest, LoginResponse } from './auth.service';
@@ -41,24 +42,24 @@ describe('AuthService', () => {
     };
 
     const mockLoginResponse: LoginResponse = {
-      success: true,
-      message: 'Login successful',
-      token: 'mock-jwt-token',
-      korisnikId: 1,
+      accessToken: 'mock-jwt-token',
+      refreshToken: 'mock-refresh-token',
+      userId: 1,
       email: 'test@example.com',
+      fullName: 'Test User',
+      role: 'Kupac',
       ime: 'Test',
       prezime: 'User',
       uloga: 'Kupac'
     };
 
     service.login(mockLoginRequest).subscribe(response => {
-      expect(response.success).toBe(true);
-      expect(response.token).toBe('mock-jwt-token');
+      expect(response.accessToken).toBe('mock-jwt-token');
       expect(localStorage.getItem('token')).toBe('mock-jwt-token');
       expect(localStorage.getItem('currentUser')).toBeTruthy();
     });
 
-    const req = httpMock.expectOne('http://localhost:5017/api/auth/login');
+    const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(mockLoginRequest);
     req.flush(mockLoginResponse);
@@ -72,20 +73,32 @@ describe('AuthService', () => {
 
     expect(localStorage.getItem('token')).toBeNull();
     expect(localStorage.getItem('currentUser')).toBeNull();
-    expect(router.navigate).toHaveBeenCalledWith(['/']);
+    expect(router.navigate).toHaveBeenCalledWith(['/kupac']);
   });
 
   it('should check if user is authenticated', () => {
     expect(service.isAuthenticated()).toBe(false);
 
     localStorage.setItem('token', 'test-token');
+    service['currentUserSubject'].next({
+      accessToken: 'token',
+      refreshToken: 'refresh-token',
+      email: 'test@example.com',
+      fullName: 'Test User',
+      role: 'Kupac',
+      userId: 1
+    });
     expect(service.isAuthenticated()).toBe(true);
   });
 
   it('should get current user', () => {
     const mockUser: LoginResponse = {
-      success: true,
-      message: '',
+      accessToken: 'token',
+      refreshToken: 'refresh-token',
+      email: 'test@example.com',
+      fullName: 'Test User',
+      role: 'Majstor',
+      userId: 1,
       uloga: 'Majstor',
       ime: 'Test'
     };

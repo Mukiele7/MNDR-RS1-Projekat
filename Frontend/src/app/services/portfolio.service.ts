@@ -20,7 +20,8 @@ export interface GetPortfolioSlikeResponse {
 
 export interface UploadPortfolioSlikaCommand {
   majstorId: number;
-  slikaUrl: string;
+  slika?: File;
+  slikaUrl?: string;
   opis?: string;
 }
 
@@ -48,7 +49,18 @@ export class PortfolioService {
   }
 
   uploadPortfolioSlika(command: UploadPortfolioSlikaCommand): Observable<UploadPortfolioSlikaResponse> {
-    return this.http.post<UploadPortfolioSlikaResponse>(this.apiUrl, command);
+    const formData = new FormData();
+    formData.append('MajstorId', command.majstorId.toString());
+    if (command.slika) {
+      formData.append('Slika', command.slika);
+    }
+    if (command.slikaUrl) {
+      formData.append('SlikaUrl', command.slikaUrl);
+    }
+    if (command.opis) {
+      formData.append('Opis', command.opis);
+    }
+    return this.http.post<UploadPortfolioSlikaResponse>(this.apiUrl, formData);
   }
 
   deletePortfolioSlika(portfolioSlikaId: number, majstorId: number): Observable<DeletePortfolioSlikaResponse> {

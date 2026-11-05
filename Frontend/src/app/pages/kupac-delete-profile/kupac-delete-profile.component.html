@@ -72,7 +72,7 @@
         <!-- Confirmation Checkbox -->
         <div class="confirmation-section">
           <mat-checkbox 
-            [(ngModel)]="confirmationChecked" 
+            [formControl]="confirmationControl"
             color="warn"
             class="confirmation-checkbox">
             <strong>Razumijem da je ova akcija trajna i da će svi moji podaci biti obrisani bez mogućnosti povratka.</strong>

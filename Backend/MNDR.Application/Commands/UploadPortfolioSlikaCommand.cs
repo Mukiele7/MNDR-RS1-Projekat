@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace MNDR.Application.Commands;
 
@@ -6,6 +7,7 @@ public class UploadPortfolioSlikaCommand : IRequest<UploadPortfolioSlikaResponse
 {
     public int MajstorId { get; set; }
     public string SlikaUrl { get; set; } = string.Empty;
+    public IFormFile? Slika { get; set; }
     public string? Opis { get; set; }
 }
 

@@ -32,17 +32,17 @@
     <section *ngIf="selectedTab === 'users'" class="panel">
       <div class="panel-heading">
         <h2>Korisnici</h2>
-        <div class="search"><input [(ngModel)]="search" (keyup.enter)="searchUsers()" placeholder="Pretraži ime ili email"><button (click)="searchUsers()">Pretraži</button></div>
+        <div class="search"><input [formControl]="searchControl" (keyup.enter)="searchUsers()" placeholder="Pretraži ime ili email"><button (click)="searchUsers()">Pretraži</button></div>
       </div>
       <div class="table-wrap"><table><thead><tr><th>Korisnik</th><th>Email</th><th>Uloga</th><th>Grad</th><th>Akcije</th></tr></thead><tbody>
-        <tr *ngFor="let user of users"><td><b>{{ user.ime }} {{ user.prezime }}</b><small>ID: {{ user.korisnikId }}</small></td><td>{{ user.email }}</td><td><select [ngModel]="user.uloga" (ngModelChange)="changeUserRole(user, $event)"><option *ngFor="let role of roles" [value]="role">{{ role }}</option></select></td><td>{{ user.grad || '—' }}</td><td><button class="link-danger" (click)="deleteUser(user)">Obriši</button></td></tr>
+        <tr *ngFor="let user of users"><td><b>{{ user.ime }} {{ user.prezime }}</b><small>ID: {{ user.korisnikId }}</small></td><td>{{ user.email }}</td><td><select [value]="user.uloga" (change)="changeUserRole(user, $any($event.target).value)"><option *ngFor="let role of roles" [value]="role">{{ role }}</option></select></td><td>{{ user.grad || '—' }}</td><td><button class="link-danger" (click)="deleteUser(user)">Obriši</button></td></tr>
       </tbody></table></div>
     </section>
 
     <section *ngIf="selectedTab === 'listings'" class="panel">
       <div class="panel-heading"><h2>Moderacija oglasa</h2><span>{{ listings.length }} oglasa</span></div>
       <div class="table-wrap"><table><thead><tr><th>Naslov</th><th>Majstor</th><th>Datum</th><th>Status</th></tr></thead><tbody>
-        <tr *ngFor="let listing of listings"><td><b>{{ listing.naslov }}</b><small>ID: {{ listing.oglasId }}</small></td><td>{{ listing.majstorIme }}</td><td>{{ listing.datumObjave | date:'dd.MM.yyyy.' }}</td><td><select [ngModel]="listing.status" (ngModelChange)="changeListingStatus(listing, $event)"><option *ngFor="let status of statuses" [value]="status">{{ status }}</option></select></td></tr>
+        <tr *ngFor="let listing of listings"><td><b>{{ listing.naslov }}</b><small>ID: {{ listing.oglasId }}</small></td><td>{{ listing.majstorIme }}</td><td>{{ listing.datumObjave | date:'dd.MM.yyyy.' }}</td><td><select [value]="listing.status" (change)="changeListingStatus(listing, $any($event.target).value)"><option *ngFor="let status of statuses" [value]="status">{{ status }}</option></select></td></tr>
       </tbody></table></div>
     </section>
 

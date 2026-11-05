@@ -39,7 +39,7 @@ public class PortfolioController : ControllerBase
     /// </summary>
     [HttpPost]
     [Authorize] // Samo ulogovani korisnici
-    public async Task<ActionResult<UploadPortfolioSlikaResponse>> UploadPortfolioSlika([FromBody] UploadPortfolioSlikaCommand command, CancellationToken ct)
+    public async Task<ActionResult<UploadPortfolioSlikaResponse>> UploadPortfolioSlika([FromForm] UploadPortfolioSlikaCommand command, CancellationToken ct)
     {
         if (!User.IsInRole("Administrator") &&
             User.FindFirstValue(ClaimTypes.NameIdentifier) != command.MajstorId.ToString())

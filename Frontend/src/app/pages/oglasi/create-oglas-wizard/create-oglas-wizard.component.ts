@@ -127,7 +127,6 @@ export class CreateOglasWizardComponent implements OnInit {
 
       this.oglasService.createOglas(oglasData).subscribe({
         next: (response) => {
-          console.log('Oglas kreiran:', response);
           this.router.navigate(['/oglasi']);
         },
         error: (error) => {

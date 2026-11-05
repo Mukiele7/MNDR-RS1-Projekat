@@ -57,7 +57,7 @@
         <div class="search-group">
           <input type="text" 
                  class="search-input" 
-                 [(ngModel)]="searchQuery"
+                 [formControl]="searchControl"
                  (keydown.enter)="searchMajstori()"
                  placeholder="npr. električar, vodoinstalater, moler..." />
           <button mat-raised-button 
@@ -165,7 +165,7 @@
             <input 
               type="email" 
               placeholder="vasemail@gmail.com" 
-              [(ngModel)]="newsletterEmail"
+              [formControl]="newsletterControl"
               name="email"
               required
             />
