@@ -24,9 +24,15 @@ namespace MNDR.API.Controllers
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
+        [Authorize(Roles = "Kupac,Administrator")]
         public async Task<ActionResult<GetKupacByIdQueryDto>> GetKupacById(int id, CancellationToken ct)
         {
+            if (!User.IsInRole("Administrator") &&
+                User.FindFirstValue(ClaimTypes.NameIdentifier) != id.ToString())
+            {
+                return Forbid();
+            }
+
             var query = new GetKupacByIdQuery { KorisnikId = id };
             var result = await sender.Send(query, ct);
 

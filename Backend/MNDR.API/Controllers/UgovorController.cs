@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using MNDR.Application.Modules.Ugovori.Commands.Create;
 using MNDR.Application.Modules.Ugovori.Commands.Complete;
 using MNDR.Application.Modules.Ugovori.Queries.GetUgovori;
+using System.Security.Claims;
 
 namespace MNDR.API.Controllers
 {
@@ -22,6 +23,10 @@ namespace MNDR.API.Controllers
         [HttpGet("korisnik/{korisnikId}")]
         public async Task<IActionResult> GetUgovori(int korisnikId)
         {
+            if (!User.IsInRole("Administrator") &&
+                User.FindFirstValue(ClaimTypes.NameIdentifier) != korisnikId.ToString())
+                return Forbid();
+
             var query = new GetUgovoreQuery { KorisnikId = korisnikId };
             var result = await _mediator.Send(query);
             return Ok(result);

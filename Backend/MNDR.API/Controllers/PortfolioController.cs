@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MNDR.Application.Commands;
 using MNDR.Application.Queries;
+using System.Security.Claims;
 
 namespace MNDR.API.Controllers;
 
@@ -40,6 +41,12 @@ public class PortfolioController : ControllerBase
     [Authorize] // Samo ulogovani korisnici
     public async Task<ActionResult<UploadPortfolioSlikaResponse>> UploadPortfolioSlika([FromBody] UploadPortfolioSlikaCommand command, CancellationToken ct)
     {
+        if (!User.IsInRole("Administrator") &&
+            User.FindFirstValue(ClaimTypes.NameIdentifier) != command.MajstorId.ToString())
+        {
+            return Forbid();
+        }
+
         var result = await _sender.Send(command, ct);
 
         if (!result.Success)
@@ -55,6 +62,12 @@ public class PortfolioController : ControllerBase
     [Authorize] // Samo ulogovani korisnici
     public async Task<ActionResult<DeletePortfolioSlikaResponse>> DeletePortfolioSlika(int portfolioSlikaId, [FromQuery] int majstorId, CancellationToken ct)
     {
+        if (!User.IsInRole("Administrator") &&
+            User.FindFirstValue(ClaimTypes.NameIdentifier) != majstorId.ToString())
+        {
+            return Forbid();
+        }
+
         var command = new DeletePortfolioSlikaCommand
         {
             PortfolioSlikaId = portfolioSlikaId,
@@ -84,4 +97,3 @@ public class PortfolioController : ControllerBase
         return Ok(result);
     }
 }
-

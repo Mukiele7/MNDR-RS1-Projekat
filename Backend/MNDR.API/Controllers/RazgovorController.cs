@@ -5,6 +5,7 @@ using MNDR.Application.Modules.Razgovori.Commands.Create;
 using MNDR.Application.Modules.Razgovori.Commands.SendPoruka;
 using MNDR.Application.Modules.Razgovori.Queries.GetById;
 using MNDR.Application.Modules.Razgovori.Queries.GetUserRazgovori;
+using System.Security.Claims;
 
 namespace MNDR.API.Controllers
 {
@@ -23,6 +24,10 @@ namespace MNDR.API.Controllers
         [HttpGet("user/{korisnikId}")]
         public async Task<IActionResult> GetUserRazgovori(int korisnikId)
         {
+            if (!User.IsInRole("Administrator") &&
+                User.FindFirstValue(ClaimTypes.NameIdentifier) != korisnikId.ToString())
+                return Forbid();
+
             var query = new GetUserRazgovoriQuery { KorisnikId = korisnikId };
             var result = await _mediator.Send(query);
             return Ok(result);
@@ -31,6 +36,10 @@ namespace MNDR.API.Controllers
         [HttpGet("{razgovorId}")]
         public async Task<IActionResult> GetRazgovor(int razgovorId, [FromQuery] int korisnikId)
         {
+            if (!User.IsInRole("Administrator") &&
+                User.FindFirstValue(ClaimTypes.NameIdentifier) != korisnikId.ToString())
+                return Forbid();
+
             var query = new GetRazgovorQuery 
             { 
                 RazgovorId = razgovorId,

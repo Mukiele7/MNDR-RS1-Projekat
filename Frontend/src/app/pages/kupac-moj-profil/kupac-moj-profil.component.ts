@@ -44,41 +44,25 @@ export class KupacMojProfilComponent implements OnInit {
 
   loadKupacProfile(): void {
     const currentUser = this.authService.getCurrentUser();
-    console.log('Current user:', currentUser);
     
     if (!currentUser || (!currentUser.korisnikId && !currentUser.userId)) {
-      console.log('No user found, redirecting to login');
       this.router.navigate(['/login']);
       return;
     }
 
     const userId = currentUser.korisnikId || currentUser.userId;
-    console.log('Loading profile for userId:', userId);
-
-    // Za sada koristimo mock podatke jer Kupac endpoint nije implementiran
-    this.kupac = {
-      ime: currentUser.ime || 'Korisnik',
-      prezime: currentUser.prezime || '',
-      email: currentUser.email || '',
-      telefon: currentUser.telefon || 'Nije navedeno',
-      grad: 'Sarajevo',
-      adresa: 'Nije navedeno'
-    };
-    this.loading = false;
-    console.log('Mock kupac data:', this.kupac);
-
-    // TODO: Implementirati pravi API call kada bude dostupan
-    // this.kupacService.getKupacById(userId).subscribe({
-    //   next: (data) => {
-    //     console.log('Kupac data loaded:', data);
-    //     this.kupac = data;
-    //     this.loading = false;
-    //   },
-    //   error: (err) => {
-    //     console.error('Greška pri učitavanju profila:', err);
-    //     this.loading = false;
-    //   }
-    // });
+    this.kupacService.getKupacById(userId).subscribe({
+      next: data => {
+        this.kupac = data;
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.kupac = null;
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   getProfileImage(): string {

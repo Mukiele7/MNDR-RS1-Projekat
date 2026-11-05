@@ -181,13 +181,19 @@ export class MajstorProfil implements OnInit {
   }
 
   contactMajstor(): void {
-    // TODO: Navigate to chat or contact form
-    alert('Funkcionalnost kontaktiranja će biti implementirana uskoro');
+    if (!this.currentUser || this.currentUser.uloga !== 'Kupac') {
+      this.router.navigate(['/login']);
+      return;
+    }
+    this.router.navigate(['/razgovori'], { queryParams: { majstorId: this.majstorId } });
   }
 
   createContract(): void {
-    // TODO: Navigate to contract creation
-    alert('Funkcionalnost kreiranja ugovora će biti implementirana uskoro');
+    if (!this.currentUser || this.currentUser.uloga !== 'Kupac') {
+      this.router.navigate(['/login']);
+      return;
+    }
+    this.router.navigate(['/ugovori'], { queryParams: { majstorId: this.majstorId } });
   }
 
   toggleMenu(): void {

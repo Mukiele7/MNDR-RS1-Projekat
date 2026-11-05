@@ -17,9 +17,8 @@ export class KreditService {
 
   addKredite(korisnikId: number, kolicina: number): Observable<any> {
     return this.http.post<any>(this.apiUrl, {
-      korisnikId,
-      kolicina,
-      tip: 'Uplata'
+      majstorId: korisnikId,
+      iznos: kolicina
     });
   }
 

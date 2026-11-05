@@ -39,9 +39,6 @@ interface Kredit {
         <h2>Stanje Kredita</h2>
         <div class="balance-display">
           <div class="balance-amount">{{ currentBalance | number:'1.2-2' }} KM</div>
-          <button mat-raised-button color="accent" (click)="openBuyCreditsDialog()">
-            <mat-icon>add</mat-icon> Kupi kredite
-          </button>
         </div>
       </mat-card>
 
@@ -197,7 +194,4 @@ export class KreditiComponent implements OnInit {
     }, 0);
   }
 
-  openBuyCreditsDialog() {
-    console.log('Otvori dialog za kupovinu kredita');
-  }
 }

@@ -7,6 +7,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { OglasService } from '../../services/oglas.service';
+import { RazgovorService } from '../../services/razgovor.service';
+import { UgovorService } from '../../services/ugovor.service';
+import { RecenzijaService } from '../../services/recenzija.service';
+import { KreditService } from '../../services/kredit.service';
+import { forkJoin } from 'rxjs';
 
 interface DashboardStats {
   totalOglasi: number;
@@ -62,7 +68,7 @@ interface DashboardStats {
               <p>Aktivnih razgovora</p>
             </mat-card-content>
             <mat-card-actions>
-              <button mat-button color="primary" [routerLink]="['/razgovori', 1]">Otvori</button>
+              <button mat-button color="primary" routerLink="/razgovori">Otvori</button>
             </mat-card-actions>
           </mat-card>
         </mat-grid-tile>
@@ -255,7 +261,14 @@ export class DashboardComponent implements OnInit {
 
   currentUserId: number = 0;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private oglasService: OglasService,
+    private razgovorService: RazgovorService,
+    private ugovorService: UgovorService,
+    private recenzijaService: RecenzijaService,
+    private kreditService: KreditService
+  ) {}
 
   ngOnInit() {
     this.loadStats();
@@ -271,14 +284,46 @@ export class DashboardComponent implements OnInit {
   }
 
   loadStats() {
-    // Statistics are populated by the role-specific dashboards.
-    // Do not display fabricated values while a real source is unavailable.
-    this.stats = {
-      totalOglasi: 0,
-      aktivniRazgovori: 0,
-      zavrseniUgovori: 0,
-      prosecnaOcena: 0,
-      stanjeSuma: 0
-    };
+    const user = this.authService.getCurrentUser();
+    const userId = user?.korisnikId ?? user?.userId;
+    if (!userId) return;
+
+    forkJoin({
+      oglasi: this.oglasService.getOglasi(1, 100, undefined, undefined, undefined, undefined),
+      razgovori: this.razgovorService.getUserRazgovori(userId),
+      ugovori: this.ugovorService.getUgovori(userId),
+      recenzije: this.recenzijaService.getRecenzije(userId),
+      krediti: this.kreditService.getKrediti(userId)
+    }).subscribe({
+      next: result => {
+        const oglasi = result.oglasi?.items ?? result.oglasi?.Items ?? [];
+        const razgovori = Array.isArray(result.razgovori)
+          ? result.razgovori
+          : result.razgovori?.items ?? result.razgovori?.Items ?? [];
+        const ugovori = Array.isArray(result.ugovori)
+          ? result.ugovori
+          : result.ugovori?.items ?? result.ugovori?.Items ?? [];
+        const recenzije = Array.isArray(result.recenzije)
+          ? result.recenzije
+          : result.recenzije?.items ?? result.recenzije?.Items ?? [];
+        const krediti = Array.isArray(result.krediti)
+          ? result.krediti
+          : result.krediti?.items ?? result.krediti?.Items ?? [];
+
+        this.stats = {
+          totalOglasi: oglasi.filter((o: any) => o.status === 'Aktivan' || o.Status === 'Aktivan').length,
+          aktivniRazgovori: razgovori.length,
+          zavrseniUgovori: ugovori.filter((u: any) => (u.status ?? u.Status) === 'Završen').length,
+          prosecnaOcena: recenzije.length
+            ? recenzije.reduce((sum: number, r: any) => sum + Number(r.ocena ?? r.Ocena ?? 0), 0) / recenzije.length
+            : 0,
+          stanjeSuma: krediti.reduce((sum: number, k: any) =>
+            sum + ((k.tip ?? k.Tip) === 'Uplata' ? Number(k.kolicina ?? k.Kolicina ?? 0) : -Number(k.kolicina ?? k.Kolicina ?? 0)), 0)
+        };
+      },
+      error: () => {
+        this.stats = { totalOglasi: 0, aktivniRazgovori: 0, zavrseniUgovori: 0, prosecnaOcena: 0, stanjeSuma: 0 };
+      }
+    });
   }
 }

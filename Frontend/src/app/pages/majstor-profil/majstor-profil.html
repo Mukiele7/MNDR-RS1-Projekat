@@ -52,7 +52,7 @@
     <mat-card-header class="profile-card-header">
       <div class="profile-avatar-container" (click)="openImageZoom()">
         <img 
-          [src]="profileImages[majstorId] || 'https://ui-avatars.com/api/?name=M+M&size=200&background=13ab24&color=ffffff&bold=true'" 
+          [src]="getProfileImage()"
           [alt]="(majstor?.ime || 'Majstor') + ' ' + (majstor?.prezime || '')"
           class="profile-avatar"
           (error)="onImageError($event)"
@@ -243,7 +243,7 @@
     
     <div class="zoom-image-container">
       <img 
-        [src]="profileImages[majstorId] || 'https://ui-avatars.com/api/?name=M+M&size=200&background=13ab24&color=ffffff&bold=true'" 
+        [src]="getProfileImage()"
         [alt]="(majstor?.ime || 'Majstor') + ' ' + (majstor?.prezime || '')"
         [style.transform]="'scale(' + zoomLevel + ')'"
         class="zoomed-image"
