@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -24,7 +24,7 @@ interface AppSettings {
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,
     MatSelectModule,
@@ -59,8 +59,18 @@ export class SettingsComponent implements OnInit {
     { value: 25, label: '25 po strani' },
     { value: 50, label: '50 po strani' }
   ];
+  settingsForm: FormGroup;
 
-  constructor(private snackBar: MatSnackBar) {}
+  constructor(private snackBar: MatSnackBar, private formBuilder: FormBuilder) {
+    this.settingsForm = this.formBuilder.group({
+      language: ['bs-Latn-BA'],
+      theme: ['light'],
+      enableNotifications: [true],
+      emailNotifications: [true],
+      pushNotifications: [false],
+      pageSize: [10]
+    });
+  }
 
   ngOnInit(): void {
     this.loadSettings();
@@ -70,11 +80,13 @@ export class SettingsComponent implements OnInit {
     const savedSettings = localStorage.getItem('appSettings');
     if (savedSettings) {
       this.settings = JSON.parse(savedSettings);
+      this.settingsForm.patchValue(this.settings);
       this.applyTheme();
     }
   }
 
   saveSettings(): void {
+    this.settings = this.settingsForm.getRawValue() as AppSettings;
     localStorage.setItem('appSettings', JSON.stringify(this.settings));
     this.applyTheme();
     
@@ -94,6 +106,7 @@ export class SettingsComponent implements OnInit {
       pushNotifications: false,
       pageSize: 10
     };
+    this.settingsForm.reset(this.settings);
     
     localStorage.removeItem('appSettings');
     this.applyTheme();
@@ -118,6 +131,7 @@ export class SettingsComponent implements OnInit {
 
   toggleTheme(): void {
     this.settings.theme = this.settings.theme === 'light' ? 'dark' : 'light';
+    this.settingsForm.patchValue({ theme: this.settings.theme });
     this.applyTheme();
   }
 }

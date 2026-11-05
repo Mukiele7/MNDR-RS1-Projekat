@@ -1,4 +1,4 @@
-<div class="settings-container">
+<form class="settings-container" [formGroup]="settingsForm">
   <h2>
     <mat-icon>settings</mat-icon>
     Podešavanja aplikacije
@@ -15,7 +15,7 @@
     <mat-card-content>
       <mat-form-field appearance="outline">
         <mat-label>Izaberite jezik</mat-label>
-        <mat-select [(ngModel)]="settings.language">
+        <mat-select formControlName="language">
           <mat-option *ngFor="let lang of languages" [value]="lang.value">
             {{ lang.label }}
           </mat-option>
@@ -39,7 +39,7 @@
           <span class="setting-description">Aktivirajte tamnu temu za prijatnije korištenje noću</span>
         </div>
         <mat-slide-toggle 
-          [(ngModel)]="settings.theme" 
+          [checked]="settings.theme === 'dark'" 
           [checked]="settings.theme === 'dark'"
           (change)="toggleTheme()">
         </mat-slide-toggle>
@@ -61,7 +61,7 @@
           <span class="setting-label">Omogući notifikacije</span>
           <span class="setting-description">Primajte obavještenja o novim porukama i aktivnostima</span>
         </div>
-        <mat-slide-toggle [(ngModel)]="settings.enableNotifications"></mat-slide-toggle>
+        <mat-slide-toggle formControlName="enableNotifications"></mat-slide-toggle>
       </div>
 
       <mat-divider></mat-divider>
@@ -72,7 +72,7 @@
           <span class="setting-description">Primajte obavještenja putem emaila</span>
         </div>
         <mat-slide-toggle 
-          [(ngModel)]="settings.emailNotifications"
+          formControlName="emailNotifications"
           [disabled]="!settings.enableNotifications">
         </mat-slide-toggle>
       </div>
@@ -85,7 +85,7 @@
           <span class="setting-description">Primajte trenutne push notifikacije u browseru</span>
         </div>
         <mat-slide-toggle 
-          [(ngModel)]="settings.pushNotifications"
+          formControlName="pushNotifications"
           [disabled]="!settings.enableNotifications">
         </mat-slide-toggle>
       </div>
@@ -103,7 +103,7 @@
     <mat-card-content>
       <mat-form-field appearance="outline">
         <mat-label>Broj stavki po stranici</mat-label>
-        <mat-select [(ngModel)]="settings.pageSize">
+        <mat-select formControlName="pageSize">
           <mat-option *ngFor="let option of pageSizeOptions" [value]="option.value">
             {{ option.label }}
           </mat-option>
@@ -124,4 +124,4 @@
       Vrati na početne vrijednosti
     </button>
   </div>
-</div>
+  </form>
